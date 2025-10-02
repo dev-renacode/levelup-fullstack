@@ -13,7 +13,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div className="lg:col-span-2">
             <h3 className="text-white font-bold text-2xl mb-4 font-[Orbitron]">
-              clas{" "}
+              {" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r to-green-400 from-blue-400">
                 Level-UP Gamers
               </span>
@@ -201,7 +201,7 @@ const Footer = () => {
 
         <div className="flex flex-col md:flex-row justify-between items-center pt-6 border-t border-green-400/20">
           <p className="text-white/60 text-sm font-[Roboto] mb-4 md:mb-0">
-            © 2024 Level-UP Gamers. Todos los derechos reservados.
+            © 2025 Level-UP Gamers. Todos los derechos reservados.
           </p>
           <nav className="flex space-x-6" aria-label="Enlaces legales">
             <a
