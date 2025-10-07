@@ -1,9 +1,9 @@
-import GameBackgroundEffects from "../visualeffects/GameBackgroundEffects";
-import { useContactForm } from "../../hooks/useContactForm";
-import FormHeader from "../forms/FormHeader";
-import TextInput from "../forms/TextInput";
-import TextareaInput from "../forms/TextareaInput";
-import SubmitButton from "../forms/SubmitButton";
+import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
+import { useContactForm } from "../../utils/hooks/useContactForm";
+import FormHeader from "../molecules/FormHeader";
+import TextInput from "../atoms/TextInput";
+import TextareaInput from "../atoms/TextareaInput";
+import SubmitButton from "../atoms/SubmitButton";
 
 const Contact = () => {
   const { formData, errors, isLoading, handleInputChange, handleSubmit } =

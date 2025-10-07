@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import App from "./App.jsx";
-import Navbar from "./components/layout/Navbar.jsx";
+import Navbar from "./components/organism/Navbar.jsx";
 
 const RootApp = () => {
   const [currentPage, setCurrentPage] = useState("home");

@@ -1,8 +1,8 @@
-import GameBackgroundEffects from "../visualeffects/GameBackgroundEffects";
-import { useLoginForm } from "../../hooks/useLoginForm";
-import FormHeader from "../forms/FormHeader";
-import TextInput from "../forms/TextInput";
-import SubmitButton from "../forms/SubmitButton";
+import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
+import { useLoginForm } from "../../utils/hooks/useLoginForm";
+import FormHeader from "../molecules/FormHeader";
+import TextInput from "../atoms/TextInput";
+import SubmitButton from "../atoms/SubmitButton";
 
 const Login = () => {
   const { formData, errors, isLoading, handleInputChange, handleSubmit } =

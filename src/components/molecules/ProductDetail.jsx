@@ -1,11 +1,11 @@
-import GameBackgroundEffects from "../visualeffects/GameBackgroundEffects";
-import { useProductDetail } from "../../hooks/useProductDetail";
-import Breadcrumbs from "../product/Breadcrumbs";
-import ProductImages from "../product/ProductImages";
-import ProductInfo from "../product/ProductInfo";
-import ProductFeatures from "../product/ProductFeatures";
-import RelatedProducts from "../product/RelatedProducts";
-import ProductLoading from "../product/ProductLoading";
+import GameBackgroundEffects from "./GameBackgroundEffects";
+import { useProductDetail } from "../../utils/hooks/useProductDetail";
+import Breadcrumbs from "./Breadcrumbs";
+import ProductImages from "./ProductImages";
+import ProductInfo from "./ProductInfo";
+import ProductFeatures from "./ProductFeatures";
+import RelatedProducts from "./RelatedProducts";
+import ProductLoading from "./ProductLoading";
 
 const ProductDetail = () => {
   // Obtener ID del producto desde la URL hash

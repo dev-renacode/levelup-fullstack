@@ -1,4 +1,4 @@
-import GameBackgroundEffects from "../visualeffects/GameBackgroundEffects";
+import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 
 const Footer = () => {
   return (

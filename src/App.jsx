@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import Hero from "./components/layout/Hero.jsx";
-import Products from "./components/layout/Products.jsx";
-import Footer from "./components/layout/Footer.jsx";
-import Register from "./components/layout/Register.jsx";
-import Login from "./components/layout/Login.jsx";
-import Blog from "./components/layout/Blog.jsx";
-import Contact from "./components/layout/Contact.jsx";
-import ProductDetail from "./components/layout/ProductDetail.jsx";
-import AdminDashboard from "./components/layout/AdminDashboard.jsx";
+import Hero from "./components/organism/Hero.jsx";
+import Products from "./components/organism/Products.jsx";
+import Footer from "./components/organism/Footer.jsx";
+import Register from "./components/pages/Register.jsx";
+import Login from "./components/pages/Login.jsx";
+import Blog from "./components/pages/Blog.jsx";
+import Contact from "./components/pages/Contact.jsx";
+import ProductDetail from "./components/molecules/ProductDetail.jsx";
+import AdminDashboard from "./components/pages/AdminDashboard.jsx";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");

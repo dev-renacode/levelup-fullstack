@@ -1,13 +1,13 @@
 import { useState, lazy, Suspense, useMemo } from "react";
-import AdminSidebar from "../admin/AdminSidebar";
-import AdminHeader from "../admin/AdminHeader";
-import DashboardLoading from "../admin/DashboardLoading";
+import AdminSidebar from "../organism/AdminSidebar";
+import AdminHeader from "../organism/AdminHeader";
+import DashboardLoading from "../molecules/DashboardLoading";
 
 // Lazy loading de componentes pesados
-const StatsCards = lazy(() => import("../admin/StatsCards"));
-const RecentOrders = lazy(() => import("../admin/RecentOrders"));
-const TopProducts = lazy(() => import("../admin/TopProducts"));
-const SalesChart = lazy(() => import("../admin/SalesChart"));
+const StatsCards = lazy(() => import("../molecules/StatsCards"));
+const RecentOrders = lazy(() => import("../molecules/RecentOrders"));
+const TopProducts = lazy(() => import("../molecules/TopProducts"));
+const SalesChart = lazy(() => import("../molecules/SalesChart"));
 
 const AdminDashboard = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");

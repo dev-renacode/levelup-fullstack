@@ -1,10 +1,10 @@
-import GameBackgroundEffects from "../visualeffects/GameBackgroundEffects";
-import { useRegisterForm } from "../../hooks/useRegisterForm";
-import FormHeader from "../forms/FormHeader";
-import TextInput from "../forms/TextInput";
-import SelectInput from "../forms/SelectInput";
-import SubmitButton from "../forms/SubmitButton";
-import LoginLink from "../forms/LoginLink";
+import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
+import { useRegisterForm } from "../../utils/hooks/useRegisterForm";
+import FormHeader from "../molecules/FormHeader";
+import TextInput from "../atoms/TextInput";
+import SelectInput from "../atoms/SelectInput";
+import SubmitButton from "../atoms/SubmitButton";
+import LoginLink from "../atoms/LoginLink";
 
 const Register = () => {
   const {
