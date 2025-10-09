@@ -5,7 +5,6 @@ const Products = () => {
     window.location.hash = `#product/${productId}`;
   };
 
-  // Datos de productos con imágenes reales
   const products = [
     {
       id: 1,

@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../config/firebase";
+import { getUserByEmail } from "../../config/firestoreService";
 
 export const useLoginForm = () => {
   const [formData, setFormData] = useState({
@@ -66,17 +69,62 @@ export const useLoginForm = () => {
     setIsLoading(true);
 
     try {
-      // Simular llamada a API
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      console.log("Datos de login:", formData);
-      alert("¡Inicio de sesión exitoso! Bienvenido de vuelta");
-
-      // Aquí podrías redirigir al dashboard o página principal
-      window.location.hash = "home";
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+      
+      console.log("Usuario autenticado:", userCredential.user);
+      
+      const userData = await getUserByEmail(formData.email);
+      
+      if (userData) {
+        if (userData.role === "admin") {
+          window.location.hash = "admin";
+        } else {
+          localStorage.setItem("currentUser", JSON.stringify({
+            fullName: userData.fullName,
+            email: userData.email
+          }));
+          window.location.hash = "home";
+        }
+      } else {
+        if (formData.email === "admin@duocuc.cl") {
+          window.location.hash = "admin";
+        } else {
+          localStorage.setItem("currentUser", JSON.stringify({
+            fullName: "Usuario",
+            email: formData.email
+          }));
+          window.location.hash = "home";
+        }
+      }
+      
     } catch (error) {
       console.error("Error en login:", error);
-      setErrors({ general: "Error al iniciar sesión. Inténtalo de nuevo." });
+      
+      let errorMessage = "Error al iniciar sesión. Inténtalo de nuevo.";
+      
+      switch (error.code) {
+        case "auth/user-not-found":
+          errorMessage = "No existe una cuenta con este correo electrónico.";
+          break;
+        case "auth/wrong-password":
+          errorMessage = "Contraseña incorrecta.";
+          break;
+        case "auth/invalid-email":
+          errorMessage = "El correo electrónico no es válido.";
+          break;
+        case "auth/too-many-requests":
+          errorMessage = "Demasiados intentos fallidos. Inténtalo más tarde.";
+          break;
+        case "auth/user-disabled":
+          errorMessage = "Esta cuenta ha sido deshabilitada.";
+          break;
+      }
+      
+      setErrors({ general: errorMessage });
     } finally {
       setIsLoading(false);
     }

@@ -3,7 +3,6 @@ import AdminSidebar from "../organism/AdminSidebar";
 import AdminHeader from "../organism/AdminHeader";
 import DashboardLoading from "../molecules/DashboardLoading";
 
-// Lazy loading de componentes pesados
 const StatsCards = lazy(() => import("../molecules/StatsCards"));
 const RecentOrders = lazy(() => import("../molecules/RecentOrders"));
 const TopProducts = lazy(() => import("../molecules/TopProducts"));

@@ -71,13 +71,10 @@ export const useContactForm = () => {
     setIsLoading(true);
 
     try {
-      // Simular envío de mensaje
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       console.log("Mensaje enviado:", formData);
       alert("¡Mensaje enviado exitosamente! Te responderemos pronto.");
-
-      // Limpiar formulario
       setFormData({
         fullName: "",
         email: "",

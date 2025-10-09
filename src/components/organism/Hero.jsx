@@ -1,4 +1,5 @@
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
+import WelcomeMessage from "../molecules/WelcomeMessage";
 
 const Hero = () => {
   return (
@@ -6,6 +7,7 @@ const Hero = () => {
       className="w-screen h-screen bg-black font-[Orbitron] relative overflow-hidden"
       id="inicio"
     >
+      <WelcomeMessage />
       <GameBackgroundEffects />
 
       <div

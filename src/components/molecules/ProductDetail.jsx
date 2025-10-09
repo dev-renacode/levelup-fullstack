@@ -8,7 +8,6 @@ import RelatedProducts from "./RelatedProducts";
 import ProductLoading from "./ProductLoading";
 
 const ProductDetail = () => {
-  // Obtener ID del producto desde la URL hash
   const getProductIdFromHash = () => {
     const hash = window.location.hash;
     const match = hash.match(/#product\/(\d+)/);

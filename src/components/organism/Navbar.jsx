@@ -15,8 +15,7 @@ const Navbar = ({ currentPage }) => {
     setIsMenuOpen(false);
   };
 
-  const navigateTo = (/* page */) => {
-    // Mantener por compatibilidad si se requiere en el futuro
+  const navigateTo = () => {
     closeMenu();
   };
 

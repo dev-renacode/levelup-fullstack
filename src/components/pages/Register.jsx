@@ -2,7 +2,6 @@ import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import { useRegisterForm } from "../../utils/hooks/useRegisterForm";
 import FormHeader from "../molecules/FormHeader";
 import TextInput from "../atoms/TextInput";
-import SelectInput from "../atoms/SelectInput";
 import SubmitButton from "../atoms/SubmitButton";
 import LoginLink from "../atoms/LoginLink";
 
@@ -10,8 +9,7 @@ const Register = () => {
   const {
     formData,
     errors,
-    regions,
-    communes,
+    isLoading,
     handleInputChange,
     handleSubmit,
   } = useRegisterForm();
@@ -31,6 +29,13 @@ const Register = () => {
           />
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {errors.general && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                <p className="text-red-400 text-sm font-[Roboto] text-center">
+                  {errors.general}
+                </p>
+              </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
                 <TextInput
@@ -94,47 +99,34 @@ const Register = () => {
               />
 
               <TextInput
-                id="phone"
-                name="phone"
-                label="TELÉFONO (opcional)"
-                type="tel"
-                value={formData.phone}
+                id="birthDate"
+                name="birthDate"
+                label="FECHA DE NACIMIENTO"
+                type="date"
+                value={formData.birthDate}
                 onChange={handleInputChange}
-                placeholder="+56 9 1234 5678"
-                labelColor="text-blue-400"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <SelectInput
-                id="region"
-                name="region"
-                label="REGIÓN"
-                value={formData.region}
-                onChange={handleInputChange}
-                options={regions}
-                placeholder="-- Seleccione la región --"
-                error={errors.region}
+                placeholder=""
+                error={errors.birthDate}
                 required
               />
 
-              <SelectInput
-                id="commune"
-                name="commune"
-                label="COMUNA"
-                value={formData.commune}
+              <TextInput
+                id="run"
+                name="run"
+                label="RUN"
+                type="text"
+                value={formData.run}
                 onChange={handleInputChange}
-                options={formData.region ? communes[formData.region] || [] : []}
-                placeholder="-- Seleccione la comuna --"
-                error={errors.commune}
-                disabled={!formData.region}
+                placeholder="12345678-9"
+                error={errors.run}
                 required
-                labelColor="text-blue-400"
               />
             </div>
 
             <div className="text-center pt-2">
-              <SubmitButton>REGISTRAR</SubmitButton>
+              <SubmitButton disabled={isLoading}>
+                {isLoading ? "Registrando..." : "REGISTRAR"}
+              </SubmitButton>
             </div>
 
             <LoginLink />

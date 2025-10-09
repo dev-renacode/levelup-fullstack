@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-// Datos de productos (en un proyecto real vendría de una API)
 const productsData = [
   {
     id: 1,
@@ -165,7 +164,6 @@ export const useProductDetail = (productId) => {
     const loadProduct = async () => {
       setIsLoading(true);
 
-      // Simular carga de API
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       const foundProduct = productsData.find(
@@ -173,7 +171,6 @@ export const useProductDetail = (productId) => {
       );
       setProduct(foundProduct);
 
-      // Cargar productos relacionados (misma categoría, excluyendo el actual)
       if (foundProduct) {
         const related = productsData
           .filter(
