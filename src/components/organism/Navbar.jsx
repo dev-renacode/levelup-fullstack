@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 import logo from "../../assets/img/level_up_logo.png";
 import cartIcon from "../../assets/icon/cart.svg";
 import menuIcon from "../../assets/icon/menu.svg";
@@ -6,6 +7,7 @@ import closeIcon from "../../assets/icon/close.svg";
 
 const Navbar = ({ currentPage }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { userData, isAuthenticated, logout } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -93,24 +95,48 @@ const Navbar = ({ currentPage }) => {
           </div>
 
           <div className="hidden lg:flex lg:items-center lg:space-x-3">
-            <div className="flex items-center space-x-2">
-              <a
-                href="#login"
-                onClick={navigateTo}
-                className="text-white/80 hover:text-green-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-green-400/10 rounded-lg font-[Roboto]"
-                aria-label="Iniciar sesión en tu cuenta"
-              >
-                Iniciar Sesión
-              </a>
-              <a
-                href="#register"
-                onClick={navigateTo}
-                className="bg-gradient-to-r from-green-400 to-blue-400 text-black font-bold px-6 py-2 rounded-full text-sm transition-all duration-300 hover:from-green-500 hover:to-blue-500 hover:scale-105 shadow-lg shadow-green-400/25 font-[Roboto]"
-                aria-label="Crear una nueva cuenta"
-              >
-                Registrarse
-              </a>
-            </div>
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-400 rounded-full flex items-center justify-center">
+                    <span className="text-black font-bold text-sm">
+                      {userData?.fullName?.charAt(0)?.toUpperCase() || "U"}
+                    </span>
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white text-sm font-[Roboto]">
+                      ¡Hola, <span className="text-green-400 font-semibold">{userData?.fullName?.split(" ")[0] || "Usuario"}</span>!
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={logout}
+                  className="text-white/80 hover:text-red-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-red-400/10 rounded-lg font-[Roboto] border border-red-400/30 hover:border-red-400/60"
+                  aria-label="Cerrar sesión"
+                >
+                  Cerrar Sesión
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <a
+                  href="#login"
+                  onClick={navigateTo}
+                  className="text-white/80 hover:text-green-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-green-400/10 rounded-lg font-[Roboto]"
+                  aria-label="Iniciar sesión en tu cuenta"
+                >
+                  Iniciar Sesión
+                </a>
+                <a
+                  href="#register"
+                  onClick={navigateTo}
+                  className="bg-gradient-to-r from-green-400 to-blue-400 text-black font-bold px-6 py-2 rounded-full text-sm transition-all duration-300 hover:from-green-500 hover:to-blue-500 hover:scale-105 shadow-lg shadow-green-400/25 font-[Roboto]"
+                  aria-label="Crear una nueva cuenta"
+                >
+                  Registrarse
+                </a>
+              </div>
+            )}
 
             <a
               href="#carrito"
@@ -225,22 +251,48 @@ const Navbar = ({ currentPage }) => {
             </a>
 
             <div className="pt-4 pb-3 border-t border-green-400/30">
-              <div className="flex flex-col space-y-3 px-3">
-                <a
-                  href="#login"
-                  onClick={navigateTo}
-                  className="w-full px-4 py-3 text-center text-white hover:text-green-400 hover:bg-green-400/10 rounded-lg border border-green-400/30 hover:border-green-400/60 transition-all duration-300 font-[Roboto] font-medium"
-                >
-                  Iniciar Sesión
-                </a>
-                <a
-                  href="#register"
-                  onClick={navigateTo}
-                  className="w-full px-4 py-3 text-center bg-gradient-to-r from-green-400 to-blue-400 text-black font-bold rounded-lg hover:from-green-500 hover:to-blue-500 transition-all duration-300 shadow-lg shadow-green-400/25 font-[Roboto]"
-                >
-                  Registrarse
-                </a>
-              </div>
+              {isAuthenticated ? (
+                <div className="px-3 space-y-3">
+                  <div className="flex items-center space-x-3 p-3 bg-green-400/10 rounded-lg border border-green-400/30">
+                    <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-blue-400 rounded-full flex items-center justify-center">
+                      <span className="text-black font-bold text-sm">
+                        {userData?.fullName?.charAt(0)?.toUpperCase() || "U"}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-white text-sm font-[Roboto]">
+                        ¡Hola, <span className="text-green-400 font-semibold">{userData?.fullName?.split(" ")[0] || "Usuario"}</span>!
+                      </p>
+                      <p className="text-white/60 text-xs font-[Roboto]">
+                        {userData?.email}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={logout}
+                    className="w-full px-4 py-3 text-center text-white hover:text-red-400 hover:bg-red-400/10 rounded-lg border border-red-400/30 hover:border-red-400/60 transition-all duration-300 font-[Roboto] font-medium"
+                  >
+                    Cerrar Sesión
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-3 px-3">
+                  <a
+                    href="#login"
+                    onClick={navigateTo}
+                    className="w-full px-4 py-3 text-center text-white hover:text-green-400 hover:bg-green-400/10 rounded-lg border border-green-400/30 hover:border-green-400/60 transition-all duration-300 font-[Roboto] font-medium"
+                  >
+                    Iniciar Sesión
+                  </a>
+                  <a
+                    href="#register"
+                    onClick={navigateTo}
+                    className="w-full px-4 py-3 text-center bg-gradient-to-r from-green-400 to-blue-400 text-black font-bold rounded-lg hover:from-green-500 hover:to-blue-500 transition-all duration-300 shadow-lg shadow-green-400/25 font-[Roboto]"
+                  >
+                    Registrarse
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>

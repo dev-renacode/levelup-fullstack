@@ -17,6 +17,7 @@ export const useRegisterForm = () => {
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
 
   const handleInputChange = (e) => {
@@ -31,6 +32,11 @@ export const useRegisterForm = () => {
         ...prev,
         [name]: "",
       }));
+    }
+    
+    // Limpiar mensaje de éxito cuando el usuario empiece a escribir
+    if (successMessage) {
+      setSuccessMessage("");
     }
   };
 
@@ -93,6 +99,10 @@ export const useRegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Limpiar errores y mensajes previos
+    setErrors({});
+    setSuccessMessage("");
+
     if (!validateForm()) {
       return;
     }
@@ -121,31 +131,55 @@ export const useRegisterForm = () => {
 
       console.log("Usuario registrado exitosamente:", user);
       
-      alert("¡Registro exitoso! Bienvenido a Level-UP Gamers. Ahora puedes iniciar sesión.");
+      // Mostrar mensaje de éxito
+      setSuccessMessage("¡Registro exitoso! Bienvenido a Level-UP Gamers. Redirigiendo al login...");
       
-      window.location.hash = "login";
+      // Redirigir al login después de un breve delay
+      setTimeout(() => {
+        window.location.hash = "login";
+      }, 2000);
 
     } catch (error) {
       console.error("Error en registro:", error);
       
-      let errorMessage = "Error al registrarse. Inténtalo de nuevo.";
+      let errorMessage = "Error inesperado al registrarse. Inténtalo de nuevo.";
+      let fieldError = null;
       
       switch (error.code) {
         case "auth/email-already-in-use":
           errorMessage = "Ya existe una cuenta con este correo electrónico.";
+          fieldError = "email";
           break;
         case "auth/invalid-email":
-          errorMessage = "El correo electrónico no es válido.";
+          errorMessage = "El formato del correo electrónico no es válido.";
+          fieldError = "email";
           break;
         case "auth/weak-password":
           errorMessage = "La contraseña es muy débil. Debe tener al menos 6 caracteres.";
+          fieldError = "password";
           break;
         case "auth/operation-not-allowed":
           errorMessage = "El registro no está habilitado. Contacta al administrador.";
           break;
+        case "auth/network-request-failed":
+          errorMessage = "Error de conexión. Verifica tu conexión a internet.";
+          break;
+        case "auth/too-many-requests":
+          errorMessage = "Demasiados intentos fallidos. Espera unos minutos antes de intentar nuevamente.";
+          break;
+        default:
+          // Para errores no manejados específicamente
+          if (error.message) {
+            errorMessage = `Error: ${error.message}`;
+          }
       }
       
-      setErrors({ general: errorMessage });
+      // Establecer el error en el campo específico si es posible, o como error general
+      if (fieldError) {
+        setErrors({ [fieldError]: errorMessage });
+      } else {
+        setErrors({ general: errorMessage });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -155,6 +189,7 @@ export const useRegisterForm = () => {
     formData,
     errors,
     isLoading,
+    successMessage,
     handleInputChange,
     handleSubmit,
   };

@@ -10,6 +10,7 @@ const Register = () => {
     formData,
     errors,
     isLoading,
+    successMessage,
     handleInputChange,
     handleSubmit,
   } = useRegisterForm();
@@ -30,10 +31,28 @@ const Register = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {errors.general && (
-              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
-                <p className="text-red-400 text-sm font-[Roboto] text-center">
-                  {errors.general}
-                </p>
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 animate-fade-in">
+                <div className="flex items-center space-x-2">
+                  <svg className="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-red-400 text-sm font-[Roboto]">
+                    {errors.general}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {successMessage && (
+              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 animate-fade-in">
+                <div className="flex items-center space-x-2">
+                  <svg className="w-5 h-5 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <p className="text-green-400 text-sm font-[Roboto]">
+                    {successMessage}
+                  </p>
+                </div>
               </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

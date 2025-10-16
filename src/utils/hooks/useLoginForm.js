@@ -11,6 +11,7 @@ export const useLoginForm = () => {
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,6 +25,11 @@ export const useLoginForm = () => {
         ...prev,
         [name]: "",
       }));
+    }
+    
+    // Limpiar mensaje de éxito cuando el usuario empiece a escribir
+    if (successMessage) {
+      setSuccessMessage("");
     }
   };
 
@@ -62,6 +68,10 @@ export const useLoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Limpiar errores y mensajes previos
+    setErrors({});
+    setSuccessMessage("");
+
     if (!validateForm()) {
       return;
     }
@@ -77,54 +87,81 @@ export const useLoginForm = () => {
       
       console.log("Usuario autenticado:", userCredential.user);
       
-      const userData = await getUserByEmail(formData.email);
+      // Mostrar mensaje de éxito
+      setSuccessMessage("¡Inicio de sesión exitoso! Redirigiendo...");
       
-      if (userData) {
-        if (userData.role === "admin") {
-          window.location.hash = "admin";
-        } else {
-          localStorage.setItem("currentUser", JSON.stringify({
-            fullName: userData.fullName,
-            email: userData.email
-          }));
-          window.location.hash = "home";
-        }
-      } else {
-        if (formData.email === "admin@duocuc.cl") {
-          window.location.hash = "admin";
-        } else {
-          localStorage.setItem("currentUser", JSON.stringify({
-            fullName: "Usuario",
-            email: formData.email
-          }));
-          window.location.hash = "home";
-        }
+      // Obtener datos del usuario
+      let userData = null;
+      try {
+        userData = await getUserByEmail(formData.email);
+      } catch (firestoreError) {
+        console.warn("Error al obtener datos de Firestore:", firestoreError);
+        // Continuar sin datos de Firestore si hay error
       }
+      
+      // Pequeño delay para mostrar el mensaje de éxito
+      setTimeout(() => {
+        // El contexto de autenticación se encargará de la redirección automáticamente
+        // Solo redirigir si es admin
+        if (userData && userData.role === "admin") {
+          window.location.hash = "admin";
+        } else if (formData.email === "admin@duocuc.cl") {
+          window.location.hash = "admin";
+        } else {
+          window.location.hash = "home";
+        }
+      }, 1000);
       
     } catch (error) {
       console.error("Error en login:", error);
       
-      let errorMessage = "Error al iniciar sesión. Inténtalo de nuevo.";
+      let errorMessage = "Error inesperado al iniciar sesión. Inténtalo de nuevo.";
+      let fieldError = null;
       
       switch (error.code) {
         case "auth/user-not-found":
           errorMessage = "No existe una cuenta con este correo electrónico.";
+          fieldError = "email";
           break;
         case "auth/wrong-password":
-          errorMessage = "Contraseña incorrecta.";
+          errorMessage = "La contraseña es incorrecta. Verifica tu contraseña.";
+          fieldError = "password";
           break;
         case "auth/invalid-email":
-          errorMessage = "El correo electrónico no es válido.";
+          errorMessage = "El formato del correo electrónico no es válido.";
+          fieldError = "email";
+          break;
+        case "auth/invalid-credential":
+          errorMessage = "Las credenciales son incorrectas. Verifica tu correo y contraseña.";
           break;
         case "auth/too-many-requests":
-          errorMessage = "Demasiados intentos fallidos. Inténtalo más tarde.";
+          errorMessage = "Demasiados intentos fallidos. Espera unos minutos antes de intentar nuevamente.";
           break;
         case "auth/user-disabled":
-          errorMessage = "Esta cuenta ha sido deshabilitada.";
+          errorMessage = "Esta cuenta ha sido deshabilitada. Contacta al administrador.";
           break;
+        case "auth/network-request-failed":
+          errorMessage = "Error de conexión. Verifica tu conexión a internet.";
+          break;
+        case "auth/operation-not-allowed":
+          errorMessage = "El inicio de sesión no está habilitado. Contacta al administrador.";
+          break;
+        case "auth/requires-recent-login":
+          errorMessage = "Por seguridad, necesitas iniciar sesión nuevamente.";
+          break;
+        default:
+          // Para errores no manejados específicamente
+          if (error.message) {
+            errorMessage = `Error: ${error.message}`;
+          }
       }
       
-      setErrors({ general: errorMessage });
+      // Establecer el error en el campo específico si es posible, o como error general
+      if (fieldError) {
+        setErrors({ [fieldError]: errorMessage });
+      } else {
+        setErrors({ general: errorMessage });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -134,6 +171,7 @@ export const useLoginForm = () => {
     formData,
     errors,
     isLoading,
+    successMessage,
     handleInputChange,
     handleSubmit,
   };

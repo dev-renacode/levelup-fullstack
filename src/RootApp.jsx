@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { AuthProvider } from "./contexts/AuthContext";
 import App from "./App.jsx";
 import Navbar from "./components/organism/Navbar.jsx";
 
@@ -26,10 +27,12 @@ const RootApp = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black">
-      {currentPage !== "admin" && <Navbar currentPage={currentPage} />}
-      <App />
-    </div>
+    <AuthProvider>
+      <div className="min-h-screen bg-black">
+        {currentPage !== "admin" && <Navbar currentPage={currentPage} />}
+        <App />
+      </div>
+    </AuthProvider>
   );
 };
 
