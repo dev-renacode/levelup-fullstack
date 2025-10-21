@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { AuthProvider } from "./contexts/AuthContext";
+import { CartProvider } from "./contexts/CartContext";
 import App from "./App.jsx";
 import Navbar from "./components/organism/Navbar.jsx";
 
@@ -30,10 +31,12 @@ const RootApp = () => {
 
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-black">
-        {currentPage !== "admin" && <Navbar currentPage={currentPage} />}
-        <App />
-      </div>
+      <CartProvider>
+        <div className="min-h-screen bg-black">
+          {currentPage !== "admin" && <Navbar currentPage={currentPage} />}
+          <App />
+        </div>
+      </CartProvider>
     </AuthProvider>
   );
 };

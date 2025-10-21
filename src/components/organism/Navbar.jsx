@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import { useCart } from "../../contexts/CartContext";
 import { getAllProducts } from "../../config/firestoreService";
 import logo from "../../assets/img/level_up_logo.png";
 import cartIcon from "../../assets/icon/cart.svg";
@@ -11,6 +12,7 @@ const Navbar = ({ currentPage }) => {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const { userData, isAuthenticated, logout } = useAuth();
+  const { getTotalItems } = useCart();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -206,9 +208,11 @@ const Navbar = ({ currentPage }) => {
                 src={cartIcon}
                 alt="Icono del carrito de compras"
               />
-              <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-400 rounded-full flex items-center justify-center">
-                <span className="text-black text-xs font-bold">0</span>
-              </div>
+              {getTotalItems() > 0 && (
+                <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-400 rounded-full flex items-center justify-center">
+                  <span className="text-black text-xs font-bold">{getTotalItems()}</span>
+                </div>
+              )}
             </a>
           </div>
 
@@ -223,9 +227,11 @@ const Navbar = ({ currentPage }) => {
                 src={cartIcon}
                 alt="Icono del carrito de compras"
               />
-              <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-400 rounded-full flex items-center justify-center">
-                <span className="text-black text-xs font-bold">0</span>
-              </div>
+              {getTotalItems() > 0 && (
+                <div className="absolute -top-1 -right-1 h-4 w-4 bg-green-400 rounded-full flex items-center justify-center">
+                  <span className="text-black text-xs font-bold">{getTotalItems()}</span>
+                </div>
+              )}
             </a>
 
             <button

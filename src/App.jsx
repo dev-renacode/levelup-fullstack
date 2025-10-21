@@ -9,6 +9,7 @@ import Contact from "./components/pages/Contact.jsx";
 import ProductDetail from "./components/molecules/ProductDetail.jsx";
 import AdminDashboard from "./components/pages/AdminDashboard.jsx";
 import CategoryPage from "./components/pages/CategoryPage.jsx";
+import Cart from "./components/pages/Cart.jsx";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -47,6 +48,8 @@ function App() {
       return <Blog />;
     case "contacto":
       return <Contact />;
+    case "carrito":
+      return <Cart />;
     case "categoria":
       return <CategoryPage categoryName={categoryName} />;
     case "product":

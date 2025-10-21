@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useCart } from "../../contexts/CartContext";
 
 const ProductCard = ({ product }) => {
   const [imageError, setImageError] = useState(false);
+  const { addToCart, cartItems } = useCart();
 
   const handleImageError = () => {
     setImageError(true);
@@ -13,6 +15,12 @@ const ProductCard = ({ product }) => {
       currency: 'CLP'
     }).format(price);
   };
+
+  const isInCart = cartItems.some(item => item.id === product.id);
+  const cartItem = cartItems.find(item => item.id === product.id);
+  const cartQuantity = cartItem ? cartItem.quantity : 0;
+  // Usar el stock real del producto (que ya se actualiza en Firebase)
+  const availableStock = product.stock || 0;
 
   return (
     <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl shadow-lg shadow-green-400/10 hover:shadow-green-400/20 transition-all duration-300 hover:border-green-400/50 group">
@@ -51,21 +59,29 @@ const ProductCard = ({ product }) => {
           </span>
           
           <button 
-            className="bg-green-500 hover:bg-green-600 text-black px-4 py-2 rounded-lg font-bold text-sm transition-colors duration-200"
-            onClick={() => {
-              // Aquí puedes agregar la lógica para agregar al carrito
-              console.log('Agregar al carrito:', product.id);
-            }}
+            className={`px-4 py-2 rounded-lg font-bold text-sm transition-colors duration-200 ${
+              availableStock > 0 
+                ? 'bg-green-500 hover:bg-green-600 text-black' 
+                : 'bg-gray-500 text-gray-300 cursor-not-allowed'
+            }`}
+            onClick={() => availableStock > 0 && addToCart(product)}
+            disabled={availableStock <= 0}
           >
-            Agregar
+            {availableStock > 0 ? 'Agregar' : 'Sin stock'}
           </button>
         </div>
         
-        {product.stock !== undefined && (
-          <div className="mt-2 text-xs text-gray-400">
-            Stock: {product.stock > 0 ? `${product.stock} disponibles` : 'Agotado'}
-          </div>
-        )}
+        <div className="mt-2 text-xs text-gray-400">
+          {availableStock > 0 ? (
+            <span className="text-green-400">
+              {availableStock} disponibles
+            </span>
+          ) : (
+            <span className="text-red-400">
+              Sin stock disponible
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

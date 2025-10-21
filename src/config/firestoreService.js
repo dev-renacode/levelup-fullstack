@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { collection, addDoc, getDocs, doc, getDoc, query, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, getDoc, query, where, updateDoc, increment } from "firebase/firestore";
 
 export async function addUser(userData) {
     try {
@@ -79,6 +79,82 @@ export async function getProductById(productId) {
         return null;
     } catch (error) {
         console.error("Error al obtener producto:", error);
+        throw error;
+    }
+}
+
+export async function updateProductStock(productId, quantityChange) {
+    try {
+        const productRef = doc(db, "producto", productId);
+        await updateDoc(productRef, {
+            stock: increment(-quantityChange)
+        });
+        return true;
+    } catch (error) {
+        console.error("Error al actualizar stock del producto:", error);
+        throw error;
+    }
+}
+
+export async function restoreProductStock(productId, quantity) {
+    try {
+        const productRef = doc(db, "producto", productId);
+        await updateDoc(productRef, {
+            stock: increment(quantity)
+        });
+        return true;
+    } catch (error) {
+        console.error("Error al restaurar stock del producto:", error);
+        throw error;
+    }
+}
+
+// Funciones para manejar carrito en Firebase
+export async function getUserCart(userId) {
+    try {
+        const cartRef = doc(db, "carritos", userId);
+        const cartDoc = await getDoc(cartRef);
+        if (cartDoc.exists()) {
+            return cartDoc.data().items || [];
+        }
+        return [];
+    } catch (error) {
+        console.error("Error al obtener carrito del usuario:", error);
+        throw error;
+    }
+}
+
+export async function saveUserCart(userId, cartItems) {
+    try {
+        const cartRef = doc(db, "carritos", userId);
+        await updateDoc(cartRef, {
+            items: cartItems,
+            lastUpdated: new Date()
+        }).catch(async () => {
+            // Si el documento no existe, crearlo
+            await addDoc(collection(db, "carritos"), {
+                userId: userId,
+                items: cartItems,
+                lastUpdated: new Date()
+            });
+        });
+        return true;
+    } catch (error) {
+        console.error("Error al guardar carrito del usuario:", error);
+        throw error;
+    }
+}
+
+export async function clearUserCart(userId) {
+    try {
+        const cartRef = doc(db, "carritos", userId);
+        await updateDoc(cartRef, {
+            items: [],
+            lastUpdated: new Date()
+        });
+        return true;
+    } catch (error) {
+        console.error("Error al limpiar carrito del usuario:", error);
         throw error;
     }
 }
