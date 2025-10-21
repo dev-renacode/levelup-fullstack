@@ -56,3 +56,29 @@ export async function getUserByEmail(email) {
         throw error;
     }
 }
+
+export async function getAllProducts() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "producto"));
+        return querySnapshot.docs.map((doc) => ({ 
+            id: doc.id, 
+            ...doc.data() 
+        }));
+    } catch (error) {
+        console.error("Error al obtener productos:", error);
+        throw error;
+    }
+}
+
+export async function getProductById(productId) {
+    try {
+        const productDoc = await getDoc(doc(db, "producto", productId));
+        if (productDoc.exists()) {
+            return { id: productDoc.id, ...productDoc.data() };
+        }
+        return null;
+    } catch (error) {
+        console.error("Error al obtener producto:", error);
+        throw error;
+    }
+}

@@ -11,6 +11,8 @@ const RootApp = () => {
       const hash = window.location.hash.slice(1);
       if (hash.startsWith("product/")) {
         setCurrentPage("product");
+      } else if (hash.startsWith("categoria/")) {
+        setCurrentPage("categoria");
       } else if (hash.startsWith("admin")) {
         setCurrentPage("admin");
       } else {

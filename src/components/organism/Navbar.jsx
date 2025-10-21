@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import { getAllProducts } from "../../config/firestoreService";
 import logo from "../../assets/img/level_up_logo.png";
 import cartIcon from "../../assets/icon/cart.svg";
 import menuIcon from "../../assets/icon/menu.svg";
@@ -7,6 +8,8 @@ import closeIcon from "../../assets/icon/close.svg";
 
 const Navbar = ({ currentPage }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
   const { userData, isAuthenticated, logout } = useAuth();
 
   const toggleMenu = () => {
@@ -19,6 +22,29 @@ const Navbar = ({ currentPage }) => {
 
   const navigateTo = () => {
     closeMenu();
+  };
+
+  // Cargar categorías al montar el componente
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const products = await getAllProducts();
+        const uniqueCategories = [...new Set(products.map(product => product.categoria).filter(Boolean))];
+        setCategories(uniqueCategories);
+      } catch (error) {
+        console.error("Error al cargar categorías:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const toggleCategories = () => {
+    setIsCategoriesOpen(!isCategoriesOpen);
+  };
+
+  const closeCategories = () => {
+    setIsCategoriesOpen(false);
   };
 
   return (
@@ -56,13 +82,45 @@ const Navbar = ({ currentPage }) => {
             >
               Inicio
             </a>
-            <a
-              href="#home"
-              onClick={navigateTo}
-              className="text-white/90 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-blue-400/10 hover:scale-105 font-[Roboto]"
-            >
-              Productos
-            </a>
+            <div className="relative">
+              <button
+                onClick={toggleCategories}
+                className="text-white/90 hover:text-blue-400 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-blue-400/10 hover:scale-105 font-[Roboto] flex items-center space-x-1"
+              >
+                <span>Categorías</span>
+                <svg 
+                  className={`w-4 h-4 transition-transform duration-300 ${isCategoriesOpen ? 'rotate-180' : ''}`} 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {isCategoriesOpen && (
+                <div className="absolute top-full left-0 mt-1 w-48 bg-black/95 backdrop-blur-md border border-blue-400/30 rounded-lg shadow-lg shadow-blue-400/10 z-50">
+                  <div className="py-2">
+                    {categories.length > 0 ? (
+                      categories.map((category, index) => (
+                        <a
+                          key={index}
+                          href={`#categoria/${encodeURIComponent(category)}`}
+                          onClick={closeCategories}
+                          className="block px-4 py-2 text-sm text-white hover:text-blue-400 hover:bg-blue-400/10 transition-all duration-300 font-[Roboto]"
+                        >
+                          {category}
+                        </a>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-sm text-gray-400 font-[Roboto]">
+                        Cargando categorías...
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
             <a
               href="#home"
               onClick={navigateTo}
@@ -213,13 +271,27 @@ const Navbar = ({ currentPage }) => {
             >
               Inicio
             </a>
-            <a
-              href="#home"
-              onClick={navigateTo}
-              className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:text-blue-400 hover:bg-blue-400/10 transition-all duration-300 font-[Roboto]"
-            >
-              Productos
-            </a>
+            <div className="px-3 py-2">
+              <div className="text-white text-base font-medium font-[Roboto] mb-2">Categorías</div>
+              <div className="space-y-1">
+                {categories.length > 0 ? (
+                  categories.map((category, index) => (
+                    <a
+                      key={index}
+                      href={`#categoria/${encodeURIComponent(category)}`}
+                      onClick={navigateTo}
+                      className="block w-full text-left px-3 py-2 rounded-md text-sm text-white hover:text-blue-400 hover:bg-blue-400/10 transition-all duration-300 font-[Roboto]"
+                    >
+                      {category}
+                    </a>
+                  ))
+                ) : (
+                  <div className="px-3 py-2 text-sm text-gray-400 font-[Roboto]">
+                    Cargando categorías...
+                  </div>
+                )}
+              </div>
+            </div>
             <a
               href="#home"
               onClick={navigateTo}

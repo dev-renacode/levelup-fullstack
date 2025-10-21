@@ -8,15 +8,21 @@ import Blog from "./components/pages/Blog.jsx";
 import Contact from "./components/pages/Contact.jsx";
 import ProductDetail from "./components/molecules/ProductDetail.jsx";
 import AdminDashboard from "./components/pages/AdminDashboard.jsx";
+import CategoryPage from "./components/pages/CategoryPage.jsx";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
+  const [categoryName, setCategoryName] = useState("");
 
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1);
       if (hash.startsWith("product/")) {
         setCurrentPage("product");
+      } else if (hash.startsWith("categoria/")) {
+        setCurrentPage("categoria");
+        const category = decodeURIComponent(hash.replace("categoria/", ""));
+        setCategoryName(category);
       } else if (hash.startsWith("admin")) {
         setCurrentPage("admin");
       } else {
@@ -41,6 +47,8 @@ function App() {
       return <Blog />;
     case "contacto":
       return <Contact />;
+    case "categoria":
+      return <CategoryPage categoryName={categoryName} />;
     case "product":
       return <ProductDetail />;
     case "admin":
