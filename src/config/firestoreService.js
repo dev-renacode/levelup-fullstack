@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { collection, addDoc, getDocs, doc, getDoc, query, where, updateDoc, increment } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, getDoc, query, where, updateDoc, increment, setDoc } from "firebase/firestore";
 
 export async function addUser(userData) {
     try {
@@ -127,17 +127,11 @@ export async function getUserCart(userId) {
 export async function saveUserCart(userId, cartItems) {
     try {
         const cartRef = doc(db, "carritos", userId);
-        await updateDoc(cartRef, {
+        await setDoc(cartRef, {
+            userId: userId,
             items: cartItems,
             lastUpdated: new Date()
-        }).catch(async () => {
-            // Si el documento no existe, crearlo
-            await addDoc(collection(db, "carritos"), {
-                userId: userId,
-                items: cartItems,
-                lastUpdated: new Date()
-            });
-        });
+        }, { merge: true });
         return true;
     } catch (error) {
         console.error("Error al guardar carrito del usuario:", error);
@@ -148,10 +142,11 @@ export async function saveUserCart(userId, cartItems) {
 export async function clearUserCart(userId) {
     try {
         const cartRef = doc(db, "carritos", userId);
-        await updateDoc(cartRef, {
+        await setDoc(cartRef, {
+            userId: userId,
             items: [],
             lastUpdated: new Date()
-        });
+        }, { merge: true });
         return true;
     } catch (error) {
         console.error("Error al limpiar carrito del usuario:", error);

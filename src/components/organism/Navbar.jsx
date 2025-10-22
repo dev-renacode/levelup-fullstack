@@ -103,6 +103,15 @@ const Navbar = ({ currentPage }) => {
               {isCategoriesOpen && (
                 <div className="absolute top-full left-0 mt-1 w-48 bg-black/95 backdrop-blur-md border border-blue-400/30 rounded-lg shadow-lg shadow-blue-400/10 z-50">
                   <div className="py-2">
+                    {/* Opción "Todas las categorías" */}
+                    <a
+                      href="#productos"
+                      onClick={closeCategories}
+                      className="block px-4 py-2 text-sm text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 transition-all duration-300 font-[Roboto] font-semibold border-b border-blue-400/20 mb-1"
+                    >
+                      📦 Todas las categorías
+                    </a>
+                    
                     {categories.length > 0 ? (
                       categories.map((category, index) => (
                         <a
@@ -280,6 +289,15 @@ const Navbar = ({ currentPage }) => {
             <div className="px-3 py-2">
               <div className="text-white text-base font-medium font-[Roboto] mb-2">Categorías</div>
               <div className="space-y-1">
+                {/* Opción "Todas las categorías" para móvil */}
+                <a
+                  href="#productos"
+                  onClick={navigateTo}
+                  className="block w-full text-left px-3 py-2 rounded-md text-sm text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 transition-all duration-300 font-[Roboto] font-semibold border border-blue-400/30 mb-2"
+                >
+                  📦 Todas las categorías
+                </a>
+                
                 {categories.length > 0 ? (
                   categories.map((category, index) => (
                     <a

@@ -50,6 +50,13 @@ function App() {
       return <Contact />;
     case "carrito":
       return <Cart />;
+    case "productos":
+      return (
+        <>
+          <Products />
+          <Footer />
+        </>
+      );
     case "categoria":
       return <CategoryPage categoryName={categoryName} />;
     case "product":

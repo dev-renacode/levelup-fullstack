@@ -14,6 +14,8 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [productStock, setProductStock] = useState({}); // Estado para manejar stock local
+  const [operationsInProgress, setOperationsInProgress] = useState(new Set()); // Control de operaciones en progreso
   const { isAuthenticated, userData } = useAuth();
 
   // Función para mostrar notificaciones
@@ -31,12 +33,30 @@ export const CartProvider = ({ children }) => {
     }, 3000);
   };
 
+  // Función helper para manejar operaciones en progreso
+  const setOperationInProgress = (productId, inProgress) => {
+    setOperationsInProgress(prev => {
+      const newSet = new Set(prev);
+      if (inProgress) {
+        newSet.add(productId);
+      } else {
+        newSet.delete(productId);
+      }
+      return newSet;
+    });
+  };
+
+  // Función helper para verificar si una operación está en progreso
+  const isOperationInProgress = (productId) => {
+    return operationsInProgress.has(productId);
+  };
+
   // Cargar carrito desde Firebase cuando el usuario esté autenticado
   useEffect(() => {
     const loadCart = async () => {
-      if (isAuthenticated && userData?.id) {
+      if (isAuthenticated && userData?.uid) {
         try {
-          const firebaseCart = await getUserCart(userData.id);
+          const firebaseCart = await getUserCart(userData.uid);
           setCartItems(firebaseCart);
         } catch (error) {
           console.error('Error al cargar carrito desde Firebase:', error);
@@ -64,14 +84,14 @@ export const CartProvider = ({ children }) => {
     };
 
     loadCart();
-  }, [isAuthenticated, userData?.id]);
+  }, [isAuthenticated, userData?.uid]);
 
   // Guardar carrito en Firebase cuando cambie (si está autenticado)
   useEffect(() => {
     const saveCart = async () => {
-      if (isAuthenticated && userData?.id) {
+      if (isAuthenticated && userData?.uid) {
         try {
-          await saveUserCart(userData.id, cartItems);
+          await saveUserCart(userData.uid, cartItems);
         } catch (error) {
           console.error('Error al guardar carrito en Firebase:', error);
           // Fallback a localStorage
@@ -86,14 +106,28 @@ export const CartProvider = ({ children }) => {
     if (cartItems.length > 0) {
       saveCart();
     }
-  }, [cartItems, isAuthenticated, userData?.id]);
+  }, [cartItems, isAuthenticated, userData?.uid]);
+
+  // Limpiar estado del carrito cuando el usuario cierra sesión
+  useEffect(() => {
+    if (!isAuthenticated) {
+      resetCartState();
+    }
+  }, [isAuthenticated]);
 
   const addToCart = async (product) => {
     try {
       // Verificar si hay stock disponible
-      if (product.stock <= 0) {
-        alert('No hay stock disponible para este producto');
-        return;
+      if (!product.stock || product.stock <= 0) {
+        showNotification('No hay stock disponible para este producto');
+        return false;
+      }
+
+      // Verificar si ya está en el carrito y si hay stock suficiente
+      const existingItem = cartItems.find(item => item.id === product.id);
+      if (existingItem && existingItem.quantity >= product.stock) {
+        showNotification('No hay suficiente stock disponible');
+        return false;
       }
 
       // Si no está autenticado, mostrar mensaje informativo
@@ -103,6 +137,12 @@ export const CartProvider = ({ children }) => {
 
       // Actualizar stock en Firebase
       await updateProductStock(product.id, 1);
+
+      // Actualizar stock local inmediatamente
+      setProductStock(prevStock => ({
+        ...prevStock,
+        [product.id]: Math.max(0, (prevStock[product.id] || product.stock) - 1)
+      }));
 
       // Actualizar carrito local
       setCartItems(prevCart => {
@@ -120,32 +160,59 @@ export const CartProvider = ({ children }) => {
 
       // Mostrar notificación de éxito
       showNotification(`¡${product.nombre} agregado al carrito!`);
+      return true;
     } catch (error) {
       console.error('Error al agregar producto al carrito:', error);
-      alert('Error al agregar el producto al carrito');
+      showNotification('Error al agregar el producto al carrito');
+      return false;
     }
   };
 
   const removeFromCart = async (productId) => {
+    // Verificar si ya hay una operación en progreso para este producto
+    if (isOperationInProgress(productId)) {
+      return; // Salir si ya hay una operación en progreso
+    }
+
     try {
+      setOperationInProgress(productId, true);
+      
       const itemToRemove = cartItems.find(item => item.id === productId);
       if (itemToRemove) {
         // Restaurar stock en Firebase
         await restoreProductStock(productId, itemToRemove.quantity);
+        
+        // Actualizar stock local inmediatamente
+        setProductStock(prevStock => ({
+          ...prevStock,
+          [productId]: (prevStock[productId] || 0) + itemToRemove.quantity
+        }));
       }
       
       // Remover del carrito local
       setCartItems(prevCart => prevCart.filter(item => item.id !== productId));
     } catch (error) {
       console.error('Error al remover producto del carrito:', error);
-      alert('Error al remover el producto del carrito');
+      showNotification('Error al remover el producto del carrito');
+    } finally {
+      setOperationInProgress(productId, false);
     }
   };
 
   const updateCartQuantity = async (productId, newQuantity) => {
+    // Verificar si ya hay una operación en progreso para este producto
+    if (isOperationInProgress(productId)) {
+      return; // Salir si ya hay una operación en progreso
+    }
+
     try {
+      setOperationInProgress(productId, true);
+      
       const currentItem = cartItems.find(item => item.id === productId);
-      if (!currentItem) return;
+      if (!currentItem) {
+        setOperationInProgress(productId, false);
+        return;
+      }
 
       const quantityDifference = newQuantity - currentItem.quantity;
 
@@ -159,7 +226,13 @@ export const CartProvider = ({ children }) => {
           await restoreProductStock(productId, Math.abs(quantityDifference));
         }
 
-        // Actualizar carrito local (sin modificar stock local)
+        // Actualizar stock local inmediatamente
+        setProductStock(prevStock => ({
+          ...prevStock,
+          [productId]: Math.max(0, (prevStock[productId] || 0) - quantityDifference)
+        }));
+
+        // Actualizar carrito local
         setCartItems(prevCart =>
           prevCart.map(item =>
             item.id === productId
@@ -170,7 +243,9 @@ export const CartProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Error al actualizar cantidad del producto:', error);
-      alert('Error al actualizar la cantidad del producto');
+      showNotification('Error al actualizar la cantidad del producto');
+    } finally {
+      setOperationInProgress(productId, false);
     }
   };
 
@@ -184,16 +259,21 @@ export const CartProvider = ({ children }) => {
       // Limpiar carrito local
       setCartItems([]);
       
+      // Limpiar estado local de stock
+      setProductStock({});
+      
       // Limpiar carrito en Firebase si está autenticado
-      if (isAuthenticated && userData?.id) {
-        await clearUserCart(userData.id);
+      if (isAuthenticated && userData?.uid) {
+        await clearUserCart(userData.uid);
       }
       
       // Limpiar localStorage también
       localStorage.removeItem('cart');
+      
+      showNotification('Carrito limpiado correctamente');
     } catch (error) {
       console.error('Error al limpiar carrito:', error);
-      alert('Error al limpiar el carrito');
+      showNotification('Error al limpiar el carrito');
     }
   };
 
@@ -205,6 +285,34 @@ export const CartProvider = ({ children }) => {
     return cartItems.reduce((total, item) => total + (item.precio * item.quantity), 0);
   };
 
+  // Función para obtener el stock actualizado de un producto
+  const getUpdatedStock = (productId, originalStock) => {
+    return productStock[productId] !== undefined ? productStock[productId] : originalStock;
+  };
+
+  // Función para sincronizar el stock inicial de los productos
+  const syncProductStock = (products) => {
+    const initialStock = {};
+    products.forEach(product => {
+      if (product.id && product.stock !== undefined) {
+        initialStock[product.id] = product.stock;
+      }
+    });
+    setProductStock(prevStock => ({
+      ...initialStock,
+      ...prevStock // Mantener las actualizaciones locales
+    }));
+  };
+
+  // Función para limpiar completamente el estado del carrito
+  const resetCartState = () => {
+    setCartItems([]);
+    setProductStock({});
+    setOperationsInProgress(new Set());
+    localStorage.removeItem('cart');
+  };
+
+
   const value = {
     cartItems,
     addToCart,
@@ -212,7 +320,11 @@ export const CartProvider = ({ children }) => {
     updateCartQuantity,
     clearCart,
     getTotalItems,
-    getTotalPrice
+    getTotalPrice,
+    getUpdatedStock,
+    syncProductStock,
+    isOperationInProgress,
+    resetCartState
   };
 
   return (

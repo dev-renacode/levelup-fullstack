@@ -14,7 +14,6 @@ const CategoryPage = ({ categoryName }) => {
       try {
         setLoading(true);
         const allProducts = await getAllProducts();
-        // Filtrar productos por categoría
         const categoryProducts = allProducts.filter(product => 
           product.categoria === categoryName
         );
@@ -32,11 +31,10 @@ const CategoryPage = ({ categoryName }) => {
     }
   }, [categoryName]);
 
-  // Filtrar productos por búsqueda
   const filteredProducts = products.filter(product => {
-    const matchesSearch = product.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.descripcion?.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesSearch;
+    const search = searchTerm.toLowerCase();
+    return product.nombre?.toLowerCase().includes(search) ||
+           product.descripcion?.toLowerCase().includes(search);
   });
 
   if (loading) {
@@ -83,7 +81,6 @@ const CategoryPage = ({ categoryName }) => {
       
       <div className="relative z-10 pt-20 pb-8">
         <div className="max-w-7xl mx-auto px-4">
-          {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Categoría: <span className="text-green-400">{categoryName}</span>
@@ -93,36 +90,73 @@ const CategoryPage = ({ categoryName }) => {
             </p>
           </div>
 
-          {/* Búsqueda */}
           <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 mb-8">
             <div className="max-w-md mx-auto">
               <label className="block text-green-400 font-bold text-sm mb-2">
                 BUSCAR PRODUCTO
               </label>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Buscar por nombre o descripción..."
-                className="w-full bg-black/50 border border-green-400/30 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-green-400 focus:outline-none transition-colors"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Buscar por nombre o descripción..."
+                  className="w-full bg-black/50 border border-green-400/30 rounded-lg px-4 py-3 pl-12 pr-12 text-white placeholder-gray-400 focus:border-green-400 focus:bg-black/70 focus:outline-none transition-all duration-300"
+                />
+                <svg 
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm("")}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+              
+              {searchTerm && (
+                <div className="mt-4 text-center">
+                  <p className="text-white/70 font-[Roboto]">
+                    {filteredProducts.length === 0 
+                      ? "No se encontraron productos" 
+                      : `${filteredProducts.length} producto${filteredProducts.length !== 1 ? 's' : ''} encontrado${filteredProducts.length !== 1 ? 's' : ''}`
+                    }
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Productos */}
           {filteredProducts.length === 0 ? (
             <div className="text-center py-12">
-              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-8 max-w-md mx-auto">
-                <svg className="w-16 h-16 text-gray-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+              <div className="bg-black/80 backdrop-blur-md border border-red-400/30 rounded-xl p-8 max-w-md mx-auto">
+                <svg className="w-16 h-16 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.709" />
                 </svg>
-                <h3 className="text-white text-xl font-bold mb-2">No se encontraron productos</h3>
-                <p className="text-gray-400">
+                <h3 className="text-white text-xl font-bold mb-2">Sin resultados</h3>
+                <p className="text-gray-400 mb-4">
                   {searchTerm 
-                    ? "No hay productos que coincidan con tu búsqueda" 
+                    ? `No se encontraron productos que coincidan con "${searchTerm}"` 
                     : `No hay productos disponibles en la categoría "${categoryName}"`
                   }
                 </p>
+                {searchTerm && (
+                  <button 
+                    onClick={() => setSearchTerm("")}
+                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Limpiar búsqueda
+                  </button>
+                )}
               </div>
             </div>
           ) : (
@@ -130,15 +164,6 @@ const CategoryPage = ({ categoryName }) => {
               {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
-            </div>
-          )}
-
-          {/* Contador de resultados */}
-          {filteredProducts.length > 0 && (
-            <div className="text-center mt-8">
-              <p className="text-gray-400">
-                Mostrando {filteredProducts.length} de {products.length} productos en {categoryName}
-              </p>
             </div>
           )}
         </div>

@@ -1,14 +1,15 @@
 import { useCart } from "../../contexts/CartContext";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
+import QuantityControls from "../molecules/QuantityControls";
 
 const Cart = () => {
   const { 
     cartItems, 
     removeFromCart, 
-    updateCartQuantity, 
     clearCart, 
     getTotalItems, 
-    getTotalPrice 
+    getTotalPrice,
+    isOperationInProgress
   } = useCart();
 
   const formatPrice = (price) => {
@@ -74,17 +75,18 @@ const Cart = () => {
                   <div className="space-y-4">
                     {cartItems.map((item) => (
                       <div key={item.id} className="bg-black/50 border border-green-400/20 rounded-lg p-4">
-                        <div className="flex items-center space-x-4">
+                        {/* Layout móvil: vertical, desktop: horizontal */}
+                        <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
                           {/* Imagen del producto */}
-                          <div className="flex-shrink-0">
+                          <div className="flex-shrink-0 mx-auto sm:mx-0">
                             {item.imagen ? (
                               <img
                                 src={item.imagen}
                                 alt={item.nombre}
-                                className="w-16 h-16 object-cover rounded-lg"
+                                className="w-20 h-20 sm:w-16 sm:h-16 object-cover rounded-lg"
                               />
                             ) : (
-                              <div className="w-16 h-16 bg-gray-800 rounded-lg flex items-center justify-center">
+                              <div className="w-20 h-20 sm:w-16 sm:h-16 bg-gray-800 rounded-lg flex items-center justify-center">
                                 <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
@@ -93,47 +95,40 @@ const Cart = () => {
                           </div>
 
                           {/* Información del producto */}
-                          <div className="flex-1 min-w-0">
-                            <h3 className="text-white font-bold text-lg truncate">
+                          <div className="flex-1 text-center sm:text-left">
+                            <h3 className="text-white font-bold text-lg sm:text-base">
                               {item.nombre}
                             </h3>
-                            <p className="text-gray-400 text-sm truncate">
+                            <p className="text-gray-400 text-sm mt-1">
                               {item.descripcion || 'Sin descripción'}
                             </p>
-                            <p className="text-green-400 font-bold text-lg">
+                            <p className="text-green-400 font-bold text-lg mt-2">
                               {formatPrice(item.precio)}
                             </p>
                           </div>
 
-                          {/* Controles de cantidad */}
-                          <div className="flex items-center space-x-3">
-                            <button
-                              onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
-                              className="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded flex items-center justify-center text-sm font-bold transition-colors"
-                            >
-                              -
-                            </button>
-                            <span className="text-white font-bold text-lg w-8 text-center">
-                              {item.quantity}
-                            </span>
-                            <button
-                              onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
-                              className="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded flex items-center justify-center text-sm font-bold transition-colors"
-                            >
-                              +
-                            </button>
+                          {/* Controles de cantidad - más espacioso en móvil */}
+                          <div className="flex justify-center sm:justify-start">
+                            <div className="bg-black/30 rounded-lg p-3">
+                              <QuantityControls item={item} />
+                            </div>
                           </div>
 
-                          {/* Precio total del item */}
-                          <div className="text-right">
-                            <p className="text-green-400 font-bold text-lg">
+                          {/* Precio total y botón eliminar */}
+                          <div className="text-center sm:text-right space-y-2">
+                            <p className="text-green-400 font-bold text-xl">
                               {formatPrice(item.precio * item.quantity)}
                             </p>
                             <button
                               onClick={() => removeFromCart(item.id)}
-                              className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors mt-1"
+                              disabled={isOperationInProgress(item.id)}
+                              className={`text-sm font-medium transition-colors px-3 py-1 rounded ${
+                                isOperationInProgress(item.id)
+                                  ? 'text-gray-500 cursor-not-allowed bg-gray-800'
+                                  : 'text-red-400 hover:text-red-300 hover:bg-red-400/10'
+                              }`}
                             >
-                              Eliminar
+                              {isOperationInProgress(item.id) ? 'Eliminando...' : 'Eliminar'}
                             </button>
                           </div>
                         </div>
