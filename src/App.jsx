@@ -11,6 +11,7 @@ import AdminDashboard from "./components/pages/AdminDashboard.jsx";
 import CategoryPage from "./components/pages/CategoryPage.jsx";
 import Cart from "./components/pages/Cart.jsx";
 import Checkout from "./components/pages/Checkout.jsx";
+import Orders from "./components/pages/Orders.jsx";
 import { scrollToTop } from "./utils/scrollUtils.js";
 
 function App() {
@@ -57,6 +58,8 @@ function App() {
       return <Cart />;
     case "checkout":
       return <Checkout />;
+    case "ordenes":
+      return <Orders />;
     case "productos":
       return (
         <>

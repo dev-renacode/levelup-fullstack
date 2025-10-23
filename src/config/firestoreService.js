@@ -153,3 +153,59 @@ export async function clearUserCart(userId) {
         throw error;
     }
 }
+
+// Funciones para manejar compras/órdenes
+export async function createOrder(orderData) {
+    try {
+        const orderRef = await addDoc(collection(db, "compras"), {
+            ...orderData,
+            createdAt: new Date(),
+            status: "completed",
+            paymentStatus: "paid"
+        });
+        return orderRef.id;
+    } catch (error) {
+        console.error("Error al crear orden:", error);
+        throw error;
+    }
+}
+
+export async function getOrderById(orderId) {
+    try {
+        const orderDoc = await getDoc(doc(db, "compras", orderId));
+        if (orderDoc.exists()) {
+            return { id: orderDoc.id, ...orderDoc.data() };
+        }
+        return null;
+    } catch (error) {
+        console.error("Error al obtener orden:", error);
+        throw error;
+    }
+}
+
+export async function getUserOrders(userId) {
+    try {
+        const q = query(collection(db, "compras"), where("userId", "==", userId));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map((doc) => ({ 
+            id: doc.id, 
+            ...doc.data() 
+        }));
+    } catch (error) {
+        console.error("Error al obtener órdenes del usuario:", error);
+        throw error;
+    }
+}
+
+export async function getAllOrders() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "compras"));
+        return querySnapshot.docs.map((doc) => ({ 
+            id: doc.id, 
+            ...doc.data() 
+        }));
+    } catch (error) {
+        console.error("Error al obtener todas las órdenes:", error);
+        throw error;
+    }
+}

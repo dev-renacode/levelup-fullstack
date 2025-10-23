@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
+import { createOrder } from "../../config/firestoreService";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import { scrollToTop } from "../../utils/scrollUtils";
 
@@ -94,12 +95,57 @@ const Checkout = () => {
     setIsProcessing(true);
     
     try {
-      // Simular procesamiento del pago
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Preparar datos de la orden
+      const orderData = {
+        userId: userData.uid,
+        userEmail: userData.email,
+        orderNumber: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+        
+        // Datos del cliente
+        customerInfo: {
+          nombre: formData.nombre,
+          apellidos: formData.apellidos,
+          correo: formData.correo
+        },
+        
+        // Dirección de entrega
+        shippingAddress: {
+          calle: formData.calle,
+          departamento: formData.departamento,
+          region: formData.region,
+          comuna: formData.comuna,
+          indicaciones: formData.indicaciones || ""
+        },
+        
+        // Productos y totales
+        items: cartItems.map(item => ({
+          productId: item.id,
+          nombre: item.nombre,
+          precio: item.precio,
+          cantidad: item.quantity,
+          imagen: item.imagen,
+          subtotal: item.precio * item.quantity
+        })),
+        
+        // Totales
+        subtotal: getTotalPrice(),
+        shipping: 0, // Envío gratis
+        total: getTotalPrice(),
+        
+        // Metadatos
+        totalItems: getTotalItems(),
+        paymentMethod: "Simulado", // Por ahora es simulado
+        notes: "Compra procesada desde la tienda online"
+      };
       
-      // Generar ID de orden único
-      const newOrderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-      setOrderId(newOrderId);
+      // Simular procesamiento del pago
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Guardar la orden en Firebase
+      const firebaseOrderId = await createOrder(orderData);
+      
+      // Usar el ID de Firebase como ID de orden
+      setOrderId(firebaseOrderId);
       setPaymentCompleted(true);
       
       // Limpiar carrito después del pago exitoso
@@ -140,10 +186,37 @@ const Checkout = () => {
                 </p>
                 
                 <div className="bg-black/50 border border-green-400/30 rounded-lg p-6 mb-8">
-                  <h3 className="text-green-400 font-bold text-xl mb-2">ID de Orden</h3>
-                  <p className="text-white text-2xl font-mono">{orderId}</p>
-                  <p className="text-gray-400 text-sm mt-2">
-                    Guarda este ID para futuras consultas
+                  <h3 className="text-green-400 font-bold text-xl mb-4">Detalles de la Orden</h3>
+                  
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">ID de Orden:</span>
+                      <span className="text-white font-mono text-sm">{orderId}</span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Cliente:</span>
+                      <span className="text-white">{formData.nombre} {formData.apellidos}</span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Email:</span>
+                      <span className="text-white">{formData.correo}</span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Total:</span>
+                      <span className="text-green-400 font-bold">{formatPrice(getTotalPrice())}</span>
+                    </div>
+                    
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Estado:</span>
+                      <span className="text-green-400 font-bold">Completado</span>
+                    </div>
+                  </div>
+                  
+                  <p className="text-gray-400 text-sm mt-4">
+                    📧 Se ha enviado un correo de confirmación a {formData.correo}
                   </p>
                 </div>
                 
