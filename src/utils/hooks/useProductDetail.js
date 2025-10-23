@@ -199,13 +199,6 @@ export const useProductDetail = (productId) => {
     }
   };
 
-  const handleAddToCart = () => {
-    if (product) {
-      console.log(`Agregando al carrito: ${product.name} x${quantity}`);
-      alert(`¡${product.name} agregado al carrito! (Cantidad: ${quantity})`);
-    }
-  };
-
   return {
     product,
     selectedImage,
@@ -214,6 +207,5 @@ export const useProductDetail = (productId) => {
     relatedProducts,
     handleImageSelect,
     handleQuantityChange,
-    handleAddToCart,
   };
 };

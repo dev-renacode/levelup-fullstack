@@ -1,6 +1,10 @@
+import { scrollToTop } from "../../utils/scrollUtils.js";
+
 const Breadcrumbs = ({ product }) => {
   const navigateTo = (page) => {
     window.location.hash = page;
+    // Scroll al tope cuando se navega desde breadcrumbs
+    scrollToTop(100);
   };
 
   return (

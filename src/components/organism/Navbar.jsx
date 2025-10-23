@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
 import { getAllProducts } from "../../config/firestoreService";
+import { scrollToTop } from "../../utils/scrollUtils.js";
 import logo from "../../assets/img/level_up_logo.png";
 import cartIcon from "../../assets/icon/cart.svg";
 import menuIcon from "../../assets/icon/menu.svg";
@@ -24,6 +25,8 @@ const Navbar = ({ currentPage }) => {
 
   const navigateTo = () => {
     closeMenu();
+    // Scroll al tope cuando se navega desde el menú
+    scrollToTop(100);
   };
 
   // Cargar categorías al montar el componente
@@ -208,7 +211,13 @@ const Navbar = ({ currentPage }) => {
             )}
 
             <a
-              href="#carrito"
+              href={isAuthenticated ? "#carrito" : "#login"}
+              onClick={(e) => {
+                if (!isAuthenticated) {
+                  e.preventDefault();
+                  window.location.hash = "login";
+                }
+              }}
               className="relative group p-2 rounded-lg hover:bg-green-400/10 transition-all duration-300"
               aria-label="Ver carrito de compras"
             >
@@ -227,7 +236,13 @@ const Navbar = ({ currentPage }) => {
 
           <div className="lg:hidden flex items-center space-x-2">
             <a
-              href="#carrito"
+              href={isAuthenticated ? "#carrito" : "#login"}
+              onClick={(e) => {
+                if (!isAuthenticated) {
+                  e.preventDefault();
+                  window.location.hash = "login";
+                }
+              }}
               className="relative p-2 rounded-lg hover:bg-green-400/10 transition-all duration-300"
               aria-label="Ver carrito de compras"
             >

@@ -3,6 +3,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import App from "./App.jsx";
 import Navbar from "./components/organism/Navbar.jsx";
+import { scrollToTop } from "./utils/scrollUtils.js";
 
 const RootApp = () => {
   const [currentPage, setCurrentPage] = useState("home");
@@ -19,6 +20,9 @@ const RootApp = () => {
       } else {
         setCurrentPage(hash || "home");
       }
+      
+      // Scroll al tope de la página cuando cambie la ruta
+      scrollToTop();
     };
 
     window.addEventListener("hashchange", handleHashChange);

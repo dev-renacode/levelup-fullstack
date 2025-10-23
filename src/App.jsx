@@ -10,6 +10,8 @@ import ProductDetail from "./components/molecules/ProductDetail.jsx";
 import AdminDashboard from "./components/pages/AdminDashboard.jsx";
 import CategoryPage from "./components/pages/CategoryPage.jsx";
 import Cart from "./components/pages/Cart.jsx";
+import Checkout from "./components/pages/Checkout.jsx";
+import { scrollToTop } from "./utils/scrollUtils.js";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -29,6 +31,9 @@ function App() {
       } else {
         setCurrentPage(hash || "home");
       }
+      
+      // Scroll al tope de la página cuando cambie la ruta
+      scrollToTop();
     };
 
     window.addEventListener("hashchange", handleHashChange);
@@ -50,6 +55,8 @@ function App() {
       return <Contact />;
     case "carrito":
       return <Cart />;
+    case "checkout":
+      return <Checkout />;
     case "productos":
       return (
         <>

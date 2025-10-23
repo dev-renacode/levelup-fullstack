@@ -1,5 +1,7 @@
 import GameBackgroundEffects from "./GameBackgroundEffects";
 import { useProductDetail } from "../../utils/hooks/useProductDetail";
+import { useCart } from "../../contexts/CartContext";
+import { useAuth } from "../../contexts/AuthContext";
 import Breadcrumbs from "./Breadcrumbs";
 import ProductImages from "./ProductImages";
 import ProductInfo from "./ProductInfo";
@@ -23,8 +25,26 @@ const ProductDetail = () => {
     relatedProducts,
     handleImageSelect,
     handleQuantityChange,
-    handleAddToCart,
   } = useProductDetail(productId);
+  
+  const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
+
+  // Función para agregar al carrito con protección de autenticación
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      window.location.hash = "login";
+      return;
+    }
+    
+    if (product) {
+      try {
+        await addToCart(product);
+      } catch (error) {
+        console.error("Error al agregar al carrito:", error);
+      }
+    }
+  };
 
   if (isLoading) {
     return <ProductLoading />;
