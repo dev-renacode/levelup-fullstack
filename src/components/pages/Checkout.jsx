@@ -2,15 +2,21 @@ import { useState } from "react";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { createOrder } from "../../config/firestoreService";
+import { downloadEnhancedInvoicePDF } from "../../utils/pdfGenerator";
+import { useEmail } from "../../utils/hooks/useEmail";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import { scrollToTop } from "../../utils/scrollUtils";
 
 const Checkout = () => {
   const { cartItems, getTotalItems, getTotalPrice, clearCart } = useCart();
   const { userData, isAuthenticated } = useAuth();
+  const { sendInvoice, isSendingEmail, emailError, emailSuccess, clearEmailStates } = useEmail();
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [orderId, setOrderId] = useState(null);
+  const [completedOrderData, setCompletedOrderData] = useState(null);
+  const [processingStep, setProcessingStep] = useState("");
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
 
   // Estados del formulario
   const [formData, setFormData] = useState({
@@ -93,6 +99,7 @@ const Checkout = () => {
     }
     
     setIsProcessing(true);
+    setProcessingStep("Preparando datos de la orden...");
     
     try {
       // Preparar datos de la orden
@@ -139,17 +146,30 @@ const Checkout = () => {
       };
       
       // Simular procesamiento del pago
+      setProcessingStep("Procesando pago...");
       await new Promise(resolve => setTimeout(resolve, 1500));
       
+      setProcessingStep("Guardando orden en la base de datos...");
       // Guardar la orden en Firebase
       const firebaseOrderId = await createOrder(orderData);
       
+      setProcessingStep("Finalizando compra...");
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       // Usar el ID de Firebase como ID de orden
       setOrderId(firebaseOrderId);
+      setCompletedOrderData(orderData);
+      
+      // Mostrar notificación de éxito
+      setShowSuccessNotification(true);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       setPaymentCompleted(true);
       
-      // Limpiar carrito después del pago exitoso
-      await clearCart();
+      // Esperar un poco antes de limpiar el carrito para que el usuario vea la confirmación
+      setTimeout(async () => {
+        await clearCart();
+      }, 5000); // 5 segundos de delay
       
     } catch (error) {
       console.error("Error al procesar el pago:", error);
@@ -162,7 +182,7 @@ const Checkout = () => {
   // Scroll al tope al cargar la página
   scrollToTop();
 
-  if (paymentCompleted) {
+  if (isProcessing) {
     return (
       <main className="min-h-screen bg-black font-[Roboto] relative overflow-hidden">
         <GameBackgroundEffects />
@@ -171,6 +191,70 @@ const Checkout = () => {
           <div className="max-w-4xl mx-auto px-4">
             <div className="text-center py-16">
               <div className="bg-green-500/10 border border-green-400/30 rounded-xl p-12 max-w-2xl mx-auto">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-400 mx-auto mb-6"></div>
+                <h2 className="text-2xl font-bold text-white mb-4">
+                  Procesando tu compra...
+                </h2>
+                <p className="text-gray-300 mb-4">
+                  {processingStep}
+                </p>
+                <div className="bg-black/50 rounded-lg p-4">
+                  <div className="flex items-center justify-center space-x-2 text-sm text-gray-400">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span>No cierres esta ventana</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (showSuccessNotification) {
+    return (
+      <main className="min-h-screen bg-black font-[Roboto] relative overflow-hidden">
+        <GameBackgroundEffects />
+        
+        <div className="relative z-10 pt-20 pb-8">
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="text-center py-16">
+              <div className="bg-green-500/10 border border-green-400/30 rounded-xl p-12 max-w-2xl mx-auto animate-fade-in">
+                <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+                  <svg className="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h2 className="text-3xl font-bold text-white mb-4">
+                  ¡Compra Exitosa!
+                </h2>
+                <p className="text-gray-300 text-lg mb-6">
+                  Tu compra ha sido procesada correctamente
+                </p>
+                <div className="bg-black/50 rounded-lg p-4">
+                  <div className="flex items-center justify-center space-x-2 text-sm text-green-400">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span>Preparando tu confirmación...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (paymentCompleted) {
+    return (
+      <main className="min-h-screen bg-black font-[Roboto] relative overflow-hidden">
+        <GameBackgroundEffects />
+        
+        <div className="relative z-10 pt-20 pb-8">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="text-center py-16">
+              <div className="bg-green-500/10 border border-green-400/30 rounded-xl p-12 max-w-4xl mx-auto">
                 <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg className="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -181,68 +265,214 @@ const Checkout = () => {
                   ¡Pago Completado!
                 </h1>
                 
-                <p className="text-gray-300 text-lg mb-6">
+                <p className="text-gray-300 text-lg mb-8">
                   Tu compra ha sido procesada exitosamente
                 </p>
                 
-                <div className="bg-black/50 border border-green-400/30 rounded-lg p-6 mb-8">
-                  <h3 className="text-green-400 font-bold text-xl mb-4">Detalles de la Orden</h3>
-                  
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">ID de Orden:</span>
-                      <span className="text-white font-mono text-sm">{orderId}</span>
-                    </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                  {/* Detalles de la Orden */}
+                  <div className="bg-black/50 border border-green-400/30 rounded-lg p-6">
+                    <h3 className="text-green-400 font-bold text-xl mb-4">Detalles de la Orden</h3>
                     
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Cliente:</span>
-                      <span className="text-white">{formData.nombre} {formData.apellidos}</span>
-                    </div>
-                    
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Email:</span>
-                      <span className="text-white">{formData.correo}</span>
-                    </div>
-                    
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Total:</span>
-                      <span className="text-green-400 font-bold">{formatPrice(getTotalPrice())}</span>
-                    </div>
-                    
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Estado:</span>
-                      <span className="text-green-400 font-bold">Completado</span>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-gray-300">ID de Orden:</span>
+                        <span className="text-white font-mono text-sm">{orderId}</span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-gray-300">Número:</span>
+                        <span className="text-white">{completedOrderData?.orderNumber}</span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-gray-300">Fecha:</span>
+                        <span className="text-white">{new Date().toLocaleDateString('es-CL', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}</span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-gray-300">Total:</span>
+                        <span className="text-green-400 font-bold">{formatPrice(getTotalPrice())}</span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-gray-300">Items:</span>
+                        <span className="text-white">{getTotalItems()} productos</span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-gray-300">Estado:</span>
+                        <span className="text-green-400 font-bold">Completado</span>
+                      </div>
                     </div>
                   </div>
+
+                  {/* Información del Cliente */}
+                  <div className="bg-black/50 border border-green-400/30 rounded-lg p-6">
+                    <h3 className="text-green-400 font-bold text-xl mb-4">Información del Cliente</h3>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <span className="text-gray-300 block">Nombre:</span>
+                        <span className="text-white">{formData.nombre} {formData.apellidos}</span>
+                      </div>
+                      
+                      <div>
+                        <span className="text-gray-300 block">Email:</span>
+                        <span className="text-white">{formData.correo}</span>
+                      </div>
+                      
+                      <div>
+                        <span className="text-gray-300 block">Dirección de Entrega:</span>
+                        <span className="text-white text-sm">
+                          {formData.calle} {formData.departamento}<br/>
+                          {formData.comuna}, {formData.region}
+                        </span>
+                      </div>
+                      
+                      {formData.indicaciones && (
+                        <div>
+                          <span className="text-gray-300 block">Indicaciones:</span>
+                          <span className="text-white text-sm italic">"{formData.indicaciones}"</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Productos Comprados */}
+                <div className="bg-black/50 border border-green-400/30 rounded-lg p-6 mb-8">
+                  <h3 className="text-green-400 font-bold text-xl mb-4">Productos Comprados</h3>
                   
-                  <p className="text-gray-400 text-sm mt-4">
-                    📧 Se ha enviado un correo de confirmación a {formData.correo}
-                  </p>
+                  <div className="space-y-3">
+                    {cartItems.map((item) => (
+                      <div key={item.id} className="flex items-center space-x-4 bg-black/30 rounded-lg p-3">
+                        {item.imagen && (
+                          <img
+                            src={item.imagen}
+                            alt={item.nombre}
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                        )}
+                        <div className="flex-1">
+                          <h4 className="text-white font-medium">{item.nombre}</h4>
+                          <p className="text-gray-400 text-sm">Cantidad: {item.quantity}</p>
+                        </div>
+                        <span className="text-green-400 font-bold">
+                          {formatPrice(item.precio * item.quantity)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Notificaciones */}
+                <div className="bg-blue-500/10 border border-blue-400/30 rounded-lg p-4 mb-8">
+                  <div className="flex items-center space-x-3">
+                    <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-blue-400 font-medium">¡Importante!</p>
+                      <p className="text-gray-300 text-sm">
+                        📧 Se ha enviado un correo de confirmación a {formData.correo}<br/>
+                        📱 Guarda el ID de orden para futuras consultas<br/>
+                        🚚 Recibirás actualizaciones sobre el estado de tu envío
+                      </p>
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <button
-                    onClick={() => window.print()}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-bold transition-colors"
+                    onClick={() => {
+                      if (completedOrderData) {
+                        try {
+                          downloadEnhancedInvoicePDF(completedOrderData, orderId);
+                        } catch (error) {
+                          console.error('Error al generar PDF:', error);
+                          alert('Error al generar el PDF. Por favor, intenta de nuevo.');
+                        }
+                      }
+                    }}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center justify-center space-x-2"
                   >
-                    📄 Descargar Boleta
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Descargar PDF</span>
+                  </button>
+                  
+                  <button
+                    onClick={async () => {
+                      if (completedOrderData && orderId) {
+                        try {
+                          clearEmailStates();
+                          const success = await sendInvoice(completedOrderData, orderId, formData.correo);
+                          if (success) {
+                            alert("✅ Boleta enviada por email exitosamente");
+                          } else {
+                            alert("❌ Error al enviar el email. Por favor, intenta de nuevo.");
+                          }
+                        } catch (error) {
+                          console.error('Error al enviar email:', error);
+                          alert("❌ Error al enviar el email. Por favor, intenta de nuevo.");
+                        }
+                      }
+                    }}
+                    disabled={isSendingEmail}
+                    className={`px-6 py-3 rounded-lg font-bold transition-colors flex items-center justify-center space-x-2 ${
+                      isSendingEmail
+                        ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
+                        : 'bg-green-500 hover:bg-green-600 text-white'
+                    }`}
+                  >
+                    {isSendingEmail ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Enviando...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span>Enviar por Email</span>
+                      </>
+                    )}
                   </button>
                   
                   <button
                     onClick={() => {
-                      // TODO: Implementar envío por email
-                      alert("Funcionalidad de envío por email en desarrollo");
+                      // Copiar ID de orden al portapapeles
+                      navigator.clipboard.writeText(orderId).then(() => {
+                        alert("✅ ID de orden copiado al portapapeles");
+                      }).catch(() => {
+                        alert("❌ No se pudo copiar el ID. Cópialo manualmente: " + orderId);
+                      });
                     }}
-                    className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-bold transition-colors"
+                    className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center justify-center space-x-2"
                   >
-                    📧 Enviar por Email
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <span>Copiar ID</span>
                   </button>
                   
                   <a
                     href="#home"
-                    className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-bold transition-colors text-center"
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-bold transition-colors text-center flex items-center justify-center space-x-2"
                   >
-                    🏠 Volver al Inicio
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span>Volver al Inicio</span>
                   </a>
                 </div>
               </div>

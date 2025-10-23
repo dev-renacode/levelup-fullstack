@@ -12,6 +12,7 @@ import CategoryPage from "./components/pages/CategoryPage.jsx";
 import Cart from "./components/pages/Cart.jsx";
 import Checkout from "./components/pages/Checkout.jsx";
 import Orders from "./components/pages/Orders.jsx";
+import OrderTracking from "./components/pages/OrderTracking.jsx";
 import { scrollToTop } from "./utils/scrollUtils.js";
 
 function App() {
@@ -60,6 +61,8 @@ function App() {
       return <Checkout />;
     case "ordenes":
       return <Orders />;
+    case "mis-ordenes":
+      return <OrderTracking />;
     case "productos":
       return (
         <>

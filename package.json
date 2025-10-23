@@ -11,8 +11,10 @@
     "deploy": "npm run build && npx firebase-tools deploy --only hosting"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@tailwindcss/vite": "^4.1.13",
     "firebase": "^12.3.0",
+    "jspdf": "^3.0.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^5.1.0",

@@ -181,6 +181,14 @@ const Navbar = ({ currentPage }) => {
                     </p>
                   </div>
                 </div>
+                <a
+                  href="#mis-ordenes"
+                  onClick={navigateTo}
+                  className="text-white/80 hover:text-blue-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-blue-400/10 rounded-lg font-[Roboto] border border-blue-400/30 hover:border-blue-400/60"
+                  aria-label="Ver mis órdenes"
+                >
+                  Mis Órdenes
+                </a>
                 <button
                   onClick={logout}
                   className="text-white/80 hover:text-red-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-red-400/10 rounded-lg font-[Roboto] border border-red-400/30 hover:border-red-400/60"
@@ -379,6 +387,13 @@ const Navbar = ({ currentPage }) => {
                       </p>
                     </div>
                   </div>
+                  <a
+                    href="#mis-ordenes"
+                    onClick={navigateTo}
+                    className="w-full px-4 py-3 text-center text-white hover:text-blue-400 hover:bg-blue-400/10 rounded-lg border border-blue-400/30 hover:border-blue-400/60 transition-all duration-300 font-[Roboto] font-medium"
+                  >
+                    Mis Órdenes
+                  </a>
                   <button
                     onClick={logout}
                     className="w-full px-4 py-3 text-center text-white hover:text-red-400 hover:bg-red-400/10 rounded-lg border border-red-400/30 hover:border-red-400/60 transition-all duration-300 font-[Roboto] font-medium"
