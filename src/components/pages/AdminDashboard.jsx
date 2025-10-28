@@ -1,171 +1,419 @@
-import { useState, lazy, Suspense, useMemo } from "react";
-import AdminSidebar from "../organism/AdminSidebar";
-import AdminHeader from "../organism/AdminHeader";
-import DashboardLoading from "../molecules/DashboardLoading";
-
-const StatsCards = lazy(() => import("../molecules/StatsCards"));
-const RecentOrders = lazy(() => import("../molecules/RecentOrders"));
-const TopProducts = lazy(() => import("../molecules/TopProducts"));
-const SalesChart = lazy(() => import("../molecules/SalesChart"));
+import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 
 const AdminDashboard = () => {
+  const { logout } = useAuth();
   const [currentPage, setCurrentPage] = useState("dashboard");
 
   const handleNavigate = (page) => {
     setCurrentPage(page);
   };
 
-  const renderContent = useMemo(() => {
-    switch (currentPage) {
-      case "orders":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-white font-[Orbitron]">
-              Gestión de Pedidos
-            </h2>
-            <Suspense fallback={<DashboardLoading />}>
-              <RecentOrders />
-            </Suspense>
-          </div>
-        );
-      case "inventory":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-white font-[Orbitron]">
-              Inventario
-            </h2>
-            <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
-              <p className="text-white/70 font-[Roboto]">
-                Gestión de inventario en desarrollo...
-              </p>
-            </div>
-          </div>
-        );
-      case "reports":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-white font-[Orbitron]">
-              Reportes
-            </h2>
-            <Suspense fallback={<DashboardLoading />}>
-              <SalesChart />
-            </Suspense>
-          </div>
-        );
-      case "employees":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-white font-[Orbitron]">
-              Empleados
-            </h2>
-            <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
-              <p className="text-white/70 font-[Roboto]">
-                Gestión de empleados en desarrollo...
-              </p>
-            </div>
-          </div>
-        );
-      case "customers":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-white font-[Orbitron]">
-              Clientes
-            </h2>
-            <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
-              <p className="text-white/70 font-[Roboto]">
-                Gestión de clientes en desarrollo...
-              </p>
-            </div>
-          </div>
-        );
-      case "settings":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-white font-[Orbitron]">
-              Configuración
-            </h2>
-            <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
-              <p className="text-white/70 font-[Roboto]">
-                Configuración del sistema en desarrollo...
-              </p>
-            </div>
-          </div>
-        );
-      case "profile":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-white font-[Orbitron]">
-              Perfil
-            </h2>
-            <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
-              <p className="text-white/70 font-[Roboto]">
-                Gestión de perfil en desarrollo...
-              </p>
-            </div>
-          </div>
-        );
-      case "search":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-white font-[Orbitron]">
-              Búsqueda
-            </h2>
-            <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
-              <p className="text-white/70 font-[Roboto]">
-                Búsqueda avanzada en desarrollo...
-              </p>
-            </div>
-          </div>
-        );
-      case "help":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-white font-[Orbitron]">
-              Ayuda
-            </h2>
-            <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
-              <p className="text-white/70 font-[Roboto]">
-                Centro de ayuda en desarrollo...
-              </p>
-            </div>
-          </div>
-        );
-      default:
-        return (
-          <div className="space-y-8">
-            <Suspense fallback={<DashboardLoading />}>
-              <StatsCards />
-            </Suspense>
+  const handleLogout = () => {
+    logout();
+  };
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <Suspense fallback={<DashboardLoading />}>
-                <SalesChart />
-              </Suspense>
-              <Suspense fallback={<DashboardLoading />}>
-                <TopProducts />
-              </Suspense>
-            </div>
+  const handleStoreRedirect = () => {
+    window.location.hash = "home";
+  };
 
-            <Suspense fallback={<DashboardLoading />}>
-              <RecentOrders />
-            </Suspense>
-          </div>
-        );
-    }
-  }, [currentPage]);
+  // Iconos SVG para la navegación
+  const DashboardIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="3" y="3" width="7" height="7"/>
+      <rect x="14" y="3" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/>
+      <rect x="3" y="14" width="7" height="7"/>
+    </svg>
+  );
+
+  const OrdersIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14,2 14,8 20,8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+      <polyline points="10,9 9,9 8,9"/>
+    </svg>
+  );
+
+  const ProductsIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 0 1-8 0"/>
+    </svg>
+  );
+
+  const CategoriesIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+      <line x1="7" y1="7" x2="7.01" y2="7"/>
+    </svg>
+  );
+
+  const UsersIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+  );
+
+  const ReportsIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M18 20V10"/>
+      <path d="M12 20V4"/>
+      <path d="M6 20v-6"/>
+    </svg>
+  );
+
+  const ProfileIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+  );
+
+  const StoreIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9,22 9,12 15,12 15,22"/>
+    </svg>
+  );
+
+  const LogoutIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+      <polyline points="16,17 21,12 16,7"/>
+      <line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+  );
+
+  // Iconos para las tarjetas de características
+  const FeatureDashboardIcon = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="3" y="3" width="7" height="7"/>
+      <rect x="14" y="3" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/>
+      <rect x="3" y="14" width="7" height="7"/>
+    </svg>
+  );
+
+  const FeatureOrdersIcon = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14,2 14,8 20,8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+      <polyline points="10,9 9,9 8,9"/>
+    </svg>
+  );
+
+  const FeatureProductsIcon = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 0 1-8 0"/>
+    </svg>
+  );
+
+  const FeatureCategoriesIcon = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+      <line x1="7" y1="7" x2="7.01" y2="7"/>
+    </svg>
+  );
+
+  const FeatureUsersIcon = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+  );
+
+  const FeatureReportsIcon = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M18 20V10"/>
+      <path d="M12 20V4"/>
+      <path d="M6 20v-6"/>
+    </svg>
+  );
+
+  const FeatureProfileIcon = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+  );
+
+  const FeatureStoreIcon = () => (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9,22 9,12 15,12 15,22"/>
+    </svg>
+  );
 
   return (
-    <main className="min-h-screen bg-black font-[Roboto] relative overflow-hidden">
-      <div className="flex h-screen">
-        <AdminSidebar currentPage={currentPage} onNavigate={handleNavigate} />
-
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <AdminHeader />
-
-          <div className="flex-1 overflow-y-auto p-6">{renderContent}</div>
+    <div className="min-h-screen bg-gray-100">
+      {/* Header */}
+      <div className="bg-gray-800 text-white p-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-semibold">Company name</h1>
+          <div className="flex items-center space-x-4">
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+              <ProfileIcon />
+            </div>
+          </div>
         </div>
       </div>
-    </main>
+
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-64 bg-gray-200 min-h-screen">
+          <div className="p-4">
+            {/* Navigation Items */}
+            <div className="space-y-2">
+              <button
+                onClick={() => handleNavigate("dashboard")}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                  currentPage === "dashboard"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                <DashboardIcon />
+                <span>Dashboard</span>
+              </button>
+
+              <button
+                onClick={() => handleNavigate("orders")}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                  currentPage === "orders"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                <OrdersIcon />
+                <span>Órdenes</span>
+              </button>
+
+              <button
+                onClick={() => handleNavigate("products")}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                  currentPage === "products"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                <ProductsIcon />
+                <span>Productos</span>
+              </button>
+
+              <button
+                onClick={() => handleNavigate("categories")}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                  currentPage === "categories"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                <CategoriesIcon />
+                <span>Categorías</span>
+              </button>
+
+              <button
+                onClick={() => handleNavigate("users")}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                  currentPage === "users"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                <UsersIcon />
+                <span>Usuarios</span>
+              </button>
+
+              <button
+                onClick={() => handleNavigate("reports")}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                  currentPage === "reports"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                <ReportsIcon />
+                <span>Reportes</span>
+              </button>
+            </div>
+
+            {/* Separator */}
+            <div className="border-t border-gray-400 my-4"></div>
+
+            {/* Profile and Action Buttons */}
+            <div className="space-y-2">
+              <button
+                onClick={() => window.location.hash = "perfil"}
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors text-gray-700 hover:bg-gray-300"
+              >
+                <ProfileIcon />
+                <span>Perfil</span>
+              </button>
+
+              <button
+                onClick={handleStoreRedirect}
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-black text-white hover:bg-gray-800 transition-colors"
+              >
+                <StoreIcon />
+                <span>Tienda</span>
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-red-500 text-white hover:bg-red-600 transition-colors"
+              >
+                <LogoutIcon />
+                <span>Cerrar Sesión</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 bg-white p-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Title Section */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
+              <p className="text-gray-600">Resumen de las actividades diarias</p>
+            </div>
+
+            {/* Top Row - Key Metric Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {/* Compras Card */}
+              <div className="bg-blue-500 rounded-lg p-6 text-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-sm font-medium mb-2">Compras</h3>
+                    <div className="text-3xl font-bold mb-2">1,234</div>
+                    <p className="text-sm opacity-90">Probabilidad de aumento: 20%</p>
+                  </div>
+                  <div className="w-16 h-16 flex items-center justify-center">
+                    <ProductsIcon />
+                  </div>
+                </div>
+              </div>
+
+              {/* Productos Card */}
+              <div className="bg-green-500 rounded-lg p-6 text-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-sm font-medium mb-2">Productos</h3>
+                    <div className="text-3xl font-bold mb-2">400</div>
+                    <p className="text-sm opacity-90">Inventario actual: 500</p>
+                  </div>
+                  <div className="w-16 h-16 flex items-center justify-center">
+                    <ProductsIcon />
+                  </div>
+                </div>
+              </div>
+
+              {/* Usuarios Card */}
+              <div className="bg-yellow-500 rounded-lg p-6 text-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h3 className="text-sm font-medium mb-2">Usuarios</h3>
+                    <div className="text-3xl font-bold mb-2">890</div>
+                    <p className="text-sm opacity-90">Nuevos usuarios este mes: 120</p>
+                  </div>
+                  <div className="w-16 h-16 flex items-center justify-center">
+                    <UsersIcon />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Grid - Feature Overview Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Dashboard Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <div className="text-blue-500 mb-4">
+                  <FeatureDashboardIcon />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Dashboard</h3>
+                <p className="text-gray-600 text-sm">Visión general de todas las métricas y estadísticas clave del sistema.</p>
+              </div>
+
+              {/* Órdenes Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <div className="text-blue-500 mb-4">
+                  <FeatureOrdersIcon />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Órdenes</h3>
+                <p className="text-gray-600 text-sm">Gestión y seguimiento de todas las órdenes de compra realizadas.</p>
+              </div>
+
+              {/* Productos Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <div className="text-blue-500 mb-4">
+                  <FeatureProductsIcon />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Productos</h3>
+                <p className="text-gray-600 text-sm">Administrar inventario y detalles de los productos disponibles.</p>
+              </div>
+
+              {/* Categorías Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <div className="text-blue-500 mb-4">
+                  <FeatureCategoriesIcon />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Categorías</h3>
+                <p className="text-gray-600 text-sm">Organizar productos en categorías para facilitar su navegación.</p>
+              </div>
+
+              {/* Usuarios Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <div className="text-blue-500 mb-4">
+                  <FeatureUsersIcon />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Usuarios</h3>
+                <p className="text-gray-600 text-sm">Gestión de cuentas de usuario y sus roles dentro del sistema.</p>
+              </div>
+
+              {/* Reportes Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <div className="text-blue-500 mb-4">
+                  <FeatureReportsIcon />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Reportes</h3>
+                <p className="text-gray-600 text-sm">Generación de informes detallados sobre las operaciones del sistema.</p>
+              </div>
+
+              {/* Perfil Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <div className="text-blue-500 mb-4">
+                  <FeatureProfileIcon />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Perfil</h3>
+                <p className="text-gray-600 text-sm">Administración de la información personal y configuraciones de cuenta.</p>
+              </div>
+
+              {/* Tienda Card */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
+                <div className="text-blue-500 mb-4">
+                  <FeatureStoreIcon />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Tienda</h3>
+                <p className="text-gray-600 text-sm">Visualiza tu tienda en tiempo real, visualiza los reportes de los usuarios.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

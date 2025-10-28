@@ -25,6 +25,15 @@ export const generateInvoicePDF = (orderData, orderId) => {
   
   // Función para formatear fecha
   const formatDate = (date) => {
+    if (!date) {
+      return new Date().toLocaleDateString('es-CL', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
     const dateObj = date.toDate ? date.toDate() : new Date(date);
     return dateObj.toLocaleDateString('es-CL', {
       year: 'numeric',
@@ -239,6 +248,15 @@ export const generateEnhancedInvoicePDF = (orderData, orderId) => {
   
   // Función para formatear fecha
   const formatDate = (date) => {
+    if (!date) {
+      return new Date().toLocaleDateString('es-CL', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
     const dateObj = date.toDate ? date.toDate() : new Date(date);
     return dateObj.toLocaleDateString('es-CL', {
       year: 'numeric',

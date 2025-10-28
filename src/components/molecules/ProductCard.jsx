@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 
-const ProductCard = ({ product, onProductClick, onStockUpdate }) => {
+const ProductCard = ({ product, onStockUpdate }) => {
   const [imageError, setImageError] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const { addToCart, cartItems, getUpdatedStock } = useCart();
@@ -50,17 +50,15 @@ const ProductCard = ({ product, onProductClick, onStockUpdate }) => {
   };
 
   const handleProductClick = () => {
-    if (onProductClick) {
-      onProductClick(product.id);
-    }
+    window.location.hash = `producto/${product.id}`;
   };
 
   return (
     <article 
       className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl shadow-lg shadow-green-400/10 hover:shadow-green-400/20 transition-all duration-300 hover:border-green-400/50 group cursor-pointer"
-      onClick={handleProductClick}
       itemScope
       itemType="https://schema.org/Product"
+      onClick={handleProductClick}
     >
       <div className="relative overflow-hidden rounded-t-xl">
         {!imageError && product.imagen ? (

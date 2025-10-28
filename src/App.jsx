@@ -6,28 +6,31 @@ import Register from "./components/pages/Register.jsx";
 import Login from "./components/pages/Login.jsx";
 import Blog from "./components/pages/Blog.jsx";
 import Contact from "./components/pages/Contact.jsx";
-import ProductDetail from "./components/molecules/ProductDetail.jsx";
 import AdminDashboard from "./components/pages/AdminDashboard.jsx";
 import CategoryPage from "./components/pages/CategoryPage.jsx";
 import Cart from "./components/pages/Cart.jsx";
 import Checkout from "./components/pages/Checkout.jsx";
 import Orders from "./components/pages/Orders.jsx";
-import OrderTracking from "./components/pages/OrderTracking.jsx";
+import ProductDetail from "./components/pages/ProductDetail.jsx";
+import Profile from "./components/pages/Profile.jsx";
 import { scrollToTop } from "./utils/scrollUtils.js";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
   const [categoryName, setCategoryName] = useState("");
+  const [productId, setProductId] = useState("");
 
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1);
-      if (hash.startsWith("product/")) {
-        setCurrentPage("product");
-      } else if (hash.startsWith("categoria/")) {
+      if (hash.startsWith("categoria/")) {
         setCurrentPage("categoria");
         const category = decodeURIComponent(hash.replace("categoria/", ""));
         setCategoryName(category);
+      } else if (hash.startsWith("producto/")) {
+        setCurrentPage("producto");
+        const product = hash.replace("producto/", "");
+        setProductId(product);
       } else if (hash.startsWith("admin")) {
         setCurrentPage("admin");
       } else {
@@ -61,8 +64,6 @@ function App() {
       return <Checkout />;
     case "ordenes":
       return <Orders />;
-    case "mis-ordenes":
-      return <OrderTracking />;
     case "productos":
       return (
         <>
@@ -72,10 +73,12 @@ function App() {
       );
     case "categoria":
       return <CategoryPage categoryName={categoryName} />;
-    case "product":
-      return <ProductDetail />;
+    case "producto":
+      return <ProductDetail productId={productId} />;
     case "admin":
       return <AdminDashboard />;
+    case "perfil":
+      return <Profile />;
     case "home":
     default:
       return (

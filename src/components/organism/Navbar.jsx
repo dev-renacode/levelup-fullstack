@@ -181,13 +181,23 @@ const Navbar = ({ currentPage }) => {
                     </p>
                   </div>
                 </div>
+                {userData?.role === "admin" && (
+                  <a
+                    href="#admin"
+                    onClick={navigateTo}
+                    className="text-white/80 hover:text-purple-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-purple-400/10 rounded-lg font-[Roboto] border border-purple-400/30 hover:border-purple-400/60"
+                    aria-label="Acceder al dashboard de administrador"
+                  >
+                    Dashboard
+                  </a>
+                )}
                 <a
-                  href="#mis-ordenes"
+                  href="#perfil"
                   onClick={navigateTo}
                   className="text-white/80 hover:text-blue-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-blue-400/10 rounded-lg font-[Roboto] border border-blue-400/30 hover:border-blue-400/60"
-                  aria-label="Ver mis órdenes"
+                  aria-label="Ver mi perfil"
                 >
-                  Mis Órdenes
+                  Perfil
                 </a>
                 <button
                   onClick={logout}
@@ -387,12 +397,21 @@ const Navbar = ({ currentPage }) => {
                       </p>
                     </div>
                   </div>
+                  {userData?.role === "admin" && (
+                    <a
+                      href="#admin"
+                      onClick={navigateTo}
+                      className="w-full px-4 py-3 text-center text-white hover:text-purple-400 hover:bg-purple-400/10 rounded-lg border border-purple-400/30 hover:border-purple-400/60 transition-all duration-300 font-[Roboto] font-medium"
+                    >
+                      Dashboard
+                    </a>
+                  )}
                   <a
-                    href="#mis-ordenes"
+                    href="#perfil"
                     onClick={navigateTo}
                     className="w-full px-4 py-3 text-center text-white hover:text-blue-400 hover:bg-blue-400/10 rounded-lg border border-blue-400/30 hover:border-blue-400/60 transition-all duration-300 font-[Roboto] font-medium"
                   >
-                    Mis Órdenes
+                    Perfil
                   </a>
                   <button
                     onClick={logout}

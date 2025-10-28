@@ -7,10 +7,6 @@ const Products = () => {
   const { products, loading, error, refreshProducts } = useProducts();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleProductClick = (productId) => {
-    window.location.hash = `#product/${productId}`;
-  };
-
   const filteredProducts = useMemo(() => {
     if (!searchTerm.trim()) return products;
     
@@ -135,8 +131,7 @@ const Products = () => {
             {filteredProducts.map((product) => (
               <li key={product.id}>
                 <ProductCard 
-                  product={product} 
-                  onProductClick={handleProductClick}
+                  product={product}
                 />
               </li>
             ))}

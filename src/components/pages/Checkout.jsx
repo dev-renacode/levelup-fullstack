@@ -40,8 +40,8 @@ const Checkout = () => {
     return null;
   }
 
-  // Redirigir si el carrito está vacío
-  if (cartItems.length === 0) {
+  // Redirigir si el carrito está vacío (solo si no se ha completado el pago)
+  if (cartItems.length === 0 && !paymentCompleted) {
     window.location.hash = "carrito";
     return null;
   }
@@ -107,6 +107,7 @@ const Checkout = () => {
         userId: userData.uid,
         userEmail: userData.email,
         orderNumber: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+        createdAt: new Date(),
         
         // Datos del cliente
         customerInfo: {
@@ -166,10 +167,10 @@ const Checkout = () => {
       
       setPaymentCompleted(true);
       
-      // Esperar un poco antes de limpiar el carrito para que el usuario vea la confirmación
+      // Esperar más tiempo antes de limpiar el carrito para que el usuario pueda descargar la boleta
       setTimeout(async () => {
         await clearCart();
-      }, 5000); // 5 segundos de delay
+      }, 30000); // 30 segundos de delay para dar tiempo a descargar la boleta
       
     } catch (error) {
       console.error("Error al procesar el pago:", error);
@@ -232,6 +233,38 @@ const Checkout = () => {
                 <p className="text-gray-300 text-lg mb-6">
                   Tu compra ha sido procesada correctamente
                 </p>
+                
+                {/* Botón de descarga de boleta */}
+                <div className="bg-green-500/20 border border-green-400/50 rounded-xl p-6 mb-6">
+                  <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-green-400 font-bold text-lg mb-2">Descarga tu Boleta</h3>
+                  <p className="text-gray-300 text-sm mb-4">
+                    Descarga inmediatamente tu boleta de compra en formato PDF
+                  </p>
+                  <button
+                    onClick={() => {
+                      if (completedOrderData) {
+                        try {
+                          downloadEnhancedInvoicePDF(completedOrderData, orderId);
+                        } catch (error) {
+                          console.error('Error al generar PDF:', error);
+                          alert('Error al generar el PDF. Por favor, intenta de nuevo.');
+                        }
+                      }
+                    }}
+                    className="bg-green-500 hover:bg-green-600 text-black px-6 py-3 rounded-lg font-bold transition-all duration-200 hover:scale-105 flex items-center justify-center space-x-2 mx-auto"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Descargar Boleta PDF</span>
+                  </button>
+                </div>
+                
                 <div className="bg-black/50 rounded-lg p-4">
                   <div className="flex items-center justify-center space-x-2 text-sm text-green-400">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -389,26 +422,7 @@ const Checkout = () => {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <button
-                    onClick={() => {
-                      if (completedOrderData) {
-                        try {
-                          downloadEnhancedInvoicePDF(completedOrderData, orderId);
-                        } catch (error) {
-                          console.error('Error al generar PDF:', error);
-                          alert('Error al generar el PDF. Por favor, intenta de nuevo.');
-                        }
-                      }
-                    }}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-bold transition-colors flex items-center justify-center space-x-2"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span>Descargar PDF</span>
-                  </button>
-                  
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <button
                     onClick={async () => {
                       if (completedOrderData && orderId) {
