@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import ProductManagement from "../molecules/ProductManagement";
 
 const AdminDashboard = () => {
   const { logout } = useAuth();
@@ -285,14 +286,18 @@ const AdminDashboard = () => {
         {/* Main Content */}
         <div className="flex-1 bg-white p-8">
           <div className="max-w-7xl mx-auto">
-            {/* Title Section */}
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
-              <p className="text-gray-600">Resumen de las actividades diarias</p>
-            </div>
+            {currentPage === "products" ? (
+              <ProductManagement />
+            ) : (
+              <>
+                {/* Title Section */}
+                <div className="mb-8">
+                  <h1 className="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
+                  <p className="text-gray-600">Resumen de las actividades diarias</p>
+                </div>
 
-            {/* Top Row - Key Metric Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                {/* Top Row - Key Metric Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               {/* Compras Card */}
               <div className="bg-blue-500 rounded-lg p-6 text-white">
                 <div className="flex items-center justify-between">
@@ -334,10 +339,10 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               </div>
-            </div>
+                </div>
 
-            {/* Bottom Grid - Feature Overview Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Bottom Grid - Feature Overview Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Dashboard Card */}
               <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
                 <div className="text-blue-500 mb-4">
@@ -409,7 +414,9 @@ const AdminDashboard = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Tienda</h3>
                 <p className="text-gray-600 text-sm">Visualiza tu tienda en tiempo real, visualiza los reportes de los usuarios.</p>
               </div>
-            </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

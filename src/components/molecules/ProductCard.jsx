@@ -53,6 +53,8 @@ const ProductCard = ({ product, onStockUpdate }) => {
     window.location.hash = `producto/${product.id}`;
   };
 
+  const isOffer = typeof product.precioAnterior === 'number' && typeof product.precio === 'number' && product.precio < product.precioAnterior;
+
   return (
     <article 
       className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl shadow-lg shadow-green-400/10 hover:shadow-green-400/20 transition-all duration-300 hover:border-green-400/50 group cursor-pointer"
@@ -79,6 +81,11 @@ const ProductCard = ({ product, onStockUpdate }) => {
         <div className="absolute top-2 right-2 bg-green-500/90 text-black px-2 py-1 rounded-full text-xs font-bold">
           {product.categoria || 'Gaming'}
         </div>
+        {isOffer && (
+          <div className="absolute top-2 left-2 bg-red-500/90 text-white px-2 py-1 rounded-full text-xs font-bold shadow">
+            Oferta
+          </div>
+        )}
         {isOutOfStock && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
@@ -108,6 +115,11 @@ const ProductCard = ({ product, onStockUpdate }) => {
             itemType="https://schema.org/Offer"
           >
             <span itemProp="price">{formatPrice(product.precio || 0)}</span>
+            {isOffer && (
+              <span className="ml-2 text-gray-400 line-through text-base align-middle">
+                {formatPrice(product.precioAnterior)}
+              </span>
+            )}
           </span>
           
           <button 

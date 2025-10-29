@@ -14,9 +14,10 @@ const CategoryPage = ({ categoryName }) => {
       try {
         setLoading(true);
         const allProducts = await getAllProducts();
-        const categoryProducts = allProducts.filter(product => 
-          product.categoria === categoryName
-        );
+        const isOffers = (categoryName || "").toLowerCase() === "ofertas";
+        const categoryProducts = isOffers
+          ? allProducts.filter(p => typeof p.precio === 'number' && typeof p.precioAnterior === 'number' && p.precio < p.precioAnterior)
+          : allProducts.filter(product => product.categoria === categoryName);
         setProducts(categoryProducts);
       } catch (err) {
         console.error("Error al cargar productos:", err);

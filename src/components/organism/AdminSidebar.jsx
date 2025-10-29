@@ -4,7 +4,7 @@ const AdminSidebar = ({ currentPage, onNavigate }) => {
   const menuItems = [
     { id: "dashboard", icon: "grid", label: "Dashboard", active: true },
     { id: "orders", icon: "cart", label: "Orders" },
-    { id: "inventory", icon: "box", label: "Inventory" },
+    { id: "products", icon: "box", label: "Productos" },
     { id: "reports", icon: "chart", label: "Reports" },
     { id: "employees", icon: "users", label: "Employees" },
     { id: "customers", icon: "user", label: "Customers" },

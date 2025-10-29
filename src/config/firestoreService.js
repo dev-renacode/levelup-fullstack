@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { collection, addDoc, getDocs, doc, getDoc, query, where, updateDoc, increment, setDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, getDoc, query, where, updateDoc, increment, setDoc, deleteDoc } from "firebase/firestore";
 
 export async function addUser(userData) {
     try {
@@ -79,6 +79,43 @@ export async function getProductById(productId) {
         return null;
     } catch (error) {
         console.error("Error al obtener producto:", error);
+        throw error;
+    }
+}
+
+export async function updateProduct(productId, updates) {
+    try {
+        const productRef = doc(db, "producto", productId);
+        await updateDoc(productRef, {
+            ...updates,
+            lastUpdated: new Date()
+        });
+        return true;
+    } catch (error) {
+        console.error("Error al actualizar producto:", error);
+        throw error;
+    }
+}
+
+export async function createProduct(productData) {
+    try {
+        const ref = await addDoc(collection(db, "producto"), {
+            ...productData,
+            createdAt: new Date(),
+        });
+        return ref.id;
+    } catch (error) {
+        console.error("Error al crear producto:", error);
+        throw error;
+    }
+}
+
+export async function deleteProduct(productId) {
+    try {
+        await deleteDoc(doc(db, "producto", productId));
+        return true;
+    } catch (error) {
+        console.error("Error al eliminar producto:", error);
         throw error;
     }
 }

@@ -96,6 +96,7 @@ const ProductDetail = ({ productId }) => {
   const isInCart = cartItems.some(item => item.id === product.id);
   const cartItem = cartItems.find(item => item.id === product.id);
   const cartQuantity = cartItem ? cartItem.quantity : 0;
+  const isOffer = typeof product?.precio === 'number' && typeof product?.precioAnterior === 'number' && product.precio < product.precioAnterior;
 
   // Simular múltiples imágenes (en un caso real vendrían del backend)
   const productImages = [
@@ -143,10 +144,15 @@ const ProductDetail = ({ productId }) => {
               <div className="absolute top-4 left-4 bg-green-500/90 text-black px-3 py-1 rounded-full text-sm font-bold">
                 {product.categoria || 'Gaming'}
               </div>
+              {isOffer && (
+                <div className="absolute top-4 right-4 bg-red-500/90 text-white px-3 py-1 rounded-full text-sm font-bold shadow">
+                  Oferta
+                </div>
+              )}
               
               {/* Indicador de stock */}
               {isOutOfStock && (
-                <div className="absolute top-4 right-4 bg-red-500/90 text-white px-3 py-1 rounded-full text-sm font-bold">
+                <div className="absolute bottom-4 right-4 bg-red-500/90 text-white px-3 py-1 rounded-full text-sm font-bold">
                   Sin Stock
                 </div>
               )}
@@ -194,6 +200,11 @@ const ProductDetail = ({ productId }) => {
                 <span className="text-green-400 text-3xl font-bold">
                   {formatPrice(product.precio || 0)}
                 </span>
+                {isOffer && (
+                  <span className="text-gray-500 line-through text-xl">
+                    {formatPrice(product.precioAnterior)}
+                  </span>
+                )}
                 <div className="flex items-center space-x-2">
                   <div className="flex text-yellow-400">
                     {[...Array(5)].map((_, i) => (
