@@ -5,6 +5,7 @@ import Footer from "./components/organism/Footer.jsx";
 import Register from "./components/pages/Register.jsx";
 import Login from "./components/pages/Login.jsx";
 import Blog from "./components/pages/Blog.jsx";
+import Nosotros from "./components/pages/Nosotros.jsx";
 import Contact from "./components/pages/Contact.jsx";
 import AdminDashboard from "./components/pages/AdminDashboard.jsx";
 import CategoryPage from "./components/pages/CategoryPage.jsx";
@@ -56,6 +57,8 @@ function App() {
       return <Register />;
     case "blog":
       return <Blog />;
+    case "nosotros":
+      return <Nosotros />;
     case "contacto":
       return <Contact />;
     case "carrito":

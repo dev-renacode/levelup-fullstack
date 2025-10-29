@@ -143,7 +143,7 @@ const Navbar = ({ currentPage }) => {
               )}
             </div>
             <a
-              href="#home"
+              href="#nosotros"
               onClick={navigateTo}
               className="text-white/90 hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-green-400/10 hover:scale-105 font-[Roboto]"
             >
