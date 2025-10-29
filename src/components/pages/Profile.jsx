@@ -3,6 +3,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { getUserOrders } from "../../config/firestoreService";
 import { downloadEnhancedInvoicePDF } from "../../utils/pdfGenerator";
 import { useEmail } from "../../utils/hooks/useEmail";
+import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 
 const Profile = () => {
   const { isAuthenticated, userData, logout } = useAuth();
@@ -155,46 +156,46 @@ const Profile = () => {
       case "info":
         return (
           <div className="space-y-6">
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Información Personal</h2>
+            <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
+                <h2 className="text-xl font-semibold text-white mb-4 font-[Orbitron]">Información Personal</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
-                  <p className="text-gray-900">{userData?.fullName || "No disponible"}</p>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Nombre Completo</label>
+                  <p className="text-white">{userData?.fullName || "No disponible"}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
-                  <p className="text-gray-900">{userData?.email || "No disponible"}</p>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Correo Electrónico</label>
+                  <p className="text-white">{userData?.email || "No disponible"}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Rol</label>
-                  <p className="text-gray-900 capitalize">{userData?.role || "Usuario"}</p>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Rol</label>
+                  <p className="text-white capitalize">{userData?.role || "Usuario"}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Estado de Verificación</label>
-                  <p className="text-gray-900">{userData?.emailVerified ? "Verificado" : "No verificado"}</p>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Estado de Verificación</label>
+                  <p className="text-white">{userData?.emailVerified ? "Verificado" : "No verificado"}</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Estadísticas de Cuenta</h2>
+            <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
+                <h2 className="text-xl font-semibold text-white mb-4 font-[Orbitron]">Estadísticas de Cuenta</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{orders.length}</div>
-                  <div className="text-sm text-gray-600">Órdenes Totales</div>
+                <div className="text-center p-4 bg-black/50 border border-blue-400/30 rounded-lg">
+                  <div className="text-2xl font-bold font-[Orbitron] text-blue-400">{orders.length}</div>
+                  <div className="text-sm text-gray-300">Órdenes Totales</div>
                 </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">
+                <div className="text-center p-4 bg-black/50 border border-green-400/30 rounded-lg">
+                  <div className="text-2xl font-bold font-[Orbitron] text-green-400">
                     {orders.reduce((total, order) => total + order.totalItems, 0)}
                   </div>
-                  <div className="text-sm text-gray-600">Productos Comprados</div>
+                  <div className="text-sm text-gray-300">Productos Comprados</div>
                 </div>
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">
+                <div className="text-center p-4 bg-black/50 border border-purple-400/30 rounded-lg">
+                  <div className="text-2xl font-bold font-[Orbitron] text-purple-400">
                     {formatPrice(orders.reduce((total, order) => total + order.total, 0))}
                   </div>
-                  <div className="text-sm text-gray-600">Total Gastado</div>
+                  <div className="text-sm text-gray-300">Total Gastado</div>
                 </div>
               </div>
             </div>
@@ -204,7 +205,7 @@ const Profile = () => {
       case "orders":
         return (
           <div className="space-y-6">
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-800">Historial de Órdenes</h2>
                 <div className="text-sm text-gray-600">
@@ -220,7 +221,7 @@ const Profile = () => {
                     value={searchOrderId}
                     onChange={(e) => setSearchOrderId(e.target.value)}
                     placeholder="Buscar por ID de orden o número..."
-                    className="w-full px-4 py-3 pl-12 pr-12 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:bg-white transition-all duration-300"
+                    className="w-full px-4 py-3 pl-12 pr-12 bg-black/50 border border-green-400/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400 focus:bg-black/70 transition-all duration-300"
                   />
                   <svg 
                     className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
@@ -261,7 +262,7 @@ const Profile = () => {
                     {!searchOrderId && (
                       <a
                         href="#productos"
-                        className="inline-block bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-bold transition-colors"
+                        className="inline-block bg-green-500 hover:bg-green-600 text-black px-6 py-3 rounded-lg font-bold transition-colors"
                       >
                         Comenzar a Comprar
                       </a>
@@ -271,12 +272,12 @@ const Profile = () => {
               ) : (
                 <div className="space-y-6">
                   {filteredOrders.map((order) => (
-                    <div key={order.id} className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                    <div key={order.id} className="bg-black/50 border border-green-400/30 rounded-xl p-6">
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Información de la orden */}
                         <div className="lg:col-span-2">
                           <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-gray-800 text-xl font-bold">
+                            <h3 className="text-white text-xl font-bold font-[Orbitron]">
                               Orden #{order.orderNumber}
                             </h3>
                             <span className={`px-3 py-1 rounded-full text-sm font-bold ${getStatusColor(order.status)}`}>
@@ -286,18 +287,18 @@ const Profile = () => {
                           
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
-                              <h4 className="text-blue-500 font-bold mb-2">Información</h4>
-                              <p className="text-gray-800 text-sm">ID: {order.id}</p>
-                              <p className="text-gray-600 text-sm">Fecha: {formatDate(order.createdAt)}</p>
-                              <p className="text-gray-600 text-sm">Total: {formatPrice(order.total)}</p>
+                              <h4 className="text-green-400 font-bold mb-2">Información</h4>
+                              <p className="text-white text-sm">ID: {order.id}</p>
+                              <p className="text-gray-300 text-sm">Fecha: {formatDate(order.createdAt)}</p>
+                              <p className="text-gray-300 text-sm">Total: {formatPrice(order.total)}</p>
                             </div>
                             
                             <div>
-                              <h4 className="text-blue-500 font-bold mb-2">Dirección de Entrega</h4>
-                              <p className="text-gray-800 text-sm">
+                              <h4 className="text-green-400 font-bold mb-2">Dirección de Entrega</h4>
+                              <p className="text-white text-sm">
                                 {order.shippingAddress?.calle} {order.shippingAddress?.departamento}
                               </p>
-                              <p className="text-gray-600 text-sm">
+                              <p className="text-gray-300 text-sm">
                                 {order.shippingAddress?.comuna}, {order.shippingAddress?.region}
                               </p>
                             </div>
@@ -307,7 +308,7 @@ const Profile = () => {
                             <h4 className="text-blue-500 font-bold mb-2">Productos ({order.totalItems})</h4>
                             <div className="space-y-2">
                               {order.items?.slice(0, 3).map((item, index) => (
-                                <div key={index} className="flex items-center space-x-3 bg-white rounded-lg p-2">
+                                <div key={index} className="flex items-center space-x-3 bg-black/30 rounded-lg p-2">
                                   {item.imagen && (
                                     <img
                                       src={item.imagen}
@@ -316,16 +317,16 @@ const Profile = () => {
                                     />
                                   )}
                                   <div className="flex-1">
-                                    <p className="text-gray-800 text-sm font-medium">{item.nombre}</p>
-                                    <p className="text-gray-600 text-xs">Cantidad: {item.cantidad}</p>
+                                    <p className="text-white text-sm font-medium">{item.nombre}</p>
+                                    <p className="text-gray-300 text-xs">Cantidad: {item.cantidad}</p>
                                   </div>
-                                  <span className="text-blue-500 font-bold text-sm">
+                                  <span className="text-green-400 font-bold text-sm">
                                     {formatPrice(item.subtotal)}
                                   </span>
                                 </div>
                               ))}
                               {order.items?.length > 3 && (
-                                <p className="text-gray-600 text-sm">
+                                <p className="text-gray-300 text-sm">
                                   ... y {order.items.length - 3} producto(s) más
                                 </p>
                               )}
@@ -335,11 +336,11 @@ const Profile = () => {
                         
                         {/* Acciones */}
                         <div className="lg:col-span-1">
-                          <div className="bg-white border border-gray-200 rounded-lg p-4 mb-4">
-                            <h4 className="text-blue-500 font-bold mb-3">Resumen</h4>
+                          <div className="bg-black/30 border border-green-400/30 rounded-lg p-4 mb-4">
+                            <h4 className="text-green-400 font-bold mb-3">Resumen</h4>
                             
                             <div className="space-y-2 text-sm">
-                              <div className="flex justify-between text-gray-600">
+                              <div className="flex justify-between text-gray-300">
                                 <span>Subtotal</span>
                                 <span>{formatPrice(order.subtotal)}</span>
                               </div>
@@ -347,10 +348,10 @@ const Profile = () => {
                                 <span>Envío</span>
                                 <span className="text-green-500">Gratis</span>
                               </div>
-                              <div className="border-t border-gray-200 pt-2">
-                                <div className="flex justify-between text-gray-800 font-bold">
+                              <div className="border-t border-green-400/30 pt-2">
+                                <div className="flex justify-between text-white font-bold">
                                   <span>Total</span>
-                                  <span className="text-blue-500">{formatPrice(order.total)}</span>
+                                  <span className="text-green-400">{formatPrice(order.total)}</span>
                                 </div>
                               </div>
                             </div>
@@ -366,7 +367,7 @@ const Profile = () => {
                                   alert('Error al generar el PDF. Por favor, intenta de nuevo.');
                                 }
                               }}
-                              className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg font-bold transition-colors text-sm flex items-center justify-center space-x-2"
+                              className="w-full bg-green-500 hover:bg-green-600 text-black py-2 px-4 rounded-lg font-bold transition-colors text-sm flex items-center justify-center space-x-2"
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -440,18 +441,18 @@ const Profile = () => {
       case "contact":
         return (
           <div className="space-y-6">
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Historial de Contacto</h2>
+            <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
+                <h2 className="text-xl font-semibold text-white mb-4 font-[Orbitron]">Historial de Contacto</h2>
               <div className="text-center py-16">
-                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-12 max-w-md mx-auto">
-                  <svg className="w-20 h-20 text-yellow-500 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                <div className="bg-black/50 border border-yellow-400/30 rounded-xl p-12 max-w-md mx-auto">
+                  <svg className="w-20 h-20 text-yellow-400 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12  Lo9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
-                  <h3 className="text-gray-800 text-2xl font-bold mb-4">En Desarrollo</h3>
-                  <p className="text-gray-600 mb-6">
+                  <h3 className="text-white text-2xl font-bold mb-4 font-[Orbitron]">En Desarrollo</h3>
+                  <p className="text-gray-300 mb-6">
                     Esta sección está siendo desarrollada. Aquí podrás ver el historial de tus consultas y mensajes de contacto.
                   </p>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-400">
                     Próximamente disponible
                   </div>
                 </div>
@@ -467,23 +468,14 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100">
-        <div className="bg-gray-800 text-white p-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold">Company name</h1>
-            <div className="flex items-center space-x-4">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <ProfileIcon />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex">
-          <div className="w-64 bg-gray-200 min-h-screen"></div>
-          <div className="flex-1 bg-white p-8">
+      <div className="min-h-screen bg-black relative overflow-hidden font-[Roboto]">
+        <GameBackgroundEffects />
+        <div className="relative z-10 flex">
+          <div className="w-64 bg-black/90 backdrop-blur-md border-r border-green-400/30 min-h-screen"></div>
+          <div className="flex-1 bg-black/80 backdrop-blur-sm p-8">
             <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-              <p className="text-gray-600 text-lg">Cargando tu perfil...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4"></div>
+              <p className="text-gray-300 text-lg">Cargando tu perfil...</p>
             </div>
           </div>
         </div>
@@ -493,23 +485,14 @@ const Profile = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-100">
-        <div className="bg-gray-800 text-white p-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold">Company name</h1>
-            <div className="flex items-center space-x-4">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <ProfileIcon />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="flex">
-          <div className="w-64 bg-gray-200 min-h-screen"></div>
-          <div className="flex-1 bg-white p-8">
+      <div className="min-h-screen bg-black relative overflow-hidden font-[Roboto]">
+        <GameBackgroundEffects />
+        <div className="relative z-10 flex">
+          <div className="w-64 bg-black/90 backdrop-blur-md border-r border-green-400/30 min-h-screen"></div>
+          <div className="flex-1 bg-black/80 backdrop-blur-sm p-8">
             <div className="text-center py-16">
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-6 max-w-md mx-auto">
-                <p className="text-red-500 text-lg">{error}</p>
+                <p className="text-red-400 text-lg">{error}</p>
                 <button 
                   onClick={() => window.location.reload()} 
                   className="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
@@ -525,34 +508,27 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <div className="bg-gray-800 text-white p-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Company name</h1>
-          <div className="flex items-center space-x-4">
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-              <ProfileIcon />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex">
+    <div className="min-h-screen bg-black relative overflow-hidden font-[Roboto]">
+      <GameBackgroundEffects />
+      <div className="relative z-10 flex">
         {/* Sidebar */}
-        <div className="w-64 bg-gray-200 min-h-screen">
+        <div className="w-64 bg-black/90 backdrop-blur-md border-r border-green-400/30 min-h-screen">
           <div className="p-4">
+            {/* Header Sidebar */}
+            <div className="mb-6 pb-4 border-b border-green-400/30">
+              <h1 className="text-xl font-bold font-[Orbitron] text-green-400">Mi Perfil</h1>
+            </div>
 
             {/* Profile Sections */}
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">Mi Perfil</h3>
+              <h3 className="text-sm font-semibold text-green-400 uppercase tracking-wider mb-2">Secciones</h3>
               
               <button
                 onClick={() => setCurrentSection("info")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
                   currentSection === "info"
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 hover:bg-gray-300"
+                    ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                    : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
                 }`}
               >
                 <InfoIcon />
@@ -561,10 +537,10 @@ const Profile = () => {
 
               <button
                 onClick={() => setCurrentSection("orders")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
                   currentSection === "orders"
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 hover:bg-gray-300"
+                    ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                    : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
                 }`}
               >
                 <HistoryIcon />
@@ -573,10 +549,10 @@ const Profile = () => {
 
               <button
                 onClick={() => setCurrentSection("contact")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
                   currentSection === "contact"
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 hover:bg-gray-300"
+                    ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                    : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
                 }`}
               >
                 <ContactIcon />
@@ -585,13 +561,13 @@ const Profile = () => {
             </div>
 
             {/* Separator */}
-            <div className="border-t border-gray-400 my-4"></div>
+            <div className="border-t border-green-400/30 my-4"></div>
 
             {/* Action Buttons */}
             <div className="space-y-2">
               <button
                 onClick={handleStoreRedirect}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-black text-white hover:bg-gray-800 transition-colors"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-green-500/20 border border-green-400/30 text-green-400 hover:bg-green-400/30 transition-all duration-300 font-[Roboto]"
               >
                 <StoreIcon />
                 <span>Tienda</span>
@@ -599,7 +575,7 @@ const Profile = () => {
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-red-500 text-white hover:bg-red-600 transition-colors"
+                className="w-full flex items-center space-x-3 px-4 py- predecessors rounded-lg text-left bg-red-500/20 border border-red-400/30 text-red-400 hover:bg-red-500/30 transition-all duration-300 font-[Roboto]"
               >
                 <LogoutIcon />
                 <span>Cerrar Sesión</span>
@@ -609,12 +585,12 @@ const Profile = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 bg-white p-8">
+        <div className="flex-1 bg-black/80 backdrop-blur-sm p-8 overflow-y-auto min-h-screen">
           <div className="max-w-7xl mx-auto">
             {/* Title Section */}
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">Perfil</h1>
-              <p className="text-gray-600">
+              <h1 className="text-3xl md:text-4xl font-bold font-[Orbitron] text-white mb-2">Perfil</h1>
+              <p className="text-gray-300">
                 {currentSection === "info" && "Gestiona tu información personal y estadísticas de cuenta"}
                 {currentSection === "orders" && "Consulta el historial de todas tus compras"}
                 {currentSection === "contact" && "Historial de consultas y mensajes de contacto"}

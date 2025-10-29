@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import ProductManagement from "../molecules/ProductManagement";
+import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 
 const AdminDashboard = () => {
   const { logout } = useAuth();
@@ -159,31 +160,24 @@ const AdminDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <div className="bg-gray-800 text-white p-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Company name</h1>
-          <div className="flex items-center space-x-4">
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-              <ProfileIcon />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex">
+    <div className="min-h-screen bg-black relative overflow-hidden font-[Roboto]">
+      <GameBackgroundEffects />
+      <div className="relative z-10 flex">
         {/* Sidebar */}
-        <div className="w-64 bg-gray-200 min-h-screen">
+        <div className="w-64 bg-black/90 backdrop-blur-md border-r border-green-400/30 min-h-screen">
           <div className="p-4">
+            {/* Header Sidebar */}
+            <div className="mb-6 pb-4 border-b border-green-400/30">
+              <h1 className="text-xl font-bold font-[Orbitron] text-green-400">Level-UP Admin</h1>
+            </div>
             {/* Navigation Items */}
             <div className="space-y-2">
               <button
                 onClick={() => handleNavigate("dashboard")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
                   currentPage === "dashboard"
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 hover:bg-gray-300"
+                    ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                    : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
                 }`}
               >
                 <DashboardIcon />
@@ -192,10 +186,10 @@ const AdminDashboard = () => {
 
               <button
                 onClick={() => handleNavigate("orders")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
                   currentPage === "orders"
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 hover:bg-gray-300"
+                    ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                    : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
                 }`}
               >
                 <OrdersIcon />
@@ -204,10 +198,10 @@ const AdminDashboard = () => {
 
               <button
                 onClick={() => handleNavigate("products")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
                   currentPage === "products"
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 hover:bg-gray-300"
+                    ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                    : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
                 }`}
               >
                 <ProductsIcon />
@@ -216,10 +210,10 @@ const AdminDashboard = () => {
 
               <button
                 onClick={() => handleNavigate("categories")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
                   currentPage === "categories"
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 hover:bg-gray-300"
+                    ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                    : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
                 }`}
               >
                 <CategoriesIcon />
@@ -228,10 +222,10 @@ const AdminDashboard = () => {
 
               <button
                 onClick={() => handleNavigate("users")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
                   currentPage === "users"
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 hover:bg-gray-300"
+                    ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                    : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
                 }`}
               >
                 <UsersIcon />
@@ -240,10 +234,10 @@ const AdminDashboard = () => {
 
               <button
                 onClick={() => handleNavigate("reports")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
                   currentPage === "reports"
-                    ? "bg-blue-500 text-white"
-                    : "text-gray-700 hover:bg-gray-300"
+                    ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                    : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
                 }`}
               >
                 <ReportsIcon />
@@ -252,13 +246,13 @@ const AdminDashboard = () => {
             </div>
 
             {/* Separator */}
-            <div className="border-t border-gray-400 my-4"></div>
+            <div className="border-t border-green-400/30 my-4"></div>
 
             {/* Profile and Action Buttons */}
             <div className="space-y-2">
               <button
                 onClick={() => window.location.hash = "perfil"}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors text-gray-700 hover:bg-gray-300"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 text-white/70 hover:text-green-400 hover:bg-green-400/10 font-[Roboto]"
               >
                 <ProfileIcon />
                 <span>Perfil</span>
@@ -266,7 +260,7 @@ const AdminDashboard = () => {
 
               <button
                 onClick={handleStoreRedirect}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-black text-white hover:bg-gray-800 transition-colors"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-green-500/20 border border-green-400/30 text-green-400 hover:bg-green-400/30 transition-all duration-300 font-[Roboto]"
               >
                 <StoreIcon />
                 <span>Tienda</span>
@@ -274,7 +268,7 @@ const AdminDashboard = () => {
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-red-500 text-white hover:bg-red-600 transition-colors"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-red-500/20 border border-red-400/30 text-red-400 hover:bg-red-500/30 transition-all duration-300 font-[Roboto]"
               >
                 <LogoutIcon />
                 <span>Cerrar Sesión</span>
@@ -284,7 +278,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 bg-white p-8">
+        <div className="flex-1 bg-black/80 backdrop-blur-sm p-8 overflow-y-auto min-h-screen">
           <div className="max-w-7xl mx-auto">
             {currentPage === "products" ? (
               <ProductManagement />
@@ -292,47 +286,47 @@ const AdminDashboard = () => {
               <>
                 {/* Title Section */}
                 <div className="mb-8">
-                  <h1 className="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
-                  <p className="text-gray-600">Resumen de las actividades diarias</p>
+                  <h1 className="text-3xl md:text-4xl font-bold font-[Orbitron] text-white mb-2">Dashboard</h1>
+                  <p className="text-gray-300">Resumen de las actividades diarias</p>
                 </div>
 
                 {/* Top Row - Key Metric Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               {/* Compras Card */}
-              <div className="bg-blue-500 rounded-lg p-6 text-white">
+              <div className="bg-black/80 backdrop-blur-md border border-blue-400/30 rounded-xl p-6 hover:border-blue-400/50 transition-all duration-300 shadow-lg shadow-blue-400/10">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h3 className="text-sm font-medium mb-2">Compras</h3>
-                    <div className="text-3xl font-bold mb-2">1,234</div>
-                    <p className="text-sm opacity-90">Probabilidad de aumento: 20%</p>
+                    <h3 className="text-sm font-medium mb-2 text-blue-400">Compras</h3>
+                    <div className="text-3xl font-bold mb-2 font-[Orbitron] text-white">1,234</div>
+                    <p className="text-sm text-gray-400">Probabilidad de aumento: 20%</p>
                   </div>
-                  <div className="w-16 h-16 flex items-center justify-center">
+                  <div className="w-16 h-16 flex items-center justify-center text-blue-400">
                     <ProductsIcon />
                   </div>
                 </div>
               </div>
 
               {/* Productos Card */}
-              <div className="bg-green-500 rounded-lg p-6 text-white">
+              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 transition-all duration-300 shadow-lg shadow-green-400/10">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h3 className="text-sm font-medium mb-2">Productos</h3>
-                    <div className="text-3xl font-bold mb-2">400</div>
-                    <p className="text-sm opacity-90">Inventario actual: 500</p>
+                    <h3 className="text-sm font-medium mb-2 text-green-400">Productos</h3>
+                    <div className="text-3xl font-bold mb-2 font-[Orbitron] text-white">400</div>
+                    <p className="text-sm text-gray-400">Inventario actual: 500</p>
                   </div>
-                  <div className="w-16 h-16 flex items-center justify-center">
+                  <div className="w-16 h-16 flex items-center justify-center text-blue-400">
                     <ProductsIcon />
                   </div>
                 </div>
               </div>
 
               {/* Usuarios Card */}
-              <div className="bg-yellow-500 rounded-lg p-6 text-white">
+              <div className="bg-black/80 backdrop-blur-md border border-yellow-400/30 rounded-xl p-6 hover:border-yellow-400/50 transition-all duration-300 shadow-lg shadow-yellow-400/10">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h3 className="text-sm font-medium mb-2">Usuarios</h3>
-                    <div className="text-3xl font-bold mb-2">890</div>
-                    <p className="text-sm opacity-90">Nuevos usuarios este mes: 120</p>
+                    <h3 className="text-sm font-medium mb-2 text-yellow-400">Usuarios</h3>
+                    <div className="text-3xl font-bold mb-2 font-[Orbitron] text-white">890</div>
+                    <p className="text-sm text-gray-400">Nuevos usuarios este mes: 120</p>
                   </div>
                   <div className="w-16 h-16 flex items-center justify-center">
                     <UsersIcon />
@@ -344,75 +338,75 @@ const AdminDashboard = () => {
                 {/* Bottom Grid - Feature Overview Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Dashboard Card */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <div className="text-blue-500 mb-4">
+              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300">
+                <div className="text-green-400 mb-4">
                   <FeatureDashboardIcon />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Dashboard</h3>
-                <p className="text-gray-600 text-sm">Visión general de todas las métricas y estadísticas clave del sistema.</p>
+                <h3 className="text-lg font-semibold text-white mb-2 font-[Orbitron]">Dashboard</h3>
+                <p className="text-gray-300 text-sm">Visión general de todas las métricas y estadísticas clave del sistema.</p>
               </div>
 
               {/* Órdenes Card */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <div className="text-blue-500 mb-4">
+              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300">
+                <div className="text-green-400 mb-4">
                   <FeatureOrdersIcon />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Órdenes</h3>
-                <p className="text-gray-600 text-sm">Gestión y seguimiento de todas las órdenes de compra realizadas.</p>
+                <h3 className="text-lg font-semibold text-white mb-2 font-[Orbitron]">Órdenes</h3>
+                <p className="text-gray-300 text-sm">Gestión y seguimiento de todas las órdenes de compra realizadas.</p>
               </div>
 
               {/* Productos Card */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <div className="text-blue-500 mb-4">
+              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300">
+                <div className="text-green-400 mb-4">
                   <FeatureProductsIcon />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Productos</h3>
-                <p className="text-gray-600 text-sm">Administrar inventario y detalles de los productos disponibles.</p>
+                <h3 className="text-lg font-semibold text-white mb-2 font-[Orbitron]">Productos</h3>
+                <p className="text-gray-300 text-sm">Administrar inventario y detalles de los productos disponibles.</p>
               </div>
 
               {/* Categorías Card */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <div className="text-blue-500 mb-4">
+              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300">
+                <div className="text-green-400 mb-4">
                   <FeatureCategoriesIcon />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Categorías</h3>
-                <p className="text-gray-600 text-sm">Organizar productos en categorías para facilitar su navegación.</p>
+                <h3 className="text-lg font-semibold text-white mb-2 font-[Orbitron]">Categorías</h3>
+                <p className="text-gray-300 text-sm">Organizar productos en categorías para facilitar su navegación.</p>
               </div>
 
               {/* Usuarios Card */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <div className="text-blue-500 mb-4">
+              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300">
+                <div className="text-green-400 mb-4">
                   <FeatureUsersIcon />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Usuarios</h3>
-                <p className="text-gray-600 text-sm">Gestión de cuentas de usuario y sus roles dentro del sistema.</p>
+                <h3 className="text-lg font-semibold text-white mb-2 font-[Orbitron]">Usuarios</h3>
+                <p className="text-gray-300 text-sm">Gestión de cuentas de usuario y sus roles dentro del sistema.</p>
               </div>
 
               {/* Reportes Card */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <div className="text-blue-500 mb-4">
+              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300">
+                <div className="text-green-400 mb-4">
                   <FeatureReportsIcon />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Reportes</h3>
-                <p className="text-gray-600 text-sm">Generación de informes detallados sobre las operaciones del sistema.</p>
+                <h3 className="text-lg font-semibold text-white mb-2 font-[Orbitron]">Reportes</h3>
+                <p className="text-gray-300 text-sm">Generación de informes detallados sobre las operaciones del sistema.</p>
               </div>
 
               {/* Perfil Card */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <div className="text-blue-500 mb-4">
+              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300">
+                <div className="text-green-400 mb-4">
                   <FeatureProfileIcon />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Perfil</h3>
-                <p className="text-gray-600 text-sm">Administración de la información personal y configuraciones de cuenta.</p>
+                <h3 className="text-lg font-semibold text-white mb-2 font-[Orbitron]">Perfil</h3>
+                <p className="text-gray-300 text-sm">Administración de la información personal y configuraciones de cuenta.</p>
               </div>
 
               {/* Tienda Card */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
-                <div className="text-blue-500 mb-4">
+              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300">
+                <div className="text-green-400 mb-4">
                   <FeatureStoreIcon />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Tienda</h3>
-                <p className="text-gray-600 text-sm">Visualiza tu tienda en tiempo real, visualiza los reportes de los usuarios.</p>
+                <h3 className="text-lg font-semibold text-white mb-2 font-[Orbitron]">Tienda</h3>
+                <p className="text-gray-300 text-sm">Visualiza tu tienda en tiempo real, visualiza los reportes de los usuarios.</p>
               </div>
                 </div>
               </>
