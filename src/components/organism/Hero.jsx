@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import WelcomeMessage from "../molecules/WelcomeMessage";
 
@@ -101,8 +102,8 @@ const Hero = () => {
         </section>
 
         <div className="flex justify-center">
-          <a
-            href="#productos"
+          <Link
+            to="/productos"
             className="bg-gradient-to-r from-green-400 to-blue-400 text-black font-bold px-8 py-4 rounded-full hover:from-green-500 hover:to-blue-500 hover:scale-105 transition-all duration-300 shadow-lg shadow-green-400/25 text-lg font-[Roboto] group inline-block"
             aria-label="Ver todos los productos disponibles"
           >
@@ -115,7 +116,7 @@ const Hero = () => {
                 →
               </span>
             </span>
-          </a>
+          </Link>
         </div>
 
         <div

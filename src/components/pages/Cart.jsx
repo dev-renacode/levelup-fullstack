@@ -1,11 +1,12 @@
+import { useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import QuantityControls from "../molecules/QuantityControls";
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
 
 const Cart = () => {
+  const navigate = useNavigate();
   const { 
     cartItems, 
     removeFromCart, 
@@ -17,10 +18,12 @@ const Cart = () => {
   
   const { isAuthenticated, loading } = useAuth();
 
-  // Permitir visualizar el carrito como invitado (sin redirección)
+  // Redirigir al login si no está autenticado
   useEffect(() => {
-    // Sin acción: mantenemos la vista para invitados
-  }, [isAuthenticated, loading]);
+    if (!loading && !isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, loading, navigate]);
 
   // Mostrar loading mientras se verifica la autenticación
   if (loading) {
@@ -39,7 +42,10 @@ const Cart = () => {
     );
   }
 
-  // Si es invitado, mostrar el mismo carrito (persistido en localStorage)
+  // Si no está autenticado, no mostrar nada (se redirigirá)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CL', {
@@ -75,12 +81,12 @@ const Cart = () => {
                 <p className="text-gray-400 mb-6">
                   Explora nuestras categorías y agrega productos a tu carrito
                 </p>
-                <Link
-                  to="/"
+                <a
+                  href="#home"
                   className="inline-block bg-green-500 hover:bg-green-600 text-black px-6 py-3 rounded-lg font-bold transition-colors"
                 >
                   Continuar Comprando
-                </Link>
+                </a>
               </div>
             </div>
           ) : (

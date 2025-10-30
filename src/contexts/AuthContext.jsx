@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { getUserByEmail } from "../config/firestoreService";
@@ -13,7 +14,8 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children }) => {
+const AuthProviderContent = ({ children }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -74,8 +76,8 @@ export const AuthProvider = ({ children }) => {
       setUserData(null);
       // Limpiar localStorage si existe
       localStorage.removeItem("currentUser");
-      // Redirigir al home
-      window.location.hash = "home";
+      // Redirigir al login
+      navigate("/login");
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
@@ -95,4 +97,9 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+// Wrapper que no necesita estar dentro del Router
+export const AuthProvider = ({ children }) => {
+  return <AuthProviderContent>{children}</AuthProviderContent>;
 };

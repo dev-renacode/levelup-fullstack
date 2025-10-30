@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
 import { getAllProducts } from "../../config/firestoreService";
-import { scrollToTop } from "../../utils/scrollUtils.js";
 import logo from "../../assets/img/level_up_logo.png";
 import cartIcon from "../../assets/icon/cart.svg";
 import menuIcon from "../../assets/icon/menu.svg";
 import closeIcon from "../../assets/icon/close.svg";
 
-const Navbar = ({ currentPage }) => {
+const Navbar = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -26,9 +27,11 @@ const Navbar = ({ currentPage }) => {
 
   const navigateTo = () => {
     closeMenu();
-    // Scroll al tope cuando se navega desde el menú
-    scrollToTop(100);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  
+  // Función para verificar si una ruta está activa
+  const isActive = (path) => location.pathname === path;
 
   // Cargar categorías al montar el componente
   useEffect(() => {
@@ -81,7 +84,7 @@ const Navbar = ({ currentPage }) => {
               to="/"
               onClick={navigateTo}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105 font-[Roboto] ${
-                currentPage === "home"
+                isActive("/")
                   ? "text-green-400 bg-green-400/10"
                   : "text-white/90 hover:text-green-400 hover:bg-green-400/10"
               }`}
@@ -110,14 +113,14 @@ const Navbar = ({ currentPage }) => {
                     {/* Opción "Todas las categorías" */}
                     <Link
                       to="/productos"
-                      onClick={closeCategories}
+                      onClick={() => { closeCategories(); navigateTo(); }}
                       className="block px-4 py-2 text-sm text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 transition-all duration-300 font-[Roboto] font-semibold border-b border-blue-400/20 mb-1"
                     >
                       📦 Todas las categorías
                     </Link>
                     <Link
                       to="/categoria/Ofertas"
-                      onClick={closeCategories}
+                      onClick={() => { closeCategories(); navigateTo(); }}
                       className="block px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all duration-300 font-[Roboto] font-semibold mb-1"
                     >
                       🔥 Ofertas
@@ -128,7 +131,7 @@ const Navbar = ({ currentPage }) => {
                         <Link
                           key={index}
                           to={`/categoria/${encodeURIComponent(category)}`}
-                          onClick={closeCategories}
+                          onClick={() => { closeCategories(); navigateTo(); }}
                           className="block px-4 py-2 text-sm text-white hover:text-blue-400 hover:bg-blue-400/10 transition-all duration-300 font-[Roboto]"
                         >
                           {category}
@@ -154,7 +157,7 @@ const Navbar = ({ currentPage }) => {
               to="/blog"
               onClick={navigateTo}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105 font-[Roboto] ${
-                currentPage === "blog"
+                isActive("/blog")
                   ? "text-blue-400 bg-blue-400/10"
                   : "text-white/90 hover:text-blue-400 hover:bg-blue-400/10"
               }`}
@@ -165,7 +168,7 @@ const Navbar = ({ currentPage }) => {
               to="/contacto"
               onClick={navigateTo}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105 font-[Roboto] ${
-                currentPage === "contacto"
+                isActive("/contacto")
                   ? "text-green-400 bg-green-400/10"
                   : "text-white/90 hover:text-green-400 hover:bg-green-400/10"
               }`}
@@ -191,7 +194,7 @@ const Navbar = ({ currentPage }) => {
                 </div>
                 {userData?.role === "admin" && (
                   <Link
-                    to="/dashboard"
+                    to="/admin"
                     onClick={navigateTo}
                     className="text-white/80 hover:text-purple-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-purple-400/10 rounded-lg font-[Roboto] border border-purple-400/30 hover:border-purple-400/60"
                     aria-label="Acceder al dashboard de administrador"
@@ -237,7 +240,8 @@ const Navbar = ({ currentPage }) => {
             )}
 
             <Link
-              to="/carrito"
+              to={isAuthenticated ? "/carrito" : "/login"}
+              onClick={navigateTo}
               className="relative group p-2 rounded-lg hover:bg-green-400/10 transition-all duration-300"
               aria-label="Ver carrito de compras"
             >
@@ -256,7 +260,8 @@ const Navbar = ({ currentPage }) => {
 
           <div className="lg:hidden flex items-center space-x-2">
             <Link
-              to="/carrito"
+              to={isAuthenticated ? "/carrito" : "/login"}
+              onClick={navigateTo}
               className="relative p-2 rounded-lg hover:bg-green-400/10 transition-all duration-300"
               aria-label="Ver carrito de compras"
             >
@@ -308,7 +313,7 @@ const Navbar = ({ currentPage }) => {
               to="/"
               onClick={navigateTo}
               className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-all duration-300 font-[Roboto] ${
-                currentPage === "home"
+                isActive("/")
                   ? "text-green-400 bg-green-400/10"
                   : "text-white hover:text-green-400 hover:bg-green-400/10"
               }`}
@@ -363,7 +368,7 @@ const Navbar = ({ currentPage }) => {
               to="/blog"
               onClick={navigateTo}
               className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-all duration-300 font-[Roboto] ${
-                currentPage === "blog"
+                isActive("/blog")
                   ? "text-blue-400 bg-blue-400/10"
                   : "text-white hover:text-blue-400 hover:bg-blue-400/10"
               }`}
@@ -374,7 +379,7 @@ const Navbar = ({ currentPage }) => {
               to="/contacto"
               onClick={navigateTo}
               className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-all duration-300 font-[Roboto] ${
-                currentPage === "contacto"
+                isActive("/contacto")
                   ? "text-green-400 bg-green-400/10"
                   : "text-white hover:text-green-400 hover:bg-green-400/10"
               }`}
@@ -404,7 +409,7 @@ const Navbar = ({ currentPage }) => {
                     <Link
                       to="/admin"
                       onClick={navigateTo}
-                      className="w-full px-4 py-3 text-center text-white hover:text-purple-400 hover:bg-purple-400/10 rounded-lg border border-purple-400/30 hover:border-purple-400/60 transition-all duration-300 font-[Roboto] font-medium"
+                      className="block w-full px-4 py-3 text-center text-white hover:text-purple-400 hover:bg-purple-400/10 rounded-lg border border-purple-400/30 hover:border-purple-400/60 transition-all duration-300 font-[Roboto] font-medium"
                     >
                       Dashboard
                     </Link>
@@ -412,7 +417,7 @@ const Navbar = ({ currentPage }) => {
                   <Link
                     to="/perfil"
                     onClick={navigateTo}
-                    className="w-full px-4 py-3 text-center text-white hover:text-blue-400 hover:bg-blue-400/10 rounded-lg border border-blue-400/30 hover:border-blue-400/60 transition-all duration-300 font-[Roboto] font-medium"
+                    className="block w-full px-4 py-3 text-center text-white hover:text-blue-400 hover:bg-blue-400/10 rounded-lg border border-blue-400/30 hover:border-blue-400/60 transition-all duration-300 font-[Roboto] font-medium"
                   >
                     Perfil
                   </Link>

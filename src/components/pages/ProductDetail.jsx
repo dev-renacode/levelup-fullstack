@@ -9,10 +9,10 @@ import Breadcrumbs from "../molecules/Breadcrumbs";
 
 const ProductDetail = () => {
   const { productId } = useParams();
+  const navigate = useNavigate();
   const { products, loading, error } = useProducts();
   const { addToCart, cartItems, getUpdatedStock } = useCart();
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
   
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -35,6 +35,11 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+
     if (!product || isAdding) return;
 
     setIsAdding(true);

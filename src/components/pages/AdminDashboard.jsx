@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import ProductManagement from "../molecules/ProductManagement";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   const { logout } = useAuth();
   const [currentPage, setCurrentPage] = useState("dashboard");
 
@@ -16,7 +18,7 @@ const AdminDashboard = () => {
   };
 
   const handleStoreRedirect = () => {
-    window.location.hash = "home";
+    navigate("/");
   };
 
   // Iconos SVG para la navegación
@@ -250,13 +252,13 @@ const AdminDashboard = () => {
 
             {/* Profile and Action Buttons */}
             <div className="space-y-2">
-              <button
-                onClick={() => window.location.hash = "perfil"}
+              <Link
+                to="/perfil"
                 className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 text-white/70 hover:text-green-400 hover:bg-green-400/10 font-[Roboto]"
               >
                 <ProfileIcon />
                 <span>Perfil</span>
-              </button>
+              </Link>
 
               <button
                 onClick={handleStoreRedirect}

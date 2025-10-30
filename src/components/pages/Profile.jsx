@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { getUserOrders } from "../../config/firestoreService";
 import { downloadEnhancedInvoicePDF } from "../../utils/pdfGenerator";
@@ -6,6 +7,7 @@ import { useEmail } from "../../utils/hooks/useEmail";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const { isAuthenticated, userData, logout } = useAuth();
   const { sendInvoice, isSendingEmail, clearEmailStates } = useEmail();
   const [orders, setOrders] = useState([]);
@@ -16,7 +18,7 @@ const Profile = () => {
 
   // Redirigir si no está autenticado
   if (!isAuthenticated) {
-    window.location.hash = "login";
+    navigate("/login");
     return null;
   }
 
@@ -101,7 +103,7 @@ const Profile = () => {
   };
 
   const handleStoreRedirect = () => {
-    window.location.hash = "home";
+    navigate("/");
   };
 
   // Iconos SVG para la navegación del perfil

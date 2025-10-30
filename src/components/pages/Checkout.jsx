@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { createOrder } from "../../config/firestoreService";
 import { downloadEnhancedInvoicePDF } from "../../utils/pdfGenerator";
 import { useEmail } from "../../utils/hooks/useEmail";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
-import { scrollToTop } from "../../utils/scrollUtils";
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const { cartItems, getTotalItems, getTotalPrice, clearCart } = useCart();
   const { userData, isAuthenticated } = useAuth();
   const { sendInvoice, isSendingEmail, emailError, emailSuccess, clearEmailStates } = useEmail();
@@ -17,7 +18,6 @@ const Checkout = () => {
   const [completedOrderData, setCompletedOrderData] = useState(null);
   const [processingStep, setProcessingStep] = useState("");
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
-  const [authError, setAuthError] = useState(null);
 
   // Estados del formulario
   const [formData, setFormData] = useState({
@@ -35,11 +35,21 @@ const Checkout = () => {
 
   const [errors, setErrors] = useState({});
 
-  // Permitir checkout para invitados (no redirigir si no está autenticado)
+  // Redirigir si no está autenticado
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
 
   // Redirigir si el carrito está vacío (solo si no se ha completado el pago)
-  if (cartItems.length === 0 && !paymentCompleted) {
-    window.location.hash = "carrito";
+  useEffect(() => {
+    if (cartItems.length === 0 && !paymentCompleted) {
+      navigate("/carrito");
+    }
+  }, [cartItems.length, paymentCompleted, navigate]);
+
+  if (!isAuthenticated || (cartItems.length === 0 && !paymentCompleted)) {
     return null;
   }
 
@@ -92,11 +102,6 @@ const Checkout = () => {
     e.preventDefault();
     
     if (!validateForm()) {
-      return;
-    }
-    
-    if (!isAuthenticated) {
-      setAuthError({ message: 'Debes iniciar sesión para confirmar la compra', code: 'ERR_NOT_AUTHENTICATED', number: 401 });
       return;
     }
     
@@ -183,7 +188,9 @@ const Checkout = () => {
   };
 
   // Scroll al tope al cargar la página
-  scrollToTop();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   if (isProcessing) {
     return (
@@ -481,15 +488,15 @@ const Checkout = () => {
                     <span>Copiar ID</span>
                   </button>
                   
-                  <a
-                    href="#home"
+                  <Link
+                    to="/"
                     className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-bold transition-colors text-center flex items-center justify-center space-x-2"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                     <span>Volver al Inicio</span>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -505,23 +512,6 @@ const Checkout = () => {
       
       <div className="relative z-10 pt-20 pb-8">
         <div className="max-w-6xl mx-auto px-4">
-          {authError && (
-            <div className="mb-6">
-              <div className="mx-auto max-w-3xl text-center bg-red-500/15 border border-red-500/40 text-red-300 rounded-xl px-6 py-4">
-                <div className="flex items-center justify-center space-x-3">
-                  <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M4.93 4.93l14.14 14.14M12 3a9 9 0 100 18 9 9 0 000-18z" />
-                  </svg>
-                  <p className="font-semibold">
-                    {authError.message}
-                    <span className="ml-2 font-mono text-xs bg-red-500/10 border border-red-500/30 px-2 py-0.5 rounded">
-                      {authError.code} · {authError.number}
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -718,7 +708,6 @@ const Checkout = () => {
                     '💳 Proceder al Pago'
                   )}
                 </button>
-                
               </form>
             </div>
 

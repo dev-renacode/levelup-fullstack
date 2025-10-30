@@ -4,11 +4,11 @@ import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 
 const ProductCard = ({ product, onStockUpdate }) => {
+  const navigate = useNavigate();
   const [imageError, setImageError] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const { addToCart, cartItems, getUpdatedStock } = useCart();
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
 
   const handleImageError = () => {
     setImageError(true);
@@ -31,7 +31,13 @@ const ProductCard = ({ product, onStockUpdate }) => {
 
   const handleAddToCart = async (e) => {
     e.stopPropagation(); // Evitar que se ejecute el click del producto
-
+    
+    // Si no está autenticado, redirigir al login
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    
     if (isOutOfStock || isAdding) return;
     
     setIsAdding(true);
