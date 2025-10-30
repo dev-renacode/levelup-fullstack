@@ -17,6 +17,7 @@ const Checkout = () => {
   const [completedOrderData, setCompletedOrderData] = useState(null);
   const [processingStep, setProcessingStep] = useState("");
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [authError, setAuthError] = useState(null);
 
   // Estados del formulario
   const [formData, setFormData] = useState({
@@ -34,11 +35,7 @@ const Checkout = () => {
 
   const [errors, setErrors] = useState({});
 
-  // Redirigir si no está autenticado
-  if (!isAuthenticated) {
-    window.location.hash = "login";
-    return null;
-  }
+  // Permitir checkout para invitados (no redirigir si no está autenticado)
 
   // Redirigir si el carrito está vacío (solo si no se ha completado el pago)
   if (cartItems.length === 0 && !paymentCompleted) {
@@ -95,6 +92,11 @@ const Checkout = () => {
     e.preventDefault();
     
     if (!validateForm()) {
+      return;
+    }
+    
+    if (!isAuthenticated) {
+      setAuthError({ message: 'Debes iniciar sesión para confirmar la compra', code: 'ERR_NOT_AUTHENTICATED', number: 401 });
       return;
     }
     
@@ -503,6 +505,23 @@ const Checkout = () => {
       
       <div className="relative z-10 pt-20 pb-8">
         <div className="max-w-6xl mx-auto px-4">
+          {authError && (
+            <div className="mb-6">
+              <div className="mx-auto max-w-3xl text-center bg-red-500/15 border border-red-500/40 text-red-300 rounded-xl px-6 py-4">
+                <div className="flex items-center justify-center space-x-3">
+                  <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M4.93 4.93l14.14 14.14M12 3a9 9 0 100 18 9 9 0 000-18z" />
+                  </svg>
+                  <p className="font-semibold">
+                    {authError.message}
+                    <span className="ml-2 font-mono text-xs bg-red-500/10 border border-red-500/30 px-2 py-0.5 rounded">
+                      {authError.code} · {authError.number}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -699,6 +718,7 @@ const Checkout = () => {
                     '💳 Proceder al Pago'
                   )}
                 </button>
+                
               </form>
             </div>
 

@@ -32,11 +32,6 @@ const ProductDetail = ({ productId }) => {
   };
 
   const handleAddToCart = async () => {
-    if (!isAuthenticated) {
-      window.location.hash = "login";
-      return;
-    }
-
     if (!product || isAdding) return;
 
     setIsAdding(true);

@@ -29,13 +29,7 @@ const ProductCard = ({ product, onStockUpdate }) => {
 
   const handleAddToCart = async (e) => {
     e.stopPropagation(); // Evitar que se ejecute el click del producto
-    
-    // Si no está autenticado, redirigir al login
-    if (!isAuthenticated) {
-      window.location.hash = "login";
-      return;
-    }
-    
+
     if (isOutOfStock || isAdding) return;
     
     setIsAdding(true);

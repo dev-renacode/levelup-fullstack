@@ -236,13 +236,7 @@ const Navbar = ({ currentPage }) => {
             )}
 
             <a
-              href={isAuthenticated ? "#carrito" : "#login"}
-              onClick={(e) => {
-                if (!isAuthenticated) {
-                  e.preventDefault();
-                  window.location.hash = "login";
-                }
-              }}
+              href="#carrito"
               className="relative group p-2 rounded-lg hover:bg-green-400/10 transition-all duration-300"
               aria-label="Ver carrito de compras"
             >
@@ -261,13 +255,7 @@ const Navbar = ({ currentPage }) => {
 
           <div className="lg:hidden flex items-center space-x-2">
             <a
-              href={isAuthenticated ? "#carrito" : "#login"}
-              onClick={(e) => {
-                if (!isAuthenticated) {
-                  e.preventDefault();
-                  window.location.hash = "login";
-                }
-              }}
+              href="#carrito"
               className="relative p-2 rounded-lg hover:bg-green-400/10 transition-all duration-300"
               aria-label="Ver carrito de compras"
             >

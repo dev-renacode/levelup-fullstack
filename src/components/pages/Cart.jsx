@@ -16,11 +16,9 @@ const Cart = () => {
   
   const { isAuthenticated, loading } = useAuth();
 
-  // Redirigir al login si no está autenticado
+  // Permitir visualizar el carrito como invitado (sin redirección)
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      window.location.hash = "login";
-    }
+    // Sin acción: mantenemos la vista para invitados
   }, [isAuthenticated, loading]);
 
   // Mostrar loading mientras se verifica la autenticación
@@ -40,10 +38,7 @@ const Cart = () => {
     );
   }
 
-  // Si no está autenticado, no mostrar nada (se redirigirá)
-  if (!isAuthenticated) {
-    return null;
-  }
+  // Si es invitado, mostrar el mismo carrito (persistido en localStorage)
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CL', {
