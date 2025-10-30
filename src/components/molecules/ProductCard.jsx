@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -7,6 +8,7 @@ const ProductCard = ({ product, onStockUpdate }) => {
   const [isAdding, setIsAdding] = useState(false);
   const { addToCart, cartItems, getUpdatedStock } = useCart();
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const handleImageError = () => {
     setImageError(true);
@@ -44,7 +46,7 @@ const ProductCard = ({ product, onStockUpdate }) => {
   };
 
   const handleProductClick = () => {
-    window.location.hash = `producto/${product.id}`;
+    navigate(`/producto/${product.id}`);
   };
 
   const isOffer = typeof product.precioAnterior === 'number' && typeof product.precio === 'number' && product.precio < product.precioAnterior;

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { useProducts } from "../../utils/hooks/useProducts";
@@ -6,10 +7,12 @@ import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import ProductQuantityControls from "../molecules/ProductQuantityControls";
 import Breadcrumbs from "../molecules/Breadcrumbs";
 
-const ProductDetail = ({ productId }) => {
+const ProductDetail = () => {
+  const { productId } = useParams();
   const { products, loading, error } = useProducts();
   const { addToCart, cartItems, getUpdatedStock } = useCart();
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -75,7 +78,7 @@ const ProductDetail = ({ productId }) => {
               El producto que buscas no existe o ha sido eliminado.
             </p>
             <button 
-              onClick={() => window.location.hash = "productos"}
+              onClick={() => navigate("/productos")}
               className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-colors"
             >
               Ver todos los productos

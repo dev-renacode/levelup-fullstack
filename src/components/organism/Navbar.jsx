@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
 import { getAllProducts } from "../../config/firestoreService";
@@ -61,8 +62,8 @@ const Navbar = ({ currentPage }) => {
       >
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <a
-              href="#home"
+            <Link
+              to="/"
               onClick={navigateTo}
               className="group"
               aria-label="Level-UP Gamers - Ir al inicio"
@@ -72,12 +73,12 @@ const Navbar = ({ currentPage }) => {
                 src={logo}
                 alt="Level-UP Gamers Logo"
               />
-            </a>
+            </Link>
           </div>
 
           <div className="hidden lg:flex lg:items-center lg:space-x-4">
-            <a
-              href="#home"
+            <Link
+              to="/"
               onClick={navigateTo}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105 font-[Roboto] ${
                 currentPage === "home"
@@ -86,7 +87,7 @@ const Navbar = ({ currentPage }) => {
               }`}
             >
               Inicio
-            </a>
+            </Link>
             <div className="relative">
               <button
                 onClick={toggleCategories}
@@ -107,31 +108,31 @@ const Navbar = ({ currentPage }) => {
                 <div className="absolute top-full left-0 mt-1 w-48 bg-black/95 backdrop-blur-md border border-blue-400/30 rounded-lg shadow-lg shadow-blue-400/10 z-50">
                   <div className="py-2">
                     {/* Opción "Todas las categorías" */}
-                    <a
-                      href="#productos"
+                    <Link
+                      to="/productos"
                       onClick={closeCategories}
                       className="block px-4 py-2 text-sm text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 transition-all duration-300 font-[Roboto] font-semibold border-b border-blue-400/20 mb-1"
                     >
                       📦 Todas las categorías
-                    </a>
-                    <a
-                      href="#categoria/Ofertas"
+                    </Link>
+                    <Link
+                      to="/categoria/Ofertas"
                       onClick={closeCategories}
                       className="block px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all duration-300 font-[Roboto] font-semibold mb-1"
                     >
                       🔥 Ofertas
-                    </a>
+                    </Link>
                     
                     {categories.length > 0 ? (
                       categories.map((category, index) => (
-                        <a
+                        <Link
                           key={index}
-                          href={`#categoria/${encodeURIComponent(category)}`}
+                          to={`/categoria/${encodeURIComponent(category)}`}
                           onClick={closeCategories}
                           className="block px-4 py-2 text-sm text-white hover:text-blue-400 hover:bg-blue-400/10 transition-all duration-300 font-[Roboto]"
                         >
                           {category}
-                        </a>
+                        </Link>
                       ))
                     ) : (
                       <div className="px-4 py-2 text-sm text-gray-400 font-[Roboto]">
@@ -142,15 +143,15 @@ const Navbar = ({ currentPage }) => {
                 </div>
               )}
             </div>
-            <a
-              href="#nosotros"
+            <Link
+              to="/nosotros"
               onClick={navigateTo}
               className="text-white/90 hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-green-400/10 hover:scale-105 font-[Roboto]"
             >
               Nosotros
-            </a>
-            <a
-              href="#blog"
+            </Link>
+            <Link
+              to="/blog"
               onClick={navigateTo}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105 font-[Roboto] ${
                 currentPage === "blog"
@@ -159,9 +160,9 @@ const Navbar = ({ currentPage }) => {
               }`}
             >
               Blog
-            </a>
-            <a
-              href="#contacto"
+            </Link>
+            <Link
+              to="/contacto"
               onClick={navigateTo}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105 font-[Roboto] ${
                 currentPage === "contacto"
@@ -170,7 +171,7 @@ const Navbar = ({ currentPage }) => {
               }`}
             >
               Contacto
-            </a>
+            </Link>
           </div>
 
           <div className="hidden lg:flex lg:items-center lg:space-x-3">
@@ -189,23 +190,23 @@ const Navbar = ({ currentPage }) => {
                   </div>
                 </div>
                 {userData?.role === "admin" && (
-                  <a
-                    href="#admin"
+                  <Link
+                    to="/dashboard"
                     onClick={navigateTo}
                     className="text-white/80 hover:text-purple-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-purple-400/10 rounded-lg font-[Roboto] border border-purple-400/30 hover:border-purple-400/60"
                     aria-label="Acceder al dashboard de administrador"
                   >
                     Dashboard
-                  </a>
+                  </Link>
                 )}
-                <a
-                  href="#perfil"
+                <Link
+                  to="/perfil"
                   onClick={navigateTo}
                   className="text-white/80 hover:text-blue-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-blue-400/10 rounded-lg font-[Roboto] border border-blue-400/30 hover:border-blue-400/60"
                   aria-label="Ver mi perfil"
                 >
                   Perfil
-                </a>
+                </Link>
                 <button
                   onClick={logout}
                   className="text-white/80 hover:text-red-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-red-400/10 rounded-lg font-[Roboto] border border-red-400/30 hover:border-red-400/60"
@@ -216,27 +217,27 @@ const Navbar = ({ currentPage }) => {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <a
-                  href="#login"
+                <Link
+                  to="/login"
                   onClick={navigateTo}
                   className="text-white/80 hover:text-green-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-green-400/10 rounded-lg font-[Roboto]"
                   aria-label="Iniciar sesión en tu cuenta"
                 >
                   Iniciar Sesión
-                </a>
-                <a
-                  href="#register"
+                </Link>
+                <Link
+                  to="/register"
                   onClick={navigateTo}
                   className="bg-gradient-to-r from-green-400 to-blue-400 text-black font-bold px-6 py-2 rounded-full text-sm transition-all duration-300 hover:from-green-500 hover:to-blue-500 hover:scale-105 shadow-lg shadow-green-400/25 font-[Roboto]"
                   aria-label="Crear una nueva cuenta"
                 >
                   Registrarse
-                </a>
+                </Link>
               </div>
             )}
 
-            <a
-              href="#carrito"
+            <Link
+              to="/carrito"
               className="relative group p-2 rounded-lg hover:bg-green-400/10 transition-all duration-300"
               aria-label="Ver carrito de compras"
             >
@@ -250,12 +251,12 @@ const Navbar = ({ currentPage }) => {
                   <span className="text-black text-xs font-bold">{getTotalItems()}</span>
                 </div>
               )}
-            </a>
+            </Link>
           </div>
 
           <div className="lg:hidden flex items-center space-x-2">
-            <a
-              href="#carrito"
+            <Link
+              to="/carrito"
               className="relative p-2 rounded-lg hover:bg-green-400/10 transition-all duration-300"
               aria-label="Ver carrito de compras"
             >
@@ -269,7 +270,7 @@ const Navbar = ({ currentPage }) => {
                   <span className="text-black text-xs font-bold">{getTotalItems()}</span>
                 </div>
               )}
-            </a>
+            </Link>
 
             <button
               onClick={toggleMenu}
@@ -303,8 +304,8 @@ const Navbar = ({ currentPage }) => {
           aria-hidden={!isMenuOpen}
         >
           <div className="px-2 pt-2 pb-3 space-y-1 bg-black/95 backdrop-blur-sm border-t border-green-400/30">
-            <a
-              href="#home"
+            <Link
+              to="/"
               onClick={navigateTo}
               className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-all duration-300 font-[Roboto] ${
                 currentPage === "home"
@@ -313,36 +314,36 @@ const Navbar = ({ currentPage }) => {
               }`}
             >
               Inicio
-            </a>
+            </Link>
             <div className="px-3 py-2">
               <div className="text-white text-base font-medium font-[Roboto] mb-2">Categorías</div>
               <div className="space-y-1">
                 {/* Opción "Todas las categorías" para móvil */}
-                <a
-                  href="#productos"
+                <Link
+                  to="/productos"
                   onClick={navigateTo}
                   className="block w-full text-left px-3 py-2 rounded-md text-sm text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 transition-all duration-300 font-[Roboto] font-semibold border border-blue-400/30 mb-2"
                 >
                   📦 Todas las categorías
-                </a>
-                    <a
-                      href="#categoria/Ofertas"
+                </Link>
+                    <Link
+                      to="/categoria/Ofertas"
                       onClick={navigateTo}
                       className="block w-full text-left px-3 py-2 rounded-md text-sm text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all duration-300 font-[Roboto] font-semibold border border-red-400/30 mb-2"
                     >
                       🔥 Ofertas
-                    </a>
+                    </Link>
                 
                 {categories.length > 0 ? (
                   categories.map((category, index) => (
-                    <a
+                    <Link
                       key={index}
-                      href={`#categoria/${encodeURIComponent(category)}`}
+                      to={`/categoria/${encodeURIComponent(category)}`}
                       onClick={navigateTo}
                       className="block w-full text-left px-3 py-2 rounded-md text-sm text-white hover:text-blue-400 hover:bg-blue-400/10 transition-all duration-300 font-[Roboto]"
                     >
                       {category}
-                    </a>
+                    </Link>
                   ))
                 ) : (
                   <div className="px-3 py-2 text-sm text-gray-400 font-[Roboto]">
@@ -351,15 +352,15 @@ const Navbar = ({ currentPage }) => {
                 )}
               </div>
             </div>
-            <a
-              href="#home"
+            <Link
+              to="/nosotros"
               onClick={navigateTo}
               className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:text-green-400 hover:bg-green-400/10 transition-all duration-300 font-[Roboto]"
             >
               Nosotros
-            </a>
-            <a
-              href="#blog"
+            </Link>
+            <Link
+              to="/blog"
               onClick={navigateTo}
               className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-all duration-300 font-[Roboto] ${
                 currentPage === "blog"
@@ -368,9 +369,9 @@ const Navbar = ({ currentPage }) => {
               }`}
             >
               Blog
-            </a>
-            <a
-              href="#contacto"
+            </Link>
+            <Link
+              to="/contacto"
               onClick={navigateTo}
               className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-all duration-300 font-[Roboto] ${
                 currentPage === "contacto"
@@ -379,7 +380,7 @@ const Navbar = ({ currentPage }) => {
               }`}
             >
               Contacto
-            </a>
+            </Link>
 
             <div className="pt-4 pb-3 border-t border-green-400/30">
               {isAuthenticated ? (
@@ -400,21 +401,21 @@ const Navbar = ({ currentPage }) => {
                     </div>
                   </div>
                   {userData?.role === "admin" && (
-                    <a
-                      href="#admin"
+                    <Link
+                      to="/admin"
                       onClick={navigateTo}
                       className="w-full px-4 py-3 text-center text-white hover:text-purple-400 hover:bg-purple-400/10 rounded-lg border border-purple-400/30 hover:border-purple-400/60 transition-all duration-300 font-[Roboto] font-medium"
                     >
                       Dashboard
-                    </a>
+                    </Link>
                   )}
-                  <a
-                    href="#perfil"
+                  <Link
+                    to="/perfil"
                     onClick={navigateTo}
                     className="w-full px-4 py-3 text-center text-white hover:text-blue-400 hover:bg-blue-400/10 rounded-lg border border-blue-400/30 hover:border-blue-400/60 transition-all duration-300 font-[Roboto] font-medium"
                   >
                     Perfil
-                  </a>
+                  </Link>
                   <button
                     onClick={logout}
                     className="w-full px-4 py-3 text-center text-white hover:text-red-400 hover:bg-red-400/10 rounded-lg border border-red-400/30 hover:border-red-400/60 transition-all duration-300 font-[Roboto] font-medium"
@@ -424,20 +425,20 @@ const Navbar = ({ currentPage }) => {
                 </div>
               ) : (
                 <div className="flex flex-col space-y-3 px-3">
-                  <a
-                    href="#login"
+                  <Link
+                    to="/login"
                     onClick={navigateTo}
                     className="w-full px-4 py-3 text-center text-white hover:text-green-400 hover:bg-green-400/10 rounded-lg border border-green-400/30 hover:border-green-400/60 transition-all duration-300 font-[Roboto] font-medium"
                   >
                     Iniciar Sesión
-                  </a>
-                  <a
-                    href="#register"
+                  </Link>
+                  <Link
+                    to="/register"
                     onClick={navigateTo}
                     className="w-full px-4 py-3 text-center bg-gradient-to-r from-green-400 to-blue-400 text-black font-bold rounded-lg hover:from-green-500 hover:to-blue-500 transition-all duration-300 shadow-lg shadow-green-400/25 font-[Roboto]"
                   >
                     Registrarse
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>

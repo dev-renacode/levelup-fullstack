@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import Hero from "./components/organism/Hero.jsx";
 import Products from "./components/organism/Products.jsx";
 import Footer from "./components/organism/Footer.jsx";
@@ -14,84 +13,33 @@ import Checkout from "./components/pages/Checkout.jsx";
 import Orders from "./components/pages/Orders.jsx";
 import ProductDetail from "./components/pages/ProductDetail.jsx";
 import Profile from "./components/pages/Profile.jsx";
-import { scrollToTop } from "./utils/scrollUtils.js";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState("home");
-  const [categoryName, setCategoryName] = useState("");
-  const [productId, setProductId] = useState("");
-
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.slice(1);
-      if (hash.startsWith("categoria/")) {
-        setCurrentPage("categoria");
-        const category = decodeURIComponent(hash.replace("categoria/", ""));
-        setCategoryName(category);
-      } else if (hash.startsWith("producto/")) {
-        setCurrentPage("producto");
-        const product = hash.replace("producto/", "");
-        setProductId(product);
-      } else if (hash.startsWith("admin")) {
-        setCurrentPage("admin");
-      } else {
-        setCurrentPage(hash || "home");
-      }
-      
-      // Scroll al tope de la página cuando cambie la ruta
-      scrollToTop();
-    };
-
-    window.addEventListener("hashchange", handleHashChange);
-    handleHashChange();
-
-    return () => {
-      window.removeEventListener("hashchange", handleHashChange);
-    };
-  }, []);
-
-  switch (currentPage) {
-    case "login":
-      return <Login />;
-    case "register":
-      return <Register />;
-    case "blog":
-      return <Blog />;
-    case "nosotros":
-      return <Nosotros />;
-    case "contacto":
-      return <Contact />;
-    case "carrito":
-      return <Cart />;
-    case "checkout":
-      return <Checkout />;
-    case "ordenes":
-      return <Orders />;
-    case "productos":
-      return (
-        <>
-          <Products />
-          <Footer />
-        </>
-      );
-    case "categoria":
-      return <CategoryPage categoryName={categoryName} />;
-    case "producto":
-      return <ProductDetail productId={productId} />;
-    case "admin":
-      return <AdminDashboard />;
-    case "perfil":
-      return <Profile />;
-    case "home":
-    default:
-      return (
+  return (
+    <Routes>
+      <Route path="/" element={
         <>
           <Hero />
           <Products />
           <Footer />
         </>
-      );
-  }
+      } />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/nosotros" element={<Nosotros />} />
+      <Route path="/contacto" element={<Contact />} />
+      <Route path="/carrito" element={<Cart />} />
+      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/ordenes" element={<Orders />} />
+      <Route path="/productos" element={<Products />} />
+      <Route path="/categoria/:categoryName" element={<CategoryPage />} />
+      <Route path="/producto/:productId" element={<ProductDetail />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/perfil" element={<Profile />} />
+    </Routes>
+  );
 }
 
 export default App;

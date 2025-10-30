@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../config/firebase";
 import { addUser } from "../../config/firestoreService";
 import { validarRun, validadMayoriaEdad } from "../validaciones";
 
 export const useRegisterForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -136,8 +138,8 @@ export const useRegisterForm = () => {
       
       // Redirigir al login después de un breve delay
       setTimeout(() => {
-        window.location.hash = "login";
-      }, 2000);
+        navigate("/login");
+      }, 1000);
 
     } catch (error) {
       console.error("Error en registro:", error);

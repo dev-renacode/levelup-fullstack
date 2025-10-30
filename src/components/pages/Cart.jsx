@@ -3,6 +3,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import QuantityControls from "../molecules/QuantityControls";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const { 
@@ -74,12 +75,12 @@ const Cart = () => {
                 <p className="text-gray-400 mb-6">
                   Explora nuestras categorías y agrega productos a tu carrito
                 </p>
-                <a
-                  href="#home"
+                <Link
+                  to="/"
                   className="inline-block bg-green-500 hover:bg-green-600 text-black px-6 py-3 rounded-lg font-bold transition-colors"
                 >
                   Continuar Comprando
-                </a>
+                </Link>
               </div>
             </div>
           ) : (
@@ -188,19 +189,19 @@ const Cart = () => {
                     </div>
                   </div>
 
-                  <a
-                    href="#checkout"
+                  <Link
+                    to="/checkout"
                     className="block w-full bg-green-500 hover:bg-green-600 text-black py-3 px-4 rounded-lg font-bold text-lg transition-colors mb-4 text-center"
                   >
                     Proceder al Pago
-                  </a>
+                  </Link>
 
-                  <a
-                    href="#home"
+                  <Link
+                    to="/"
                     className="block w-full text-center text-green-400 hover:text-green-300 py-2 font-medium transition-colors"
                   >
                     Continuar Comprando
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { getAllProducts } from "../../config/firestoreService";
 import ProductCard from "../molecules/ProductCard";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 
-const CategoryPage = ({ categoryName }) => {
+const CategoryPage = () => {
+  const { categoryName } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

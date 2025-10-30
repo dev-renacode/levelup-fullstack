@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../config/firebase";
 import { getUserByEmail } from "../../config/firestoreService";
 
 export const useLoginForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -101,16 +103,14 @@ export const useLoginForm = () => {
       
       // Pequeño delay para mostrar el mensaje de éxito
       setTimeout(() => {
-        // El contexto de autenticación se encargará de la redirección automáticamente
-        // Solo redirigir si es admin
         if (userData && userData.role === "admin") {
-          window.location.hash = "admin";
+          navigate("/admin");
         } else if (formData.email === "admin@duocuc.cl") {
-          window.location.hash = "admin";
+          navigate("/admin");
         } else {
-          window.location.hash = "home";
+          navigate("/");
         }
-      }, 1000);
+      }, 800);
       
     } catch (error) {
       console.error("Error en login:", error);
