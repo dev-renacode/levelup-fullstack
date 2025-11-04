@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { useProducts } from "../../utils/hooks/useProducts";
@@ -114,14 +114,41 @@ const ProductDetail = () => {
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumbs */}
-        <Breadcrumbs 
-          items={[
-            { label: 'Inicio', href: '#home' },
-            { label: 'Productos', href: '#productos' },
-            { label: product.categoria || 'Gaming', href: `#categoria/${encodeURIComponent(product.categoria || 'Gaming')}` },
-            { label: product.nombre, href: '#' }
-          ]}
-        />
+        <nav
+          className="flex items-center space-x-2 text-sm font-[Roboto] mb-6"
+          aria-label="Breadcrumb"
+        >
+          <Link
+            to="/"
+            className="text-white/70 hover:text-green-400 transition-colors duration-300"
+          >
+            Inicio
+          </Link>
+          <span className="text-white/50" aria-hidden="true">
+            {">"}
+          </span>
+          <Link
+            to="/productos"
+            className="text-white/70 hover:text-green-400 transition-colors duration-300"
+          >
+            Productos
+          </Link>
+          <span className="text-white/50" aria-hidden="true">
+            {">"}
+          </span>
+          <Link
+            to={`/categoria/${encodeURIComponent(product.categoria || 'Gaming')}`}
+            className="text-white/70 hover:text-green-400 transition-colors duration-300"
+          >
+            {product.categoria || 'Gaming'}
+          </Link>
+          <span className="text-white/50" aria-hidden="true">
+            {">"}
+          </span>
+          <span className="text-green-400 font-medium">
+            {product.nombre}
+          </span>
+        </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Galería de imágenes */}

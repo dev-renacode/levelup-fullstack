@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 
 const Footer = () => {
@@ -73,19 +74,19 @@ const Footer = () => {
               aria-label="Navegación rápida"
             >
               {[
-                { name: "Inicio", href: "#inicio" },
-                { name: "Productos", href: "#productos" },
-                { name: "Nosotros", href: "#nosotros" },
-                { name: "Blog", href: "#blog" },
-                { name: "Contacto", href: "#contacto" },
+                { name: "Inicio", to: "/" },
+                { name: "Productos", to: "/productos" },
+                { name: "Nosotros", to: "/nosotros" },
+                { name: "Blog", to: "/blog" },
+                { name: "Contacto", to: "/contacto" },
               ].map((link) => (
                 <li key={link.name} role="listitem">
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.to}
                     className="text-white/70 hover:text-green-400 transition-all duration-300 text-sm font-[Roboto] hover:translate-x-1 transform"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -109,12 +110,12 @@ const Footer = () => {
                 "Accesorios",
               ].map((category) => (
                 <li key={category} role="listitem">
-                  <a
-                    href={`#categoria-${category.toLowerCase()}`}
+                  <Link
+                    to={`/categoria/${encodeURIComponent(category)}`}
                     className="text-white/70 hover:text-blue-400 transition-all duration-300 text-sm font-[Roboto] hover:translate-x-1 transform"
                   >
                     {category}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

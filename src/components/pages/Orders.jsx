@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { getAllOrders } from "../../config/firestoreService";
 import { downloadEnhancedInvoicePDF } from "../../utils/pdfGenerator";
@@ -7,6 +8,7 @@ import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import { scrollToTop } from "../../utils/scrollUtils";
 
 const Orders = () => {
+  const navigate = useNavigate();
   const { isAuthenticated, isAdmin } = useAuth();
   const { sendInvoice, isSendingEmail, emailError, emailSuccess, clearEmailStates } = useEmail();
   const [orders, setOrders] = useState([]);
@@ -14,8 +16,13 @@ const Orders = () => {
   const [error, setError] = useState(null);
 
   // Redirigir si no está autenticado o no es admin
+  useEffect(() => {
+    if (!isAuthenticated || !isAdmin) {
+      navigate("/");
+    }
+  }, [isAuthenticated, isAdmin, navigate]);
+
   if (!isAuthenticated || !isAdmin) {
-    window.location.hash = "home";
     return null;
   }
 

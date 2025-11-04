@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import { useLoginForm } from "../../utils/hooks/useLoginForm";
 import FormHeader from "../molecules/FormHeader";
@@ -100,12 +101,12 @@ const Login = () => {
             <div className="text-center pt-4">
               <p className="text-white/70 text-sm font-[Roboto]">
                 ¿No tienes cuenta?{" "}
-                <a
-                  href="#register"
+                <Link
+                  to="/register"
                   className="text-green-400 hover:text-green-300 transition-colors duration-300 font-medium"
                 >
                   Regístrate aquí
-                </a>
+                </Link>
               </p>
             </div>
           </form>

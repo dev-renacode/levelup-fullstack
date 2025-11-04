@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 
 const Nosotros = () => {
@@ -108,12 +109,12 @@ const Nosotros = () => {
             <h3 className="text-white text-2xl md:text-3xl font-[Orbitron] font-bold mb-3">¿Listo para subir de nivel?</h3>
             <p className="text-gray-300 mb-6">Explora nuestras categorías y descubre ofertas exclusivas para la comunidad.</p>
             <div className="flex items-center justify-center gap-3">
-              <a href="#productos" className="bg-green-500 hover:bg-green-600 text-black font-bold px-6 py-3 rounded-lg transition">
+              <Link to="/productos" className="bg-green-500 hover:bg-green-600 text-black font-bold px-6 py-3 rounded-lg transition">
                 Ver productos
-              </a>
-              <a href="#categoria/Ofertas" className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-lg transition">
+              </Link>
+              <Link to="/categoria/Ofertas" className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-lg transition">
                 Ver ofertas
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -81,12 +81,12 @@ const Cart = () => {
                 <p className="text-gray-400 mb-6">
                   Explora nuestras categorías y agrega productos a tu carrito
                 </p>
-                <a
-                  href="#home"
+                <Link
+                  to="/"
                   className="inline-block bg-green-500 hover:bg-green-600 text-black px-6 py-3 rounded-lg font-bold transition-colors"
                 >
                   Continuar Comprando
-                </a>
+                </Link>
               </div>
             </div>
           ) : (

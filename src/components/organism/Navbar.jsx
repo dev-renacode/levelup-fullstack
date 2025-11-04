@@ -1,12 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
 import { getAllProducts } from "../../config/firestoreService";
 import logo from "../../assets/img/level_up_logo.png";
 import cartIcon from "../../assets/icon/cart.svg";
-import menuIcon from "../../assets/icon/menu.svg";
-import closeIcon from "../../assets/icon/close.svg";
 
 const Navbar = () => {
   const location = useLocation();
@@ -16,6 +14,8 @@ const Navbar = () => {
   const [categories, setCategories] = useState([]);
   const { userData, isAuthenticated, logout } = useAuth();
   const { getTotalItems } = useCart();
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -47,6 +47,31 @@ const Navbar = () => {
 
     fetchCategories();
   }, []);
+
+  // Cerrar menú al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isMenuOpen &&
+        menuRef.current &&
+        buttonRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   const toggleCategories = () => {
     setIsCategoriesOpen(!isCategoriesOpen);
@@ -278,29 +303,50 @@ const Navbar = () => {
             </Link>
 
             <button
+              ref={buttonRef}
               onClick={toggleMenu}
               className="inline-flex items-center justify-center p-2 rounded-lg text-white hover:text-green-400 hover:bg-green-400/10 transition-all duration-300"
               aria-expanded={isMenuOpen}
               aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
             >
               <span className="sr-only">Abrir menú principal</span>
-              <img
-                className={`${isMenuOpen ? "hidden" : "block"} h-6 w-6`}
-                src={menuIcon}
-                alt="Abrir menú"
-                aria-hidden="true"
-              />
-              <img
-                className={`${isMenuOpen ? "block" : "hidden"} h-6 w-6`}
-                src={closeIcon}
-                alt="Cerrar menú"
-                aria-hidden="true"
-              />
+              {!isMenuOpen ? (
+                <svg
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              )}
             </button>
           </div>
         </div>
 
         <div
+          ref={menuRef}
           className={`lg:hidden transition-all duration-300 ease-in-out ${
             isMenuOpen
               ? "max-h-96 opacity-100 visible"

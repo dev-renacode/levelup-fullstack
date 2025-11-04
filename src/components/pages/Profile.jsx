@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { getUserOrders } from "../../config/firestoreService";
 import { downloadEnhancedInvoicePDF } from "../../utils/pdfGenerator";
@@ -262,12 +262,12 @@ const Profile = () => {
                       }
                     </p>
                     {!searchOrderId && (
-                      <a
-                        href="#productos"
+                      <Link
+                        to="/productos"
                         className="inline-block bg-green-500 hover:bg-green-600 text-black px-6 py-3 rounded-lg font-bold transition-colors"
                       >
                         Comenzar a Comprar
-                      </a>
+                      </Link>
                     )}
                   </div>
                 </div>
