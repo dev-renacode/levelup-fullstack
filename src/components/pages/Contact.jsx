@@ -6,7 +6,7 @@ import TextareaInput from "../atoms/TextareaInput";
 import SubmitButton from "../atoms/SubmitButton";
 
 const Contact = () => {
-  const { formData, errors, isLoading, handleInputChange, handleSubmit } =
+  const { formData, errors, isLoading, successMessage, handleInputChange, handleSubmit } =
     useContactForm();
 
   return (
@@ -49,6 +49,14 @@ const Contact = () => {
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
                 <p className="text-red-400 text-sm font-[Roboto] text-center">
                   {errors.general}
+                </p>
+              </div>
+            )}
+
+            {successMessage && (
+              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                <p className="text-green-400 text-sm font-[Roboto] text-center">
+                  {successMessage}
                 </p>
               </div>
             )}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { getUserOrders } from "../../config/firestoreService";
+import { getUserOrders, getUserContacts } from "../../config/firestoreService";
 import { downloadEnhancedInvoicePDF } from "../../utils/pdfGenerator";
 import { useEmail } from "../../utils/hooks/useEmail";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
@@ -11,7 +11,9 @@ const Profile = () => {
   const { isAuthenticated, userData, logout } = useAuth();
   const { sendInvoice, isSendingEmail, clearEmailStates } = useEmail();
   const [orders, setOrders] = useState([]);
+  const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [contactsLoading, setContactsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchOrderId, setSearchOrderId] = useState("");
   const [currentSection, setCurrentSection] = useState("info");
@@ -40,7 +42,26 @@ const Profile = () => {
       }
     };
 
-    loadUserOrders();
+    const loadUserContacts = async () => {
+      try {
+        setContactsLoading(true);
+        const userContacts = await getUserContacts(userData.uid);
+        // Ordenar por fecha de creación (más recientes primero)
+        const sortedContacts = userContacts.sort((a, b) => 
+          new Date(b.fechaCreacion?.toDate?.() || b.fechaCreacion) - new Date(a.fechaCreacion?.toDate?.() || a.fechaCreacion)
+        );
+        setContacts(sortedContacts);
+      } catch (err) {
+        console.error("Error al cargar contactos del usuario:", err);
+      } finally {
+        setContactsLoading(false);
+      }
+    };
+
+    if (userData?.uid) {
+      loadUserOrders();
+      loadUserContacts();
+    }
   }, [userData.uid]);
 
   const formatPrice = (price) => {
@@ -209,8 +230,8 @@ const Profile = () => {
           <div className="space-y-6">
             <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">Historial de Órdenes</h2>
-                <div className="text-sm text-gray-600">
+                <h2 className="text-xl font-semibold text-white">Historial de Órdenes</h2>
+                <div className="text-sm text-white">
                   Total: {orders.length} órdenes
                 </div>
               </div>
@@ -248,14 +269,11 @@ const Profile = () => {
 
               {filteredOrders.length === 0 ? (
                 <div className="text-center py-16">
-                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-12 max-w-md mx-auto">
-                    <svg className="w-20 h-20 text-gray-400 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.709" />
-                    </svg>
-                    <h3 className="text-gray-800 text-2xl font-bold mb-4">
+                  <div className="rounded-xl p-12 max-w-md mx-auto text-white">
+                    <h3 className="text-white text-2xl font-bold mb-4">
                       {searchOrderId ? "No se encontraron órdenes" : "No tienes órdenes"}
                     </h3>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-white mb-6">
                       {searchOrderId 
                         ? "No se encontraron órdenes que coincidan con tu búsqueda"
                         : "Aún no has realizado ninguna compra"
@@ -444,21 +462,79 @@ const Profile = () => {
         return (
           <div className="space-y-6">
             <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
-                <h2 className="text-xl font-semibold text-white mb-4 font-[Orbitron]">Historial de Contacto</h2>
-              <div className="text-center py-16">
-                <div className="bg-black/50 border border-yellow-400/30 rounded-xl p-12 max-w-md mx-auto">
-                  <svg className="w-20 h-20 text-yellow-400 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12  Lo9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                  </svg>
-                  <h3 className="text-white text-2xl font-bold mb-4 font-[Orbitron]">En Desarrollo</h3>
-                  <p className="text-gray-300 mb-6">
-                    Esta sección está siendo desarrollada. Aquí podrás ver el historial de tus consultas y mensajes de contacto.
-                  </p>
-                  <div className="text-sm text-gray-400">
-                    Próximamente disponible
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-white font-[Orbitron]">Historial de Contacto</h2>
+                <Link
+                  to="/contacto"
+                  className="bg-green-500 hover:bg-green-600 text-black px-4 py-2 rounded-lg font-bold transition-colors text-sm"
+                >
+                  Nuevo Mensaje
+                </Link>
+              </div>
+
+              {contactsLoading ? (
+                <div className="text-center py-16">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4"></div>
+                  <p className="text-gray-300">Cargando contactos...</p>
+                </div>
+              ) : contacts.length === 0 ? (
+                <div className="text-center py-16">
+                  <div className="bg-black/50 border border-yellow-400/30 rounded-xl p-12 max-w-md mx-auto">
+                    <svg className="w-20 h-20 text-yellow-400 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <h3 className="text-white text-2xl font-bold mb-4 font-[Orbitron]">No hay mensajes</h3>
+                    <p className="text-gray-300 mb-6">
+                      Aún no has enviado ningún mensaje de contacto.
+                    </p>
+                    <Link
+                      to="/contacto"
+                      className="inline-block bg-green-500 hover:bg-green-600 text-black px-6 py-3 rounded-lg font-bold transition-colors"
+                    >
+                      Enviar Primer Mensaje
+                    </Link>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="space-y-4">
+                  {contacts.map((contact) => (
+                    <div
+                      key={contact.id}
+                      className="bg-black/50 border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 transition-all duration-300"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h3 className="text-white text-lg font-bold font-[Orbitron]">
+                              {contact.nombreCompleto || contact.fullName || "Sin nombre"}
+                            </h3>
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
+                              contact.estado === "pendiente"
+                                ? 'bg-yellow-500/20 text-yellow-400 border-yellow-400/30'
+                                : contact.estado === "respondido"
+                                ? 'bg-green-500/20 text-green-400 border-green-400/30'
+                                : 'bg-gray-500/20 text-gray-400 border-gray-400/30'
+                            }`}>
+                              {contact.estado === "pendiente" ? "Pendiente" : contact.estado === "respondido" ? "Respondido" : "Visto"}
+                            </span>
+                          </div>
+                          <p className="text-gray-400 text-sm mb-2">
+                            {contact.email}
+                          </p>
+                          <p className="text-gray-500 text-xs">
+                            {formatDate(contact.fechaCreacion)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-green-400/20">
+                        <p className="text-white text-sm leading-relaxed whitespace-pre-wrap">
+                          {contact.contenido || contact.content}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         );
@@ -546,8 +622,8 @@ const Profile = () => {
                 }`}
               >
                 <HistoryIcon />
-                <span>Historial de Órdenes</span>
-              </button>
+                <span className="text-white">Historial de Órdenes</span>
+              </button> 
 
               <button
                 onClick={() => setCurrentSection("contact")}
@@ -558,7 +634,7 @@ const Profile = () => {
                 }`}
               >
                 <ContactIcon />
-                <span>Historial de Contacto</span>
+                <span className="text-white">Historial de Contacto</span>
               </button>
             </div>
 
@@ -572,7 +648,7 @@ const Profile = () => {
                 className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-green-500/20 border border-green-400/30 text-green-400 hover:bg-green-400/30 transition-all duration-300 font-[Roboto]"
               >
                 <StoreIcon />
-                <span>Tienda</span>
+                <span className="text-white">Tienda</span>
               </button>
 
               <button
