@@ -69,13 +69,13 @@ export const generateInvoicePDF = (orderData, orderId) => {
   yPosition += 10;
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Número de Orden: ${orderData.orderNumber}`, 20, yPosition);
+  doc.text(`Número de Orden: ${orderData.numeroOrden}`, 20, yPosition);
   yPosition += 6;
   doc.text(`ID de Firebase: ${orderId}`, 20, yPosition);
   yPosition += 6;
-  doc.text(`Fecha: ${formatDate(orderData.createdAt)}`, 20, yPosition);
+  doc.text(`Fecha: ${formatDate(orderData.fechaCreacion)}`, 20, yPosition);
   yPosition += 6;
-  doc.text(`Estado: ${orderData.status}`, 20, yPosition);
+  doc.text(`Estado: ${orderData.estado}`, 20, yPosition);
   
   // Información del cliente
   yPosition += 15;
@@ -86,9 +86,9 @@ export const generateInvoicePDF = (orderData, orderId) => {
   yPosition += 10;
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Nombre: ${orderData.customerInfo.nombre} ${orderData.customerInfo.apellidos}`, 20, yPosition);
+  doc.text(`Nombre: ${orderData.informacionCliente.nombre} ${orderData.informacionCliente.apellidos}`, 20, yPosition);
   yPosition += 6;
-  doc.text(`Email: ${orderData.customerInfo.correo}`, 20, yPosition);
+  doc.text(`Email: ${orderData.informacionCliente.correo}`, 20, yPosition);
   
   // Dirección de entrega
   yPosition += 15;
@@ -99,12 +99,12 @@ export const generateInvoicePDF = (orderData, orderId) => {
   yPosition += 10;
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.text(`${orderData.shippingAddress.calle} ${orderData.shippingAddress.departamento}`, 20, yPosition);
+  doc.text(`${orderData.direccionEntrega.calle} ${orderData.direccionEntrega.departamento}`, 20, yPosition);
   yPosition += 6;
-  doc.text(`${orderData.shippingAddress.comuna}, ${orderData.shippingAddress.region}`, 20, yPosition);
-  if (orderData.shippingAddress.indicaciones) {
+  doc.text(`${orderData.direccionEntrega.comuna}, ${orderData.direccionEntrega.region}`, 20, yPosition);
+  if (orderData.direccionEntrega.indicaciones) {
     yPosition += 6;
-    doc.text(`Indicaciones: ${orderData.shippingAddress.indicaciones}`, 20, yPosition);
+    doc.text(`Indicaciones: ${orderData.direccionEntrega.indicaciones}`, 20, yPosition);
   }
   
   // Tabla de productos
@@ -133,7 +133,7 @@ export const generateInvoicePDF = (orderData, orderId) => {
   doc.setTextColor(...textColor);
   doc.setFont('helvetica', 'normal');
   
-  orderData.items.forEach((item, index) => {
+  orderData.productos.forEach((item, index) => {
     if (yPosition > 250) {
       doc.addPage();
       yPosition = 20;
@@ -165,7 +165,7 @@ export const generateInvoicePDF = (orderData, orderId) => {
   yPosition += 15;
   doc.setTextColor(...textColor);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Subtotal (${orderData.totalItems} items):`, 20, yPosition);
+  doc.text(`Subtotal (${orderData.totalProductos} items):`, 20, yPosition);
   doc.text(formatPrice(orderData.subtotal), 170, yPosition);
   
   yPosition += 6;
@@ -200,7 +200,7 @@ export const generateInvoicePDF = (orderData, orderId) => {
 export const downloadInvoicePDF = (orderData, orderId) => {
   try {
     const pdf = generateInvoicePDF(orderData, orderId);
-    const fileName = `boleta_${orderData.orderNumber}_${new Date().getTime()}.pdf`;
+    const fileName = `boleta_${orderData.numeroOrden}_${new Date().getTime()}.pdf`;
     pdf.save(fileName);
   } catch (error) {
     console.error('Error al generar PDF:', error);
@@ -289,7 +289,7 @@ export const generateEnhancedInvoicePDF = (orderData, orderId) => {
   doc.setFont('helvetica', 'bold');
   doc.text('BOLETA N°', 150, 20);
   doc.setFont('helvetica', 'normal');
-  doc.text(orderData.orderNumber, 150, 28);
+  doc.text(orderData.numeroOrden, 150, 28);
   doc.text(`ID: ${orderId}`, 150, 35);
   
   // Línea separadora
@@ -307,11 +307,11 @@ export const generateEnhancedInvoicePDF = (orderData, orderId) => {
   yPosition += 10;
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Nombre: ${orderData.customerInfo.nombre} ${orderData.customerInfo.apellidos}`, 20, yPosition);
+  doc.text(`Nombre: ${orderData.informacionCliente.nombre} ${orderData.informacionCliente.apellidos}`, 20, yPosition);
   yPosition += 7;
-  doc.text(`Email: ${orderData.customerInfo.correo}`, 20, yPosition);
+  doc.text(`Email: ${orderData.informacionCliente.correo}`, 20, yPosition);
   yPosition += 7;
-  doc.text(`Fecha: ${formatDate(orderData.createdAt)}`, 20, yPosition);
+  doc.text(`Fecha: ${formatDate(orderData.fechaCreacion)}`, 20, yPosition);
   
   // Dirección de entrega
   yPosition += 15;
@@ -322,12 +322,12 @@ export const generateEnhancedInvoicePDF = (orderData, orderId) => {
   yPosition += 10;
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
-  doc.text(`${orderData.shippingAddress.calle} ${orderData.shippingAddress.departamento}`, 20, yPosition);
+  doc.text(`${orderData.direccionEntrega.calle} ${orderData.direccionEntrega.departamento}`, 20, yPosition);
   yPosition += 7;
-  doc.text(`${orderData.shippingAddress.comuna}, ${orderData.shippingAddress.region}`, 20, yPosition);
-  if (orderData.shippingAddress.indicaciones) {
+  doc.text(`${orderData.direccionEntrega.comuna}, ${orderData.direccionEntrega.region}`, 20, yPosition);
+  if (orderData.direccionEntrega.indicaciones) {
     yPosition += 7;
-    doc.text(`Indicaciones: ${orderData.shippingAddress.indicaciones}`, 20, yPosition);
+    doc.text(`Indicaciones: ${orderData.direccionEntrega.indicaciones}`, 20, yPosition);
   }
   
   // Tabla de productos con diseño mejorado
@@ -356,7 +356,7 @@ export const generateEnhancedInvoicePDF = (orderData, orderId) => {
   doc.setTextColor(...textColor);
   doc.setFont('helvetica', 'normal');
   
-  orderData.items.forEach((item, index) => {
+  orderData.productos.forEach((item, index) => {
     if (yPosition > 250) {
       doc.addPage();
       yPosition = 20;
@@ -390,7 +390,7 @@ export const generateEnhancedInvoicePDF = (orderData, orderId) => {
   yPosition += 15;
   doc.setTextColor(...textColor);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Subtotal (${orderData.totalItems} items):`, 20, yPosition);
+  doc.text(`Subtotal (${orderData.totalProductos} items):`, 20, yPosition);
   doc.text(formatPrice(orderData.subtotal), 170, yPosition);
   
   yPosition += 8;
@@ -436,7 +436,7 @@ export const generateEnhancedInvoicePDF = (orderData, orderId) => {
 export const downloadEnhancedInvoicePDF = (orderData, orderId) => {
   try {
     const pdf = generateEnhancedInvoicePDF(orderData, orderId);
-    const fileName = `boleta_${orderData.orderNumber}_${new Date().getTime()}.pdf`;
+    const fileName = `boleta_${orderData.numeroOrden}_${new Date().getTime()}.pdf`;
     pdf.save(fileName);
   } catch (error) {
     console.error('Error al generar PDF mejorado:', error);

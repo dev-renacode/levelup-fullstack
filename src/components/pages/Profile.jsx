@@ -29,7 +29,7 @@ const Profile = () => {
         const userOrders = await getUserOrders(userData.uid);
         // Ordenar por fecha de creación (más recientes primero)
         const sortedOrders = userOrders.sort((a, b) => 
-          new Date(b.createdAt?.toDate?.() || b.createdAt) - new Date(a.createdAt?.toDate?.() || a.createdAt)
+          new Date(b.fechaCreacion?.toDate?.() || b.fechaCreacion) - new Date(a.fechaCreacion?.toDate?.() || a.fechaCreacion)
         );
         setOrders(sortedOrders);
       } catch (err) {
@@ -64,13 +64,13 @@ const Profile = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'completed':
+      case 'completado':
         return 'text-green-400 bg-green-400/10';
-      case 'processing':
+      case 'procesando':
         return 'text-yellow-400 bg-yellow-400/10';
-      case 'shipped':
+      case 'enviado':
         return 'text-blue-400 bg-blue-400/10';
-      case 'delivered':
+      case 'entregado':
         return 'text-purple-400 bg-purple-400/10';
       default:
         return 'text-gray-400 bg-gray-400/10';
@@ -79,13 +79,13 @@ const Profile = () => {
 
   const getStatusText = (status) => {
     switch (status) {
-      case 'completed':
+      case 'completado':
         return 'Completado';
-      case 'processing':
+      case 'procesando':
         return 'Procesando';
-      case 'shipped':
+      case 'enviado':
         return 'Enviado';
-      case 'delivered':
+      case 'entregado':
         return 'Entregado';
       default:
         return 'Desconocido';
@@ -95,7 +95,7 @@ const Profile = () => {
   const filteredOrders = orders.filter(order => 
     searchOrderId === "" || 
     order.id.toLowerCase().includes(searchOrderId.toLowerCase()) ||
-    order.orderNumber.toLowerCase().includes(searchOrderId.toLowerCase())
+    order.numeroOrden.toLowerCase().includes(searchOrderId.toLowerCase())
   );
 
   const handleLogout = () => {
@@ -187,9 +187,9 @@ const Profile = () => {
                   <div className="text-2xl font-bold font-[Orbitron] text-blue-400">{orders.length}</div>
                   <div className="text-sm text-gray-300">Órdenes Totales</div>
                 </div>
-                <div className="text-center p-4 bg-black/50 border border-green-400/30 rounded-lg">
+                  <div className="text-center p-4 bg-black/50 border border-green-400/30 rounded-lg">
                   <div className="text-2xl font-bold font-[Orbitron] text-green-400">
-                    {orders.reduce((total, order) => total + order.totalItems, 0)}
+                    {orders.reduce((total, order) => total + order.totalProductos, 0)}
                   </div>
                   <div className="text-sm text-gray-300">Productos Comprados</div>
                 </div>
@@ -280,10 +280,10 @@ const Profile = () => {
                         <div className="lg:col-span-2">
                           <div className="flex items-center justify-between mb-4">
                             <h3 className="text-white text-xl font-bold font-[Orbitron]">
-                              Orden #{order.orderNumber}
+                              Orden #{order.numeroOrden}
                             </h3>
-                            <span className={`px-3 py-1 rounded-full text-sm font-bold ${getStatusColor(order.status)}`}>
-                              {getStatusText(order.status)}
+                            <span className={`px-3 py-1 rounded-full text-sm font-bold ${getStatusColor(order.estado)}`}>
+                              {getStatusText(order.estado)}
                             </span>
                           </div>
                           
@@ -291,25 +291,25 @@ const Profile = () => {
                             <div>
                               <h4 className="text-green-400 font-bold mb-2">Información</h4>
                               <p className="text-white text-sm">ID: {order.id}</p>
-                              <p className="text-gray-300 text-sm">Fecha: {formatDate(order.createdAt)}</p>
+                              <p className="text-gray-300 text-sm">Fecha: {formatDate(order.fechaCreacion)}</p>
                               <p className="text-gray-300 text-sm">Total: {formatPrice(order.total)}</p>
                             </div>
                             
                             <div>
                               <h4 className="text-green-400 font-bold mb-2">Dirección de Entrega</h4>
                               <p className="text-white text-sm">
-                                {order.shippingAddress?.calle} {order.shippingAddress?.departamento}
+                                {order.direccionEntrega?.calle} {order.direccionEntrega?.departamento}
                               </p>
                               <p className="text-gray-300 text-sm">
-                                {order.shippingAddress?.comuna}, {order.shippingAddress?.region}
+                                {order.direccionEntrega?.comuna}, {order.direccionEntrega?.region}
                               </p>
                             </div>
                           </div>
                           
                           <div className="mb-4">
-                            <h4 className="text-blue-500 font-bold mb-2">Productos ({order.totalItems})</h4>
+                            <h4 className="text-blue-500 font-bold mb-2">Productos ({order.totalProductos})</h4>
                             <div className="space-y-2">
-                              {order.items?.slice(0, 3).map((item, index) => (
+                              {order.productos?.slice(0, 3).map((item, index) => (
                                 <div key={index} className="flex items-center space-x-3 bg-black/30 rounded-lg p-2">
                                   {item.imagen && (
                                     <img
@@ -327,9 +327,9 @@ const Profile = () => {
                                   </span>
                                 </div>
                               ))}
-                              {order.items?.length > 3 && (
+                              {order.productos?.length > 3 && (
                                 <p className="text-gray-300 text-sm">
-                                  ... y {order.items.length - 3} producto(s) más
+                                  ... y {order.productos.length - 3} producto(s) más
                                 </p>
                               )}
                             </div>
@@ -381,7 +381,7 @@ const Profile = () => {
                               onClick={async () => {
                                 try {
                                   clearEmailStates();
-                                  const success = await sendInvoice(order, order.id, order.customerInfo.correo);
+                                  const success = await sendInvoice(order, order.id, order.informacionCliente.correo);
                                   if (success) {
                                     alert("✅ Boleta enviada por email exitosamente");
                                   } else {

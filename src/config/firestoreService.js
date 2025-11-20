@@ -5,8 +5,8 @@ export async function addUser(userData) {
     try {
         const docRef = await addDoc(collection(db, "users"), { 
             ...userData, 
-            createdAt: new Date(),
-            role: "user"
+            fechaCreacion: new Date(),
+            rol: "usuario"
         });
         return docRef.id;
     } catch (error) {
@@ -196,9 +196,9 @@ export async function createOrder(orderData) {
     try {
         const orderRef = await addDoc(collection(db, "compras"), {
             ...orderData,
-            createdAt: new Date(),
-            status: "completed",
-            paymentStatus: "paid"
+            fechaCreacion: new Date(),
+            estado: "pendiente",
+            estadoPago: "pagado"
         });
         return orderRef.id;
     } catch (error) {
@@ -222,7 +222,7 @@ export async function getOrderById(orderId) {
 
 export async function getUserOrders(userId) {
     try {
-        const q = query(collection(db, "compras"), where("userId", "==", userId));
+        const q = query(collection(db, "compras"), where("idUsuario", "==", userId));
         const querySnapshot = await getDocs(q);
         return querySnapshot.docs.map((doc) => ({ 
             id: doc.id, 
@@ -243,6 +243,20 @@ export async function getAllOrders() {
         }));
     } catch (error) {
         console.error("Error al obtener todas las órdenes:", error);
+        throw error;
+    }
+}
+
+export async function updateOrderStatus(orderId, newStatus) {
+    try {
+        const orderRef = doc(db, "compras", orderId);
+        await updateDoc(orderRef, {
+            estado: newStatus,
+            fechaActualizacion: new Date()
+        });
+        return true;
+    } catch (error) {
+        console.error("Error al actualizar estado de la orden:", error);
         throw error;
     }
 }

@@ -111,20 +111,20 @@ const Checkout = () => {
     try {
       // Preparar datos de la orden
       const orderData = {
-        userId: userData.uid,
-        userEmail: userData.email,
-        orderNumber: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-        createdAt: new Date(),
+        idUsuario: userData.uid,
+        correoUsuario: userData.email,
+        numeroOrden: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+        fechaCreacion: new Date(),
         
         // Datos del cliente
-        customerInfo: {
+        informacionCliente: {
           nombre: formData.nombre,
           apellidos: formData.apellidos,
           correo: formData.correo
         },
         
         // Dirección de entrega
-        shippingAddress: {
+        direccionEntrega: {
           calle: formData.calle,
           departamento: formData.departamento,
           region: formData.region,
@@ -133,8 +133,8 @@ const Checkout = () => {
         },
         
         // Productos y totales
-        items: cartItems.map(item => ({
-          productId: item.id,
+        productos: cartItems.map(item => ({
+          idProducto: item.id,
           nombre: item.nombre,
           precio: item.precio,
           cantidad: item.quantity,
@@ -144,13 +144,13 @@ const Checkout = () => {
         
         // Totales
         subtotal: getTotalPrice(),
-        shipping: 0, // Envío gratis
+        envio: 0, // Envío gratis
         total: getTotalPrice(),
         
         // Metadatos
-        totalItems: getTotalItems(),
-        paymentMethod: "Simulado", // Por ahora es simulado
-        notes: "Compra procesada desde la tienda online"
+        totalProductos: getTotalItems(),
+        metodoPago: "Simulado", // Por ahora es simulado
+        notas: "Compra procesada desde la tienda online"
       };
       
       // Simular procesamiento del pago
@@ -324,7 +324,7 @@ const Checkout = () => {
                       
                       <div className="flex justify-between">
                         <span className="text-gray-300">Número:</span>
-                        <span className="text-white">{completedOrderData?.orderNumber}</span>
+                        <span className="text-white">{completedOrderData?.numeroOrden}</span>
                       </div>
                       
                       <div className="flex justify-between">

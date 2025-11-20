@@ -21,10 +21,10 @@ export const sendInvoiceEmail = async (orderData, orderId, customerEmail) => {
     // Preparar los datos para el template de email
     const templateParams = {
       to_email: customerEmail,
-      customer_name: `${orderData.customerInfo.nombre} ${orderData.customerInfo.apellidos}`,
-      order_number: orderData.orderNumber,
+      customer_name: `${orderData.informacionCliente.nombre} ${orderData.informacionCliente.apellidos}`,
+      order_number: orderData.numeroOrden,
       order_id: orderId,
-      order_date: new Date(orderData.createdAt?.toDate?.() || orderData.createdAt).toLocaleDateString('es-CL', {
+      order_date: new Date(orderData.fechaCreacion?.toDate?.() || orderData.fechaCreacion).toLocaleDateString('es-CL', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -35,8 +35,8 @@ export const sendInvoiceEmail = async (orderData, orderId, customerEmail) => {
         style: 'currency',
         currency: 'CLP'
       }).format(orderData.total),
-      total_items: orderData.totalItems,
-      shipping_address: `${orderData.shippingAddress.calle} ${orderData.shippingAddress.departamento}, ${orderData.shippingAddress.comuna}, ${orderData.shippingAddress.region}`,
+      total_items: orderData.totalProductos,
+      shipping_address: `${orderData.direccionEntrega.calle} ${orderData.direccionEntrega.departamento}, ${orderData.direccionEntrega.comuna}, ${orderData.direccionEntrega.region}`,
       company_name: 'Level-UP Gamers',
       company_email: 'admin@levelupgamers.cl',
       company_phone: '+56 9 1234 5678',
@@ -70,10 +70,10 @@ export const sendConfirmationEmail = async (orderData, orderId, customerEmail) =
   try {
     const templateParams = {
       to_email: customerEmail,
-      customer_name: `${orderData.customerInfo.nombre} ${orderData.customerInfo.apellidos}`,
-      order_number: orderData.orderNumber,
+      customer_name: `${orderData.informacionCliente.nombre} ${orderData.informacionCliente.apellidos}`,
+      order_number: orderData.numeroOrden,
       order_id: orderId,
-      order_date: new Date(orderData.createdAt?.toDate?.() || orderData.createdAt).toLocaleDateString('es-CL'),
+      order_date: new Date(orderData.fechaCreacion?.toDate?.() || orderData.fechaCreacion).toLocaleDateString('es-CL'),
       total_amount: new Intl.NumberFormat('es-CL', {
         style: 'currency',
         currency: 'CLP'
@@ -109,9 +109,9 @@ export const simulateEmailSend = async (orderData, orderId, customerEmail) => {
     setTimeout(() => {
       console.log('📧 Email simulado enviado a:', customerEmail);
       console.log('📋 Datos de la orden:', {
-        orderNumber: orderData.orderNumber,
+        orderNumber: orderData.numeroOrden,
         orderId,
-        customer: `${orderData.customerInfo.nombre} ${orderData.customerInfo.apellidos}`,
+        customer: `${orderData.informacionCliente.nombre} ${orderData.informacionCliente.apellidos}`,
         total: orderData.total
       });
       resolve(true);

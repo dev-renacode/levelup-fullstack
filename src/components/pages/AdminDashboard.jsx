@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import ProductManagement from "../molecules/ProductManagement";
+import OrdersManagement from "../molecules/OrdersManagement";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 
 const AdminDashboard = () => {
@@ -284,6 +285,8 @@ const AdminDashboard = () => {
           <div className="max-w-7xl mx-auto">
             {currentPage === "products" ? (
               <ProductManagement />
+            ) : currentPage === "orders" ? (
+              <OrdersManagement />
             ) : (
               <>
                 {/* Title Section */}

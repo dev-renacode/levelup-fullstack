@@ -122,9 +122,9 @@ export const useRegisterForm = () => {
 
       const userData = {
         uid: user.uid,
-        fullName: formData.fullName,
+        nombreCompleto: formData.fullName,
         email: formData.email,
-        birthDate: formData.birthDate,
+        fechaNacimiento: formData.birthDate,
         run: formData.run,
         emailVerified: user.emailVerified,
       };

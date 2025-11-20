@@ -31,8 +31,10 @@ const AuthProviderContent = ({ children }) => {
             setUserData({
               uid: firebaseUser.uid,
               email: firebaseUser.email,
-              fullName: userInfo.fullName,
-              role: userInfo.role || "user",
+              nombreCompleto: userInfo.nombreCompleto || userInfo.fullName, // Compatibilidad con datos antiguos
+              fullName: userInfo.nombreCompleto || userInfo.fullName, // Mantener fullName para compatibilidad
+              rol: userInfo.rol || userInfo.role || "usuario", // Compatibilidad con datos antiguos
+              role: userInfo.rol || userInfo.role || "usuario", // Mantener role para compatibilidad
               emailVerified: firebaseUser.emailVerified,
             });
           } else {
@@ -40,8 +42,10 @@ const AuthProviderContent = ({ children }) => {
             setUserData({
               uid: firebaseUser.uid,
               email: firebaseUser.email,
-              fullName: firebaseUser.displayName || "Usuario",
-              role: firebaseUser.email === "admin@duocuc.cl" ? "admin" : "user",
+              nombreCompleto: firebaseUser.displayName || "Usuario",
+              fullName: firebaseUser.displayName || "Usuario", // Mantener fullName para compatibilidad
+              rol: firebaseUser.email === "admin@duocuc.cl" ? "admin" : "usuario",
+              role: firebaseUser.email === "admin@duocuc.cl" ? "admin" : "usuario", // Mantener role para compatibilidad
               emailVerified: firebaseUser.emailVerified,
             });
           }
@@ -53,8 +57,10 @@ const AuthProviderContent = ({ children }) => {
           setUserData({
             uid: firebaseUser.uid,
             email: firebaseUser.email,
-            fullName: firebaseUser.displayName || "Usuario",
-            role: firebaseUser.email === "admin@duocuc.cl" ? "admin" : "user",
+            nombreCompleto: firebaseUser.displayName || "Usuario",
+            fullName: firebaseUser.displayName || "Usuario", // Mantener fullName para compatibilidad
+            rol: firebaseUser.email === "admin@duocuc.cl" ? "admin" : "usuario",
+            role: firebaseUser.email === "admin@duocuc.cl" ? "admin" : "usuario", // Mantener role para compatibilidad
             emailVerified: firebaseUser.emailVerified,
           });
           setUser(firebaseUser);
@@ -89,7 +95,7 @@ const AuthProviderContent = ({ children }) => {
     loading,
     logout,
     isAuthenticated: !!user,
-    isAdmin: userData?.role === "admin",
+    isAdmin: userData?.rol === "admin" || userData?.role === "admin", // Compatibilidad con datos antiguos
   };
 
   return (

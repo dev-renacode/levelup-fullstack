@@ -33,7 +33,7 @@ const Orders = () => {
         const ordersData = await getAllOrders();
         // Ordenar por fecha de creación (más recientes primero)
         const sortedOrders = ordersData.sort((a, b) => 
-          new Date(b.createdAt?.toDate?.() || b.createdAt) - new Date(a.createdAt?.toDate?.() || a.createdAt)
+          new Date(b.fechaCreacion?.toDate?.() || b.fechaCreacion) - new Date(a.fechaCreacion?.toDate?.() || a.fechaCreacion)
         );
         setOrders(sortedOrders);
       } catch (err) {
@@ -145,31 +145,31 @@ const Orders = () => {
                     <div className="lg:col-span-2">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-white text-xl font-bold">
-                          Orden #{order.orderNumber}
+                          Orden #{order.numeroOrden}
                         </h3>
                         <span className="bg-green-500 text-black px-3 py-1 rounded-full text-sm font-bold">
-                          {order.status}
+                          {order.estado}
                         </span>
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                           <h4 className="text-green-400 font-bold mb-2">Cliente</h4>
-                          <p className="text-white">{order.customerInfo?.nombre} {order.customerInfo?.apellidos}</p>
-                          <p className="text-gray-400 text-sm">{order.customerInfo?.correo}</p>
+                          <p className="text-white">{order.informacionCliente?.nombre} {order.informacionCliente?.apellidos}</p>
+                          <p className="text-gray-400 text-sm">{order.informacionCliente?.correo}</p>
                         </div>
                         
                         <div>
                           <h4 className="text-green-400 font-bold mb-2">Dirección de Entrega</h4>
                           <p className="text-white text-sm">
-                            {order.shippingAddress?.calle} {order.shippingAddress?.departamento}
+                            {order.direccionEntrega?.calle} {order.direccionEntrega?.departamento}
                           </p>
                           <p className="text-gray-400 text-sm">
-                            {order.shippingAddress?.comuna}, {order.shippingAddress?.region}
+                            {order.direccionEntrega?.comuna}, {order.direccionEntrega?.region}
                           </p>
-                          {order.shippingAddress?.indicaciones && (
+                          {order.direccionEntrega?.indicaciones && (
                             <p className="text-gray-400 text-sm italic">
-                              "{order.shippingAddress.indicaciones}"
+                              "{order.direccionEntrega.indicaciones}"
                             </p>
                           )}
                         </div>
@@ -178,7 +178,7 @@ const Orders = () => {
                       <div className="mb-4">
                         <h4 className="text-green-400 font-bold mb-2">Productos</h4>
                         <div className="space-y-2">
-                          {order.items?.map((item, index) => (
+                          {order.productos?.map((item, index) => (
                             <div key={index} className="flex items-center space-x-3 bg-black/30 rounded-lg p-3">
                               {item.imagen && (
                                 <img
@@ -209,7 +209,7 @@ const Orders = () => {
                         
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between text-gray-300">
-                            <span>Subtotal ({order.totalItems} items)</span>
+                            <span>Subtotal ({order.totalProductos} items)</span>
                             <span>{formatPrice(order.subtotal)}</span>
                           </div>
                           <div className="flex justify-between text-gray-300">
@@ -228,15 +228,15 @@ const Orders = () => {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between text-gray-300">
                           <span>Fecha:</span>
-                          <span className="text-white">{formatDate(order.createdAt)}</span>
+                          <span className="text-white">{formatDate(order.fechaCreacion)}</span>
                         </div>
                         <div className="flex justify-between text-gray-300">
                           <span>Método de pago:</span>
-                          <span className="text-white">{order.paymentMethod}</span>
+                          <span className="text-white">{order.metodoPago}</span>
                         </div>
                         <div className="flex justify-between text-gray-300">
                           <span>Estado del pago:</span>
-                          <span className="text-green-400 font-bold">{order.paymentStatus}</span>
+                          <span className="text-green-400 font-bold">{order.estadoPago}</span>
                         </div>
                       </div>
                       
@@ -259,7 +259,7 @@ const Orders = () => {
                           onClick={async () => {
                             try {
                               clearEmailStates();
-                              const success = await sendInvoice(order, order.id, order.customerInfo.correo);
+                              const success = await sendInvoice(order, order.id, order.informacionCliente.correo);
                               if (success) {
                                 alert("✅ Boleta enviada por email exitosamente");
                               } else {

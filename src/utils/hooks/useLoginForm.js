@@ -103,7 +103,7 @@ export const useLoginForm = () => {
       
       // Pequeño delay para mostrar el mensaje de éxito
       setTimeout(() => {
-        if (userData && userData.role === "admin") {
+        if (userData && (userData.rol === "admin" || userData.role === "admin")) { // Compatibilidad con datos antiguos
           navigate("/admin");
         } else if (formData.email === "admin@duocuc.cl") {
           navigate("/admin");
