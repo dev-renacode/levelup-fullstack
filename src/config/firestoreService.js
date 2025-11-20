@@ -72,6 +72,30 @@ export async function updateUserStatus(userId, newStatus) {
     }
 }
 
+export async function updateUser(userId, userData) {
+    try {
+        const userRef = doc(db, "users", userId);
+        await updateDoc(userRef, {
+            ...userData,
+            fechaActualizacion: new Date()
+        });
+        return true;
+    } catch (error) {
+        console.error("Error al actualizar usuario:", error);
+        throw error;
+    }
+}
+
+export async function deleteUser(userId) {
+    try {
+        await deleteDoc(doc(db, "users", userId));
+        return true;
+    } catch (error) {
+        console.error("Error al eliminar usuario:", error);
+        throw error;
+    }
+}
+
 export async function getAllProducts() {
     try {
         const querySnapshot = await getDocs(collection(db, "producto"));

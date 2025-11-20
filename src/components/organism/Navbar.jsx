@@ -209,18 +209,23 @@ const Navbar = () => {
           <div className="hidden lg:flex lg:items-center lg:space-x-3">
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-400 rounded-full flex items-center justify-center">
+                <Link
+                  to="/perfil"
+                  onClick={navigateTo}
+                  className="flex items-center space-x-2 hover:bg-green-400/10 px-3 py-2 rounded-lg transition-all duration-300 cursor-pointer group"
+                  aria-label="Ver mi perfil"
+                >
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-400 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <span className="text-black font-bold text-sm">
                       {userData?.fullName?.charAt(0)?.toUpperCase() || "U"}
                     </span>
                   </div>
                   <div className="text-left">
-                    <p className="text-white text-sm font-[Roboto]">
-                      ¡Hola, <span className="text-green-400 font-semibold">{userData?.fullName?.split(" ")[0] || "Usuario"}</span>!
+                    <p className="text-white text-sm font-[Roboto] group-hover:text-green-400 transition-colors duration-300">
+                      ¡Hola, <span className="text-green-400 font-semibold group-hover:text-green-300">{userData?.fullName?.split(" ")[0] || "Usuario"}</span>!
                     </p>
                   </div>
-                </div>
+                </Link>
                 {userData?.role === "admin" && (
                   <Link
                     to="/admin"
@@ -231,14 +236,6 @@ const Navbar = () => {
                     Dashboard
                   </Link>
                 )}
-                <Link
-                  to="/perfil"
-                  onClick={navigateTo}
-                  className="text-white/80 hover:text-blue-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-blue-400/10 rounded-lg font-[Roboto] border border-blue-400/30 hover:border-blue-400/60"
-                  aria-label="Ver mi perfil"
-                >
-                  Perfil
-                </Link>
                 <button
                   onClick={logout}
                   className="text-white/80 hover:text-red-400 px-4 py-2 text-sm font-medium transition-all duration-300 hover:bg-red-400/10 rounded-lg font-[Roboto] border border-red-400/30 hover:border-red-400/60"
@@ -444,21 +441,25 @@ const Navbar = () => {
             <div className="pt-4 pb-3 border-t border-green-400/30">
               {isAuthenticated ? (
                 <div className="px-3 space-y-3">
-                  <div className="flex items-center space-x-3 p-3 bg-green-400/10 rounded-lg border border-green-400/30">
-                    <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-blue-400 rounded-full flex items-center justify-center">
+                  <Link
+                    to="/perfil"
+                    onClick={navigateTo}
+                    className="flex items-center space-x-3 p-3 bg-green-400/10 rounded-lg border border-green-400/30 hover:bg-green-400/20 hover:border-green-400/50 transition-all duration-300 group"
+                  >
+                    <div className="w-10 h-10 bg-gradient-to-r from-green-400 to-blue-400 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                       <span className="text-black font-bold text-sm">
                         {userData?.fullName?.charAt(0)?.toUpperCase() || "U"}
                       </span>
                     </div>
                     <div className="flex-1">
-                      <p className="text-white text-sm font-[Roboto]">
-                        ¡Hola, <span className="text-green-400 font-semibold">{userData?.fullName?.split(" ")[0] || "Usuario"}</span>!
+                      <p className="text-white text-sm font-[Roboto] group-hover:text-green-400 transition-colors duration-300">
+                        ¡Hola, <span className="text-green-400 font-semibold group-hover:text-green-300">{userData?.fullName?.split(" ")[0] || "Usuario"}</span>!
                       </p>
-                      <p className="text-white/60 text-xs font-[Roboto]">
+                      <p className="text-white/60 text-xs font-[Roboto] group-hover:text-white/80 transition-colors duration-300">
                         {userData?.email}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                   {userData?.role === "admin" && (
                     <Link
                       to="/admin"
@@ -468,13 +469,6 @@ const Navbar = () => {
                       Dashboard
                     </Link>
                   )}
-                  <Link
-                    to="/perfil"
-                    onClick={navigateTo}
-                    className="block w-full px-4 py-3 text-center text-white hover:text-blue-400 hover:bg-blue-400/10 rounded-lg border border-blue-400/30 hover:border-blue-400/60 transition-all duration-300 font-[Roboto] font-medium"
-                  >
-                    Perfil
-                  </Link>
                   <button
                     onClick={logout}
                     className="w-full px-4 py-3 text-center text-white hover:text-red-400 hover:bg-red-400/10 rounded-lg border border-red-400/30 hover:border-red-400/60 transition-all duration-300 font-[Roboto] font-medium"
