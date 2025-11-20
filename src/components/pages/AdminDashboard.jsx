@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import ProductManagement from "../molecules/ProductManagement";
 import OrdersManagement from "../molecules/OrdersManagement";
+import UsersManagement from "../molecules/UsersManagement";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 
 const AdminDashboard = () => {
@@ -212,18 +213,6 @@ const AdminDashboard = () => {
               </button>
 
               <button
-                onClick={() => handleNavigate("categories")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
-                  currentPage === "categories"
-                    ? "bg-green-400/20 text-green-400 border border-green-400/30"
-                    : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
-                }`}
-              >
-                <CategoriesIcon />
-                <span>Categorías</span>
-              </button>
-
-              <button
                 onClick={() => handleNavigate("users")}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
                   currentPage === "users"
@@ -287,6 +276,8 @@ const AdminDashboard = () => {
               <ProductManagement />
             ) : currentPage === "orders" ? (
               <OrdersManagement />
+            ) : currentPage === "users" ? (
+              <UsersManagement />
             ) : (
               <>
                 {/* Title Section */}
@@ -367,15 +358,6 @@ const AdminDashboard = () => {
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2 font-[Orbitron]">Productos</h3>
                 <p className="text-gray-300 text-sm">Administrar inventario y detalles de los productos disponibles.</p>
-              </div>
-
-              {/* Categorías Card */}
-              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300">
-                <div className="text-green-400 mb-4">
-                  <FeatureCategoriesIcon />
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-2 font-[Orbitron]">Categorías</h3>
-                <p className="text-gray-300 text-sm">Organizar productos en categorías para facilitar su navegación.</p>
               </div>
 
               {/* Usuarios Card */}
