@@ -19,6 +19,26 @@ const Checkout = () => {
   const [processingStep, setProcessingStep] = useState("");
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
 
+  // Datos de regiones y comunas de Chile
+  const regionesYComunas = {
+    "Arica y Parinacota": ["Arica", "Camarones", "Putre", "General Lagos"],
+    "Tarapacá": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"],
+    "Antofagasta": ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal", "Calama", "Ollagüe", "San Pedro de Atacama", "Tocopilla", "María Elena"],
+    "Atacama": ["Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro", "Vallenar", "Alto del Carmen", "Freirina", "Huasco"],
+    "Coquimbo": ["La Serena", "Coquimbo", "Andacollo", "La Higuera", "Paiguano", "Vicuña", "Illapel", "Canela", "Los Vilos", "Salamanca", "Ovalle", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"],
+    "Valparaíso": ["Valparaíso", "Casablanca", "Concón", "Juan Fernández", "Puchuncaví", "Quintero", "Viña del Mar", "Isla de Pascua", "Los Andes", "Calle Larga", "Rinconada", "San Esteban", "La Ligua", "Cabildo", "Papudo", "Petorca", "Zapallar", "Quillota", "Calera", "Hijuelas", "La Cruz", "Nogales", "San Antonio", "Algarrobo", "Cartagena", "El Quisco", "El Tabo", "Santo Domingo", "San Felipe", "Catemu", "Llaillay", "Panquehue", "Putaendo", "Santa María", "Quilpué", "Limache", "Olmué", "Villa Alemana"],
+    "Región Metropolitana": ["Santiago", "Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Joaquín", "San Miguel", "San Ramón", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "Tiltil", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"],
+    "O'Higgins": ["Rancagua", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", "Las Cabras", "Machalí", "Malloa", "Mostazal", "Olivar", "Peumo", "Pichidegua", "Quinta de Tilcoco", "Rengo", "Requínoa", "San Vicente", "Pichilemu", "La Estrella", "Litueche", "Marchihue", "Navidad", "Paredones", "San Fernando", "Chépica", "Chimbarongo", "Lolol", "Nancagua", "Palmilla", "Peralillo", "Placilla", "Pumanque", "Santa Cruz"],
+    "Maule": ["Talca", "Constitución", "Curepto", "Empedrado", "Maule", "Pelarco", "Pencahue", "Río Claro", "San Clemente", "San Rafael", "Cauquenes", "Chanco", "Pelluhue", "Curicó", "Hualañé", "Licantén", "Molina", "Rauco", "Romeral", "Sagrada Familia", "Teno", "Vichuquén", "Linares", "Colbún", "Longaví", "Parral", "Retiro", "San Javier", "Villa Alegre", "Yerbas Buenas"],
+    "Ñuble": ["Chillán", "Bulnes", "Chillán Viejo", "El Carmen", "Pemuco", "Pinto", "Quillón", "San Ignacio", "Yungay", "Quirihue", "Cobquecura", "Coelemu", "Ninhue", "Portezuelo", "Ránquil", "Treguaco", "San Carlos", "Coihueco", "Ñiquén", "San Fabián", "San Nicolás"],
+    "Biobío": ["Concepción", "Coronel", "Chiguayante", "Florida", "Hualpén", "Hualqui", "Lota", "Penco", "San Pedro de la Paz", "Santa Juana", "Talcahuano", "Tomé", "Arauco", "Cañete", "Contulmo", "Curanilahue", "Lebu", "Los Álamos", "Tirúa", "Los Ángeles", "Antuco", "Cabrero", "Laja", "Mulchén", "Nacimiento", "Negrete", "Quilaco", "Quilleco", "San Rosendo", "Santa Bárbara", "Tucapel", "Yumbel", "Alto Biobío"],
+    "Araucanía": ["Temuco", "Carahue", "Cunco", "Curarrehue", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Melipeuco", "Nueva Imperial", "Padre Las Casas", "Perquenco", "Pitrufquén", "Pucón", "Saavedra", "Teodoro Schmidt", "Toltén", "Vilcún", "Villarrica", "Cholchol", "Angol", "Collipulli", "Curacautín", "Ercilla", "Lonquimay", "Los Sauces", "Lumaco", "Purén", "Renaico", "Traiguén", "Victoria"],
+    "Los Ríos": ["Valdivia", "Corral", "Lanco", "Los Lagos", "Máfil", "Mariquina", "Paillaco", "Panguipulli", "La Unión", "Futrono", "Lago Ranco", "Río Bueno"],
+    "Los Lagos": ["Puerto Montt", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Los Muermos", "Llanquihue", "Maullín", "Puerto Varas", "Castro", "Ancud", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena"],
+    "Aysén": ["Coyhaique", "Lago Verde", "Aysén", "Cisnes", "Guaitecas", "Cochrane", "O'Higgins", "Tortel", "Chile Chico", "Río Ibáñez"],
+    "Magallanes": ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos", "Antártica", "Porvenir", "Primavera", "Timaukel", "Natales", "Torres del Paine"]
+  };
+
   // Estados del formulario
   const [formData, setFormData] = useState({
     // Datos personales
@@ -27,13 +47,16 @@ const Checkout = () => {
     correo: userData?.email || "",
     // Dirección de entrega
     calle: "",
-    departamento: "",
+    numero: "",
     region: "",
     comuna: "",
     indicaciones: ""
   });
 
   const [errors, setErrors] = useState({});
+  
+  // Obtener comunas disponibles según la región seleccionada
+  const comunasDisponibles = formData.region ? (regionesYComunas[formData.region] || []) : [];
 
   // Redirigir si no está autenticado
   useEffect(() => {
@@ -62,10 +85,20 @@ const Checkout = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Si cambia la región, limpiar la comuna seleccionada
+    if (name === "region") {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+        comuna: "" // Limpiar comuna cuando cambia la región
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
     
     // Limpiar error del campo cuando el usuario empiece a escribir
     if (errors[name]) {
@@ -84,7 +117,7 @@ const Checkout = () => {
     if (!formData.apellidos.trim()) newErrors.apellidos = "Los apellidos son obligatorios";
     if (!formData.correo.trim()) newErrors.correo = "El correo es obligatorio";
     if (!formData.calle.trim()) newErrors.calle = "La calle es obligatoria";
-    if (!formData.departamento.trim()) newErrors.departamento = "El departamento es obligatorio";
+    if (!formData.numero.trim()) newErrors.numero = "El número es obligatorio";
     if (!formData.region.trim()) newErrors.region = "La región es obligatoria";
     if (!formData.comuna.trim()) newErrors.comuna = "La comuna es obligatoria";
     
@@ -126,7 +159,7 @@ const Checkout = () => {
         // Dirección de entrega
         direccionEntrega: {
           calle: formData.calle,
-          departamento: formData.departamento,
+          numero: formData.numero,
           region: formData.region,
           comuna: formData.comuna,
           indicaciones: formData.indicaciones || ""
@@ -373,7 +406,7 @@ const Checkout = () => {
                       <div>
                         <span className="text-gray-300 block">Dirección de Entrega:</span>
                         <span className="text-white text-sm">
-                          {formData.calle} {formData.departamento}<br/>
+                          {formData.calle} {formData.numero}<br/>
                           {formData.comuna}, {formData.region}
                         </span>
                       </div>
@@ -595,42 +628,44 @@ const Checkout = () => {
                 <div>
                   <h3 className="text-green-400 font-bold text-lg mb-4">Dirección de Entrega</h3>
                   <div className="space-y-4">
-                    <div>
-                      <label className="block text-white font-medium mb-2">
-                        Calle *
-                      </label>
-                      <input
-                        type="text"
-                        name="calle"
-                        value={formData.calle}
-                        onChange={handleInputChange}
-                        className={`w-full px-4 py-3 bg-black/50 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400 transition-colors ${
-                          errors.calle ? 'border-red-500' : 'border-green-400/30'
-                        }`}
-                        placeholder="Nombre de la calle y número"
-                      />
-                      {errors.calle && (
-                        <p className="text-red-400 text-sm mt-1">{errors.calle}</p>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <label className="block text-white font-medium mb-2">
-                        Departamento *
-                      </label>
-                      <input
-                        type="text"
-                        name="departamento"
-                        value={formData.departamento}
-                        onChange={handleInputChange}
-                        className={`w-full px-4 py-3 bg-black/50 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400 transition-colors ${
-                          errors.departamento ? 'border-red-500' : 'border-green-400/30'
-                        }`}
-                        placeholder="Número de departamento"
-                      />
-                      {errors.departamento && (
-                        <p className="text-red-400 text-sm mt-1">{errors.departamento}</p>
-                      )}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="md:col-span-2">
+                        <label className="block text-white font-medium mb-2">
+                          Calle *
+                        </label>
+                        <input
+                          type="text"
+                          name="calle"
+                          value={formData.calle}
+                          onChange={handleInputChange}
+                          className={`w-full px-4 py-3 bg-black/50 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400 transition-colors ${
+                            errors.calle ? 'border-red-500' : 'border-green-400/30'
+                          }`}
+                          placeholder="Nombre de la calle"
+                        />
+                        {errors.calle && (
+                          <p className="text-red-400 text-sm mt-1">{errors.calle}</p>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <label className="block text-white font-medium mb-2">
+                          Número *
+                        </label>
+                        <input
+                          type="text"
+                          name="numero"
+                          value={formData.numero}
+                          onChange={handleInputChange}
+                          className={`w-full px-4 py-3 bg-black/50 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400 transition-colors ${
+                            errors.numero ? 'border-red-500' : 'border-green-400/30'
+                          }`}
+                          placeholder="Número"
+                        />
+                        {errors.numero && (
+                          <p className="text-red-400 text-sm mt-1">{errors.numero}</p>
+                        )}
+                      </div>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -638,16 +673,21 @@ const Checkout = () => {
                         <label className="block text-white font-medium mb-2">
                           Región *
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="region"
                           value={formData.region}
                           onChange={handleInputChange}
-                          className={`w-full px-4 py-3 bg-black/50 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400 transition-colors ${
+                          className={`w-full px-4 py-3 bg-black/50 border rounded-lg text-white focus:outline-none focus:border-green-400 transition-colors ${
                             errors.region ? 'border-red-500' : 'border-green-400/30'
                           }`}
-                          placeholder="Región"
-                        />
+                        >
+                          <option value="">Selecciona una región</option>
+                          {Object.keys(regionesYComunas).map((region) => (
+                            <option key={region} value={region} className="bg-black text-white">
+                              {region}
+                            </option>
+                          ))}
+                        </select>
                         {errors.region && (
                           <p className="text-red-400 text-sm mt-1">{errors.region}</p>
                         )}
@@ -657,16 +697,24 @@ const Checkout = () => {
                         <label className="block text-white font-medium mb-2">
                           Comuna *
                         </label>
-                        <input
-                          type="text"
+                        <select
                           name="comuna"
                           value={formData.comuna}
                           onChange={handleInputChange}
-                          className={`w-full px-4 py-3 bg-black/50 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-400 transition-colors ${
+                          disabled={!formData.region}
+                          className={`w-full px-4 py-3 bg-black/50 border rounded-lg text-white focus:outline-none focus:border-green-400 transition-colors ${
                             errors.comuna ? 'border-red-500' : 'border-green-400/30'
-                          }`}
-                          placeholder="Comuna"
-                        />
+                          } ${!formData.region ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                          <option value="">
+                            {formData.region ? "Selecciona una comuna" : "Primero selecciona una región"}
+                          </option>
+                          {comunasDisponibles.map((comuna) => (
+                            <option key={comuna} value={comuna} className="bg-black text-white">
+                              {comuna}
+                            </option>
+                          ))}
+                        </select>
                         {errors.comuna && (
                           <p className="text-red-400 text-sm mt-1">{errors.comuna}</p>
                         )}

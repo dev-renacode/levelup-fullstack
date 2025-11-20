@@ -1,12 +1,9 @@
-import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
-import { useAuth } from "../../contexts/AuthContext";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import QuantityControls from "../molecules/QuantityControls";
 
 const Cart = () => {
-  const navigate = useNavigate();
   const { 
     cartItems, 
     removeFromCart, 
@@ -16,36 +13,6 @@ const Cart = () => {
     isOperationInProgress
   } = useCart();
   
-  const { isAuthenticated, loading } = useAuth();
-
-  // Redirigir al login si no está autenticado
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, loading, navigate]);
-
-  // Mostrar loading mientras se verifica la autenticación
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-black font-[Roboto] relative overflow-hidden">
-        <GameBackgroundEffects />
-        <div className="relative z-10 pt-20 pb-8">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4"></div>
-              <p className="text-white text-lg">Verificando autenticación...</p>
-            </div>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  // Si no está autenticado, no mostrar nada (se redirigirá)
-  if (!isAuthenticated) {
-    return null;
-  }
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CL', {

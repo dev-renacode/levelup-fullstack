@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
-import { useAuth } from "../../contexts/AuthContext";
 import { useProducts } from "../../utils/hooks/useProducts";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import ProductQuantityControls from "../molecules/ProductQuantityControls";
@@ -12,7 +11,6 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { products, loading, error } = useProducts();
   const { addToCart, cartItems, getUpdatedStock } = useCart();
-  const { isAuthenticated } = useAuth();
   
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -35,11 +33,6 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = async () => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
-
     if (!product || isAdding) return;
 
     setIsAdding(true);

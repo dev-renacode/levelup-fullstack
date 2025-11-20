@@ -50,16 +50,9 @@ const AppRoutes = () => {
         <Route path="/blog" element={<Blog />} />
         <Route path="/nosotros" element={<Nosotros />} />
         <Route path="/contacto" element={<Contact />} />
+        <Route path="/carrito" element={<Cart />} />
 
         {/* Rutas protegidas (requieren autenticación) */}
-        <Route
-          path="/carrito"
-          element={
-            <ProtectedRoute>
-              <Cart />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/checkout"
           element={

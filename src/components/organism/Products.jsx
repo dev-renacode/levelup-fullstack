@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import ProductCard from "../molecules/ProductCard";
 import { useProducts } from "../../utils/hooks/useProducts";
@@ -6,17 +6,47 @@ import { useProducts } from "../../utils/hooks/useProducts";
 const Products = () => {
   const { products, loading, error, refreshProducts } = useProducts();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Todas");
+  const [categories, setCategories] = useState([]);
+
+  // Extraer categorías únicas de los productos
+  useEffect(() => {
+    if (products.length > 0) {
+      const uniqueCategories = [...new Set(products.map(product => product.categoria).filter(Boolean))];
+      setCategories(uniqueCategories);
+    }
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
-    if (!searchTerm.trim()) return products;
-    
-    const search = searchTerm.toLowerCase();
-    return products.filter(product => 
-      product.nombre?.toLowerCase().includes(search) ||
-      product.descripcion?.toLowerCase().includes(search) ||
-      product.categoria?.toLowerCase().includes(search)
-    );
-  }, [products, searchTerm]);
+    let filtered = products;
+
+    // Filtrar por categoría
+    if (selectedCategory === "Ofertas") {
+      filtered = filtered.filter(product => 
+        typeof product.precio === 'number' && 
+        typeof product.precioAnterior === 'number' && 
+        product.precio < product.precioAnterior
+      );
+    } else if (selectedCategory !== "Todas") {
+      filtered = filtered.filter(product => product.categoria === selectedCategory);
+    }
+
+    // Filtrar por búsqueda
+    if (searchTerm.trim()) {
+      const search = searchTerm.toLowerCase();
+      filtered = filtered.filter(product => 
+        product.nombre?.toLowerCase().includes(search) ||
+        product.descripcion?.toLowerCase().includes(search) ||
+        product.categoria?.toLowerCase().includes(search)
+      );
+    }
+
+    return filtered;
+  }, [products, searchTerm, selectedCategory]);
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+  };
 
   return (
     <section
@@ -77,6 +107,52 @@ const Products = () => {
               </div>
             )}
           </div>
+
+          {/* Tarjetas de categorías */}
+          {!loading && products.length > 0 && (
+            <div className="mt-10 mb-12">
+              <div className="flex flex-wrap justify-center gap-3">
+                {/* Categoría "Todas" */}
+                <button
+                  onClick={() => handleCategoryClick("Todas")}
+                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 font-[Roboto] ${
+                    selectedCategory === "Todas"
+                      ? "bg-gradient-to-r from-green-400 to-blue-400 text-black shadow-lg shadow-green-400/50 scale-105"
+                      : "bg-black/50 border border-green-400/30 text-white hover:border-green-400 hover:bg-green-400/10 hover:scale-105"
+                  }`}
+                >
+                  📦 Todas
+                </button>
+
+                {/* Categoría "Ofertas" */}
+                <button
+                  onClick={() => handleCategoryClick("Ofertas")}
+                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 font-[Roboto] ${
+                    selectedCategory === "Ofertas"
+                      ? "bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg shadow-red-500/50 scale-105"
+                      : "bg-black/50 border border-red-400/30 text-white hover:border-red-400 hover:bg-red-400/10 hover:scale-105"
+                  }`}
+                >
+                  🔥 Ofertas
+                </button>
+
+                {/* Resto de categorías */}
+                {categories.map((category, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleCategoryClick(category)}
+                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 font-[Roboto] ${
+                      selectedCategory === category
+                        ? "bg-gradient-to-r from-blue-400 to-purple-400 text-white shadow-lg shadow-blue-400/50 scale-105"
+                        : "bg-black/50 border border-blue-400/30 text-white hover:border-blue-400 hover:bg-blue-400/10 hover:scale-105"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </header>
 
         {loading ? (

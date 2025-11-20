@@ -12,6 +12,17 @@ export const useCart = () => {
   return context;
 };
 
+// Función para generar o obtener ID de invitado
+const getGuestId = () => {
+  let guestId = localStorage.getItem('guestId');
+  if (!guestId) {
+    // Generar un ID único para el invitado
+    guestId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem('guestId', guestId);
+  }
+  return guestId;
+};
+
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [productStock, setProductStock] = useState({}); // Estado para manejar stock local
@@ -51,13 +62,43 @@ export const CartProvider = ({ children }) => {
     return operationsInProgress.has(productId);
   };
 
-  // Cargar carrito desde Firebase cuando el usuario esté autenticado
+  // Cargar carrito desde Firebase (usuario autenticado o invitado)
   useEffect(() => {
     const loadCart = async () => {
       if (isAuthenticated && userData?.uid) {
+        // Usuario autenticado: cargar desde Firebase
         try {
           const firebaseCart = await getUserCart(userData.uid);
           setCartItems(firebaseCart);
+          
+          // Si había un carrito de invitado, migrarlo y limpiarlo
+          const guestId = localStorage.getItem('guestId');
+          if (guestId) {
+            try {
+              const guestCart = await getUserCart(guestId);
+              if (guestCart && guestCart.length > 0) {
+                // Combinar carritos (priorizar el del usuario autenticado)
+                const mergedCart = [...firebaseCart];
+                guestCart.forEach(guestItem => {
+                  const existingItem = mergedCart.find(item => item.id === guestItem.id);
+                  if (existingItem) {
+                    // Si ya existe, mantener la cantidad mayor
+                    existingItem.quantity = Math.max(existingItem.quantity, guestItem.quantity);
+                  } else {
+                    mergedCart.push(guestItem);
+                  }
+                });
+                // Guardar carrito combinado en Firebase
+                await saveUserCart(userData.uid, mergedCart);
+                setCartItems(mergedCart);
+                // Limpiar carrito de invitado
+                await clearUserCart(guestId);
+                localStorage.removeItem('guestId');
+              }
+            } catch (guestError) {
+              console.warn('Error al migrar carrito de invitado:', guestError);
+            }
+          }
         } catch (error) {
           console.error('Error al cargar carrito desde Firebase:', error);
           // Fallback a localStorage si Firebase falla
@@ -71,13 +112,21 @@ export const CartProvider = ({ children }) => {
           }
         }
       } else {
-        // Si no está autenticado, usar localStorage como fallback
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
-          try {
-            setCartItems(JSON.parse(savedCart));
-          } catch (error) {
-            console.error('Error al cargar carrito desde localStorage:', error);
+        // Usuario no autenticado: usar ID de invitado
+        const guestId = getGuestId();
+        try {
+          const guestCart = await getUserCart(guestId);
+          setCartItems(guestCart);
+        } catch (error) {
+          console.error('Error al cargar carrito de invitado desde Firebase:', error);
+          // Fallback a localStorage
+          const savedCart = localStorage.getItem('cart');
+          if (savedCart) {
+            try {
+              setCartItems(JSON.parse(savedCart));
+            } catch (parseError) {
+              console.error('Error al parsear carrito desde localStorage:', parseError);
+            }
           }
         }
       }
@@ -86,10 +135,11 @@ export const CartProvider = ({ children }) => {
     loadCart();
   }, [isAuthenticated, userData?.uid]);
 
-  // Guardar carrito en Firebase cuando cambie (si está autenticado)
+  // Guardar carrito en Firebase cuando cambie (usuario autenticado o invitado)
   useEffect(() => {
     const saveCart = async () => {
       if (isAuthenticated && userData?.uid) {
+        // Usuario autenticado: guardar en Firebase
         try {
           await saveUserCart(userData.uid, cartItems);
         } catch (error) {
@@ -98,22 +148,23 @@ export const CartProvider = ({ children }) => {
           localStorage.setItem('cart', JSON.stringify(cartItems));
         }
       } else {
-        // Si no está autenticado, usar localStorage
-        localStorage.setItem('cart', JSON.stringify(cartItems));
+        // Usuario no autenticado: usar ID de invitado
+        const guestId = getGuestId();
+        try {
+          await saveUserCart(guestId, cartItems);
+        } catch (error) {
+          console.error('Error al guardar carrito de invitado en Firebase:', error);
+          // Fallback a localStorage
+          localStorage.setItem('cart', JSON.stringify(cartItems));
+        }
       }
     };
 
-    if (cartItems.length > 0) {
-      saveCart();
-    }
+    // Guardar siempre, incluso si el carrito está vacío (para sincronizar)
+    saveCart();
   }, [cartItems, isAuthenticated, userData?.uid]);
 
-  // Limpiar estado del carrito cuando el usuario cierra sesión
-  useEffect(() => {
-    if (!isAuthenticated) {
-      resetCartState();
-    }
-  }, [isAuthenticated]);
+  // No limpiar el carrito al cerrar sesión - mantener el carrito del invitado
 
   const addToCart = async (product) => {
     try {
@@ -130,21 +181,25 @@ export const CartProvider = ({ children }) => {
         return false;
       }
 
-      // Si no está autenticado, mostrar mensaje informativo
-      if (!isAuthenticated) {
-        showNotification('Inicia sesión para guardar tu carrito permanentemente');
+      // Intentar actualizar stock en Firebase (puede fallar si no está autenticado)
+      try {
+        await updateProductStock(product.id, 1);
+        // Actualizar stock local inmediatamente si la actualización fue exitosa
+        setProductStock(prevStock => ({
+          ...prevStock,
+          [product.id]: Math.max(0, (prevStock[product.id] || product.stock) - 1)
+        }));
+      } catch (stockError) {
+        // Si no está autenticado y falla la actualización del stock, continuar de todos modos
+        if (!isAuthenticated) {
+          console.warn('No se pudo actualizar el stock en Firebase (usuario no autenticado), agregando al carrito local:', stockError);
+        } else {
+          // Si está autenticado y falla, lanzar el error
+          throw stockError;
+        }
       }
 
-      // Actualizar stock en Firebase
-      await updateProductStock(product.id, 1);
-
-      // Actualizar stock local inmediatamente
-      setProductStock(prevStock => ({
-        ...prevStock,
-        [product.id]: Math.max(0, (prevStock[product.id] || product.stock) - 1)
-      }));
-
-      // Actualizar carrito local
+      // Actualizar carrito local (siempre se agrega, incluso si falló la actualización del stock)
       setCartItems(prevCart => {
         const existingItem = prevCart.find(item => item.id === product.id);
         if (existingItem) {
@@ -262,9 +317,12 @@ export const CartProvider = ({ children }) => {
       // Limpiar estado local de stock
       setProductStock({});
       
-      // Limpiar carrito en Firebase si está autenticado
+      // Limpiar carrito en Firebase (usuario autenticado o invitado)
       if (isAuthenticated && userData?.uid) {
         await clearUserCart(userData.uid);
+      } else {
+        const guestId = getGuestId();
+        await clearUserCart(guestId);
       }
       
       // Limpiar localStorage también
