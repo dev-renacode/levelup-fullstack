@@ -1,9 +1,12 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
+import { useAuth } from "../../contexts/AuthContext";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import QuantityControls from "../molecules/QuantityControls";
 
 const Cart = () => {
+  const navigate = useNavigate();
   const { 
     cartItems, 
     removeFromCart, 
@@ -12,7 +15,7 @@ const Cart = () => {
     getTotalPrice,
     isOperationInProgress
   } = useCart();
-  
+  const { isAuthenticated } = useAuth();
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CL', {
@@ -21,22 +24,20 @@ const Cart = () => {
     }).format(price);
   };
 
+  const handleProceedToCheckout = () => {
+    if (isAuthenticated) {
+      navigate("/checkout");
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-black font-[Roboto] relative overflow-hidden">
       <GameBackgroundEffects />
       
       <div className="relative z-10 pt-20 pb-8">
         <div className="max-w-6xl mx-auto px-4">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Mi <span className="text-green-400">Carrito</span>
-            </h1>
-            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-              Revisa y gestiona los productos en tu carrito de compras
-            </p>
-          </div>
-
           {cartItems.length === 0 ? (
             /* Carrito vacío */
             <div className="text-center py-16">
@@ -57,127 +58,71 @@ const Cart = () => {
               </div>
             </div>
           ) : (
-            /* Carrito con productos */
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Lista de productos */}
-              <div className="lg:col-span-2">
-                <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-white text-xl font-bold">
-                      Productos ({getTotalItems()} items)
-                    </h2>
-                    <button
-                      onClick={clearCart}
-                      className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
-                    >
-                      Vaciar carrito
-                    </button>
+            <>
+              {/* Sección 1: Carrito de compra */}
+              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 mb-6">
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h2 className="text-2xl font-bold text-white mb-2">Carrito de compra</h2>
+                    <p className="text-gray-400 text-sm">Completa la siguiente información</p>
                   </div>
-
-                  <div className="space-y-4">
-                    {cartItems.map((item) => (
-                      <div key={item.id} className="bg-black/50 border border-green-400/20 rounded-lg p-4">
-                        {/* Layout móvil: vertical, desktop: horizontal */}
-                        <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
-                          {/* Imagen del producto */}
-                          <div className="flex-shrink-0 mx-auto sm:mx-0">
+                  <div className="bg-gradient-to-r from-green-400 to-blue-400 text-black px-6 py-3 rounded-lg font-bold text-lg">
+                    Total a pagar: {formatPrice(getTotalPrice())}
+                  </div>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-green-400/30">
+                        <th className="text-left py-3 px-4 text-white font-semibold">Imagen</th>
+                        <th className="text-left py-3 px-4 text-white font-semibold">Nombre</th>
+                        <th className="text-left py-3 px-4 text-white font-semibold">Precio</th>
+                        <th className="text-left py-3 px-4 text-white font-semibold">Cantidad</th>
+                        <th className="text-left py-3 px-4 text-white font-semibold">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cartItems.map((item) => (
+                        <tr key={item.id} className="border-b border-green-400/10">
+                          <td className="py-4 px-4">
                             {item.imagen ? (
                               <img
                                 src={item.imagen}
                                 alt={item.nombre}
-                                className="w-20 h-20 sm:w-16 sm:h-16 object-cover rounded-lg"
+                                className="w-16 h-16 object-cover rounded"
                               />
                             ) : (
-                              <div className="w-20 h-20 sm:w-16 sm:h-16 bg-gray-800 rounded-lg flex items-center justify-center">
-                                <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
+                              <div className="w-16 h-16 bg-gray-800 rounded flex items-center justify-center text-gray-500 text-xs">
+                                W x H
                               </div>
                             )}
-                          </div>
-
-                          {/* Información del producto */}
-                          <div className="flex-1 text-center sm:text-left">
-                            <h3 className="text-white font-bold text-lg sm:text-base">
-                              {item.nombre}
-                            </h3>
-                            <p className="text-gray-400 text-sm mt-1">
-                              {item.descripcion || 'Sin descripción'}
-                            </p>
-                            <p className="text-green-400 font-bold text-lg mt-2">
-                              {formatPrice(item.precio)}
-                            </p>
-                          </div>
-
-                          {/* Controles de cantidad - más espacioso en móvil */}
-                          <div className="flex justify-center sm:justify-start">
-                            <div className="bg-black/30 rounded-lg p-3">
+                          </td>
+                          <td className="py-4 px-4 text-white font-medium">{item.nombre}</td>
+                          <td className="py-4 px-4 text-gray-300">{formatPrice(item.precio)}</td>
+                          <td className="py-4 px-4">
+                            <div className="flex items-center space-x-2">
                               <QuantityControls item={item} />
                             </div>
-                          </div>
-
-                          {/* Precio total y botón eliminar */}
-                          <div className="text-center sm:text-right space-y-2">
-                            <p className="text-green-400 font-bold text-xl">
-                              {formatPrice(item.precio * item.quantity)}
-                            </p>
-                            <button
-                              onClick={() => removeFromCart(item.id)}
-                              disabled={isOperationInProgress(item.id)}
-                              className={`text-sm font-medium transition-colors px-3 py-1 rounded ${
-                                isOperationInProgress(item.id)
-                                  ? 'text-gray-500 cursor-not-allowed bg-gray-800'
-                                  : 'text-red-400 hover:text-red-300 hover:bg-red-400/10'
-                              }`}
-                            >
-                              {isOperationInProgress(item.id) ? 'Eliminando...' : 'Eliminar'}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                          </td>
+                          <td className="py-4 px-4 text-green-400 font-semibold">{formatPrice(item.precio * item.quantity)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
-              {/* Resumen del pedido */}
-              <div className="lg:col-span-1">
-                <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 sticky top-24">
-                  <h3 className="text-white text-xl font-bold mb-6">Resumen del Pedido</h3>
-                  
-                  <div className="space-y-4 mb-6">
-                    <div className="flex justify-between text-gray-300">
-                      <span>Subtotal ({getTotalItems()} items)</span>
-                      <span>{formatPrice(getTotalPrice())}</span>
-                    </div>
-                    <div className="flex justify-between text-gray-300">
-                      <span>Envío</span>
-                      <span className="text-green-400">Gratis</span>
-                    </div>
-                    <div className="border-t border-green-400/30 pt-4">
-                      <div className="flex justify-between text-white text-xl font-bold">
-                        <span>Total</span>
-                        <span className="text-green-400">{formatPrice(getTotalPrice())}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Link
-                    to="/checkout"
-                    className="block w-full bg-green-500 hover:bg-green-600 text-black py-3 px-4 rounded-lg font-bold text-lg transition-colors mb-4 text-center"
-                  >
-                    Proceder al Pago
-                  </Link>
-
-                  <Link
-                    to="/"
-                    className="block w-full text-center text-green-400 hover:text-green-300 py-2 font-medium transition-colors"
-                  >
-                    Continuar Comprando
-                  </Link>
-                </div>
+              {/* Botón para proceder al checkout */}
+              <div className="flex justify-end mb-6">
+                <button
+                  onClick={handleProceedToCheckout}
+                  className="bg-gradient-to-r from-green-400 to-blue-400 hover:from-green-500 hover:to-blue-500 text-black px-8 py-3 rounded-lg font-bold text-lg transition-all duration-300 shadow-lg shadow-green-400/25 hover:scale-105"
+                >
+                  Proceder al Pago
+                </button>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
