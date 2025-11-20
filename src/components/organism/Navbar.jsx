@@ -353,12 +353,12 @@ const Navbar = () => {
           ref={menuRef}
           className={`lg:hidden transition-all duration-300 ease-in-out ${
             isMenuOpen
-              ? "max-h-96 opacity-100 visible"
+              ? "max-h-[calc(100vh-4rem)] opacity-100 visible"
               : "max-h-0 opacity-0 invisible"
-          } overflow-hidden`}
+          } overflow-y-auto`}
           aria-hidden={!isMenuOpen}
         >
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-black/95 backdrop-blur-sm border-t border-green-400/30">
+          <div className="px-2 pt-2 pb-6 space-y-1 bg-black/95 backdrop-blur-sm border-t border-green-400/30">
             <Link
               to="/"
               onClick={navigateTo}
