@@ -265,7 +265,7 @@ const Navbar = () => {
             )}
 
             <Link
-              to={isAuthenticated ? "/carrito" : "/login"}
+              to="/carrito"
               onClick={navigateTo}
               className="relative group p-2 rounded-lg hover:bg-green-400/10 transition-all duration-300"
               aria-label="Ver carrito de compras"
@@ -285,7 +285,7 @@ const Navbar = () => {
 
           <div className="lg:hidden flex items-center space-x-2">
             <Link
-              to={isAuthenticated ? "/carrito" : "/login"}
+              to="/carrito"
               onClick={navigateTo}
               className="relative p-2 rounded-lg hover:bg-green-400/10 transition-all duration-300"
               aria-label="Ver carrito de compras"
