@@ -6,7 +6,8 @@ export async function addUser(userData) {
         const docRef = await addDoc(collection(db, "users"), { 
             ...userData, 
             fechaCreacion: new Date(),
-            rol: "usuario"
+            rol: "usuario",
+            estado: "activo"
         });
         return docRef.id;
     } catch (error) {
@@ -53,6 +54,20 @@ export async function getUserByEmail(email) {
         return null;
     } catch (error) {
         console.error("Error al obtener usuario por email:", error);
+        throw error;
+    }
+}
+
+export async function updateUserStatus(userId, newStatus) {
+    try {
+        const userRef = doc(db, "users", userId);
+        await updateDoc(userRef, {
+            estado: newStatus,
+            fechaActualizacion: new Date()
+        });
+        return true;
+    } catch (error) {
+        console.error("Error al actualizar estado del usuario:", error);
         throw error;
     }
 }
