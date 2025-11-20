@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNotifications } from "../../contexts/NotificationContext";
 import { createOrder } from "../../config/firestoreService";
 import { downloadEnhancedInvoicePDF } from "../../utils/pdfGenerator";
 import { useEmail } from "../../utils/hooks/useEmail";
@@ -11,6 +12,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { cartItems, getTotalItems, getTotalPrice, clearCart } = useCart();
   const { userData, isAuthenticated } = useAuth();
+  const { sendNotification, refreshNotifications } = useNotifications();
   const { sendInvoice, isSendingEmail, emailError, emailSuccess, clearEmailStates } = useEmail();
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
@@ -201,6 +203,35 @@ const Checkout = () => {
       setOrderId(firebaseOrderId);
       setCompletedOrderData(orderData);
       
+      // Enviar notificación de compra exitosa
+      if (isAuthenticated && userData?.uid) {
+        try {
+          console.log("Enviando notificación de compra exitosa para usuario:", userData.uid);
+          const notificationId = await sendNotification(userData.uid, {
+            titulo: "¡Compra realizada exitosamente!",
+            mensaje: `Tu orden ${orderData.numeroOrden} ha sido procesada correctamente. Total: ${formatPrice(getTotalPrice())}`,
+            tipo: "success",
+            extraData: {
+              orderId: firebaseOrderId,
+              orderNumber: orderData.numeroOrden
+            }
+          });
+          console.log("Notificación enviada con ID:", notificationId);
+          
+          // Recargar notificaciones múltiples veces para asegurar que aparezca
+          // Firebase puede tardar un poco en sincronizar
+          for (let i = 0; i < 3; i++) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await refreshNotifications();
+            console.log(`Intento ${i + 1} de recarga de notificaciones`);
+          }
+        } catch (notifError) {
+          console.error("Error al enviar notificación:", notifError);
+        }
+      } else {
+        console.warn("Usuario no autenticado, no se puede enviar notificación");
+      }
+      
       // Mostrar notificación de éxito
       setShowSuccessNotification(true);
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -214,6 +245,25 @@ const Checkout = () => {
       
     } catch (error) {
       console.error("Error al procesar el pago:", error);
+      
+      // Enviar notificación de error
+      if (isAuthenticated && userData?.uid) {
+        try {
+          await sendNotification(userData.uid, {
+            titulo: "Error al procesar tu compra",
+            mensaje: "Hubo un problema al procesar tu pago. Por favor, intenta de nuevo o contacta con soporte.",
+            tipo: "error",
+            extraData: {
+              error: error.message || "Error desconocido"
+            }
+          });
+          // Recargar notificaciones desde la base de datos para que aparezca inmediatamente
+          await refreshNotifications();
+        } catch (notifError) {
+          console.error("Error al enviar notificación de error:", notifError);
+        }
+      }
+      
       alert("Error al procesar el pago. Por favor, intenta de nuevo.");
     } finally {
       setIsProcessing(false);

@@ -17,6 +17,7 @@ import Cart from "../components/pages/Cart";
 import Checkout from "../components/pages/Checkout";
 import Orders from "../components/pages/Orders";
 import Profile from "../components/pages/Profile";
+import Notifications from "../components/pages/Notifications";
 import AdminDashboard from "../components/pages/AdminDashboard";
 
 // Componente Home
@@ -74,6 +75,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notificaciones"
+          element={
+            <ProtectedRoute>
+              <Notifications />
             </ProtectedRoute>
           }
         />
