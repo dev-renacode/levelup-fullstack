@@ -1,14 +1,18 @@
 import { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { createContact } from "../../config/firestoreService";
 
 export const useContactForm = () => {
+  const { userData, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
+    fullName: userData?.fullName || userData?.nombreCompleto || "",
+    email: userData?.email || "",
     content: "",
   });
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -69,15 +73,27 @@ export const useContactForm = () => {
     }
 
     setIsLoading(true);
+    setSuccessMessage("");
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Preparar datos del contacto
+      const contactData = {
+        idUsuario: isAuthenticated ? userData?.uid : null,
+        nombreCompleto: formData.fullName,
+        email: formData.email,
+        contenido: formData.content,
+        estado: "pendiente"
+      };
 
-      console.log("Mensaje enviado:", formData);
-      alert("¡Mensaje enviado exitosamente! Te responderemos pronto.");
+      // Guardar en Firebase
+      await createContact(contactData);
+
+      setSuccessMessage("¡Mensaje enviado exitosamente! Te responderemos pronto.");
+      
+      // Limpiar formulario (mantener nombre y email si está autenticado)
       setFormData({
-        fullName: "",
-        email: "",
+        fullName: userData?.fullName || userData?.nombreCompleto || "",
+        email: userData?.email || "",
         content: "",
       });
     } catch (error) {
@@ -92,6 +108,7 @@ export const useContactForm = () => {
     formData,
     errors,
     isLoading,
+    successMessage,
     handleInputChange,
     handleSubmit,
   };

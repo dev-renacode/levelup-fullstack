@@ -4,6 +4,8 @@ import { useAuth } from "../../contexts/AuthContext";
 import ProductManagement from "../molecules/ProductManagement";
 import OrdersManagement from "../molecules/OrdersManagement";
 import UsersManagement from "../molecules/UsersManagement";
+import ContactsManagement from "../molecules/ContactsManagement";
+import ReportsManagement from "../molecules/ReportsManagement";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 
 const AdminDashboard = () => {
@@ -72,6 +74,12 @@ const AdminDashboard = () => {
       <path d="M18 20V10"/>
       <path d="M12 20V4"/>
       <path d="M6 20v-6"/>
+    </svg>
+  );
+
+  const ContactsIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
     </svg>
   );
 
@@ -225,6 +233,18 @@ const AdminDashboard = () => {
               </button>
 
               <button
+                onClick={() => handleNavigate("contacts")}
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
+                  currentPage === "contacts"
+                    ? "bg-green-400/20 text-green-400 border border-green-400/30"
+                    : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
+                }`}
+              >
+                <ContactsIcon />
+                <span>Contactos</span>
+              </button>
+
+              <button
                 onClick={() => handleNavigate("reports")}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
                   currentPage === "reports"
@@ -278,6 +298,10 @@ const AdminDashboard = () => {
               <OrdersManagement />
             ) : currentPage === "users" ? (
               <UsersManagement />
+            ) : currentPage === "contacts" ? (
+              <ContactsManagement />
+            ) : currentPage === "reports" ? (
+              <ReportsManagement />
             ) : (
               <>
                 {/* Title Section */}
@@ -370,13 +394,16 @@ const AdminDashboard = () => {
               </div>
 
               {/* Reportes Card */}
-              <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300">
+              <button
+                onClick={() => handleNavigate("reports")}
+                className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 text-left w-full"
+              >
                 <div className="text-green-400 mb-4">
                   <FeatureReportsIcon />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2 font-[Orbitron]">Reportes</h3>
                 <p className="text-gray-300 text-sm">Generación de informes detallados sobre las operaciones del sistema.</p>
-              </div>
+              </button>
 
               {/* Perfil Card */}
               <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300">

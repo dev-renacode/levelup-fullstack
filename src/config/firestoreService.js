@@ -96,6 +96,62 @@ export async function deleteUser(userId) {
     }
 }
 
+// Funciones para manejar contactos
+export async function createContact(contactData) {
+    try {
+        const contactRef = await addDoc(collection(db, "contacto"), {
+            ...contactData,
+            fechaCreacion: new Date(),
+            estado: "pendiente"
+        });
+        return contactRef.id;
+    } catch (error) {
+        console.error("Error al crear contacto:", error);
+        throw error;
+    }
+}
+
+export async function getUserContacts(userId) {
+    try {
+        const q = query(collection(db, "contacto"), where("idUsuario", "==", userId));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map((doc) => ({ 
+            id: doc.id, 
+            ...doc.data() 
+        }));
+    } catch (error) {
+        console.error("Error al obtener contactos del usuario:", error);
+        throw error;
+    }
+}
+
+export async function getAllContacts() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "contacto"));
+        return querySnapshot.docs.map((doc) => ({ 
+            id: doc.id, 
+            ...doc.data() 
+        }));
+    } catch (error) {
+        console.error("Error al obtener todos los contactos:", error);
+        throw error;
+    }
+}
+
+export async function updateContactStatus(contactId, newStatus) {
+    try {
+        const contactRef = doc(db, "contacto", contactId);
+        await updateDoc(contactRef, {
+            estado: newStatus,
+            fechaActualizacion: new Date()
+        });
+        return true;
+    } catch (error) {
+        console.error("Error al actualizar estado del contacto:", error);
+        throw error;
+    }
+}
+
 export async function getAllProducts() {
     try {
         const querySnapshot = await getDocs(collection(db, "producto"));
