@@ -143,13 +143,6 @@ const Navbar = () => {
                     >
                       📦 Todas las categorías
                     </Link>
-                    <Link
-                      to="/categoria/Ofertas"
-                      onClick={() => { closeCategories(); navigateTo(); }}
-                      className="block px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all duration-300 font-[Roboto] font-semibold mb-1"
-                    >
-                      🔥 Ofertas
-                    </Link>
                     
                     {categories.length > 0 ? (
                       categories.map((category, index) => (
@@ -171,6 +164,17 @@ const Navbar = () => {
                 </div>
               )}
             </div>
+            <Link
+              to="/categoria/Ofertas"
+              onClick={navigateTo}
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:scale-105 font-[Roboto] ${
+                isActive("/categoria/Ofertas")
+                  ? "text-red-400 bg-red-400/10"
+                  : "text-white/90 hover:text-red-400 hover:bg-red-400/10"
+              }`}
+            >
+              🔥 Ofertas
+            </Link>
             <Link
               to="/nosotros"
               onClick={navigateTo}
@@ -366,6 +370,17 @@ const Navbar = () => {
             >
               Inicio
             </Link>
+            <Link
+              to="/categoria/Ofertas"
+              onClick={navigateTo}
+              className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-all duration-300 font-[Roboto] ${
+                isActive("/categoria/Ofertas")
+                  ? "text-red-400 bg-red-400/10"
+                  : "text-white hover:text-red-400 hover:bg-red-400/10"
+              }`}
+            >
+              🔥 Ofertas
+            </Link>
             <div className="px-3 py-2">
               <div className="text-white text-base font-medium font-[Roboto] mb-2">Categorías</div>
               <div className="space-y-1">
@@ -377,13 +392,6 @@ const Navbar = () => {
                 >
                   📦 Todas las categorías
                 </Link>
-                    <Link
-                      to="/categoria/Ofertas"
-                      onClick={navigateTo}
-                      className="block w-full text-left px-3 py-2 rounded-md text-sm text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-all duration-300 font-[Roboto] font-semibold border border-red-400/30 mb-2"
-                    >
-                      🔥 Ofertas
-                    </Link>
                 
                 {categories.length > 0 ? (
                   categories.map((category, index) => (
