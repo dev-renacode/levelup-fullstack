@@ -75,10 +75,14 @@ export async function updateUserStatus(userId, newStatus) {
 export async function updateUser(userId, userData) {
     try {
         const userRef = doc(db, "users", userId);
-        await updateDoc(userRef, {
+        
+        // Usar setDoc con merge: true para crear o actualizar el documento
+        // Esto evita el error si el documento no existe
+        await setDoc(userRef, {
             ...userData,
             fechaActualizacion: new Date()
-        });
+        }, { merge: true });
+        
         return true;
     } catch (error) {
         console.error("Error al actualizar usuario:", error);

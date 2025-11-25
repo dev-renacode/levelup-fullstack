@@ -36,6 +36,8 @@ const AuthProviderContent = ({ children }) => {
               rol: userInfo.rol || userInfo.role || "usuario", // Compatibilidad con datos antiguos
               role: userInfo.rol || userInfo.role || "usuario", // Mantener role para compatibilidad
               emailVerified: firebaseUser.emailVerified,
+              // Datos de domicilio
+              domicilio: userInfo.domicilio || null,
             });
           } else {
             // Si no hay datos en Firestore, usar datos básicos de Firebase
@@ -89,11 +91,34 @@ const AuthProviderContent = ({ children }) => {
     }
   };
 
+  const refreshUserData = async () => {
+    if (user) {
+      try {
+        const userInfo = await getUserByEmail(user.email);
+        if (userInfo) {
+          setUserData({
+            uid: user.uid,
+            email: user.email,
+            nombreCompleto: userInfo.nombreCompleto || userInfo.fullName,
+            fullName: userInfo.nombreCompleto || userInfo.fullName,
+            rol: userInfo.rol || userInfo.role || "usuario",
+            role: userInfo.rol || userInfo.role || "usuario",
+            emailVerified: user.emailVerified,
+            domicilio: userInfo.domicilio || null,
+          });
+        }
+      } catch (error) {
+        console.error("Error al recargar datos del usuario:", error);
+      }
+    }
+  };
+
   const value = {
     user,
     userData,
     loading,
     logout,
+    refreshUserData,
     isAuthenticated: !!user,
     isAdmin: userData?.rol === "admin" || userData?.role === "admin", // Compatibilidad con datos antiguos
   };

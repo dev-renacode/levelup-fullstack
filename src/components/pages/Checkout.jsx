@@ -49,13 +49,27 @@ const Checkout = () => {
     nombre: userData?.fullName?.split(" ")[0] || "",
     apellidos: userData?.fullName?.split(" ").slice(1).join(" ") || "",
     correo: userData?.email || "",
-    // Dirección de entrega
-    calle: "",
-    departamento: "",
-    region: "",
-    comuna: "",
-    indicaciones: ""
+    // Dirección de entrega - autocompletar desde domicilio guardado
+    calle: userData?.domicilio?.calle || "",
+    departamento: userData?.domicilio?.departamento || "",
+    region: userData?.domicilio?.region || "",
+    comuna: userData?.domicilio?.comuna || "",
+    indicaciones: userData?.domicilio?.indicaciones || ""
   });
+  
+  // Actualizar formulario cuando cambie userData o domicilio
+  useEffect(() => {
+    if (userData?.domicilio) {
+      setFormData(prev => ({
+        ...prev,
+        calle: userData.domicilio.calle || prev.calle,
+        departamento: userData.domicilio.departamento || prev.departamento,
+        region: userData.domicilio.region || prev.region,
+        comuna: userData.domicilio.comuna || prev.comuna,
+        indicaciones: userData.domicilio.indicaciones || prev.indicaciones
+      }));
+    }
+  }, [userData?.domicilio]);
 
   const [errors, setErrors] = useState({});
   
@@ -98,6 +112,20 @@ const Checkout = () => {
 
     checkFirstOrder();
   }, [isAuthenticated, userData?.uid]);
+  
+  // Cargar domicilio guardado al montar el componente
+  useEffect(() => {
+    if (userData?.domicilio) {
+      setFormData(prev => ({
+        ...prev,
+        calle: userData.domicilio.calle || prev.calle,
+        departamento: userData.domicilio.departamento || prev.departamento,
+        region: userData.domicilio.region || prev.region,
+        comuna: userData.domicilio.comuna || prev.comuna,
+        indicaciones: userData.domicilio.indicaciones || prev.indicaciones
+      }));
+    }
+  }, [userData?.domicilio]);
 
   if (!isAuthenticated || (cartItems.length === 0 && !paymentCompleted)) {
     return null;
@@ -794,8 +822,41 @@ const Checkout = () => {
 
             {/* Sección 3: Dirección de entrega */}
             <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
-              <h2 className="text-2xl font-bold text-white mb-2">Dirección de entrega de los productos</h2>
-              <p className="text-gray-400 text-sm mb-6">Ingrese direccion de forma detallada</p>
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <h2 className="text-2xl font-bold text-white mb-2">Dirección de entrega de los productos</h2>
+                  <p className="text-gray-400 text-sm">Ingrese direccion de forma detallada</p>
+                </div>
+                {userData?.domicilio?.calle && userData?.domicilio?.region && userData?.domicilio?.comuna && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData(prev => ({
+                        ...prev,
+                        calle: userData.domicilio.calle || prev.calle,
+                        departamento: userData.domicilio.departamento || prev.departamento,
+                        region: userData.domicilio.region || prev.region,
+                        comuna: userData.domicilio.comuna || prev.comuna,
+                        indicaciones: userData.domicilio.indicaciones || prev.indicaciones
+                      }));
+                    }}
+                    className="bg-green-500 hover:bg-green-600 text-black px-4 py-2 rounded-lg font-bold text-sm transition-colors flex items-center space-x-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span>Usar mi domicilio guardado</span>
+                  </button>
+                )}
+              </div>
+              {userData?.domicilio?.calle && userData?.domicilio?.region && userData?.domicilio?.comuna && (
+                <div className="mb-4 p-3 bg-green-500/10 border border-green-400/30 rounded-lg">
+                  <p className="text-green-400 text-sm font-semibold mb-1">💡 Tienes un domicilio guardado</p>
+                  <p className="text-gray-300 text-xs">
+                    {userData.domicilio.calle} {userData.domicilio.departamento ? `Depto. ${userData.domicilio.departamento}` : ''}, {userData.domicilio.comuna}, {userData.domicilio.region}
+                  </p>
+                </div>
+              )}
               
               <div className="space-y-4">
                 <div>
