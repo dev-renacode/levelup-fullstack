@@ -5,6 +5,8 @@ import { useProducts } from "../../utils/hooks/useProducts";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
 import ProductQuantityControls from "../molecules/ProductQuantityControls";
 import Breadcrumbs from "../molecules/Breadcrumbs";
+import { generateProductDescription } from "../../utils/productDescriptions";
+import { generateProductFeatures } from "../../utils/productFeatures";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -245,7 +247,7 @@ const ProductDetail = () => {
             <div>
               <h3 className="text-white text-xl font-bold mb-3">Descripción</h3>
               <p className="text-gray-300 leading-relaxed">
-                {product.descripcion || 'Descripción detallada no disponible. Este producto de gaming está diseñado para ofrecer la mejor experiencia a los jugadores más exigentes.'}
+                {product.descripcion || generateProductDescription(product)}
               </p>
             </div>
 
@@ -253,30 +255,14 @@ const ProductDetail = () => {
             <div>
               <h3 className="text-white text-xl font-bold mb-3">Características principales</h3>
               <ul className="space-y-2 text-gray-300">
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Tecnología gaming de última generación
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Diseño ergonómico y resistente
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Compatible con múltiples plataformas
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Garantía de 1 año
-                </li>
+                {generateProductFeatures(product).map((feature, index) => (
+                  <li key={index} className="flex items-center">
+                    <svg className="w-5 h-5 text-green-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>{feature}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 

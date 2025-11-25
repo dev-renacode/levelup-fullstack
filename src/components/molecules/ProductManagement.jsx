@@ -6,9 +6,9 @@ const ProductManagement = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState({ nombre: "", precio: 0, stock: 0, categoria: "", imagen: "" });
+  const [form, setForm] = useState({ nombre: "", precio: 0, stock: 0, categoria: "", imagen: "", descripcion: "" });
   const [creating, setCreating] = useState(false);
-  const [createForm, setCreateForm] = useState({ nombre: "", precio: "", stock: "", categoria: "", imagen: "" });
+  const [createForm, setCreateForm] = useState({ nombre: "", precio: "", stock: "", categoria: "", imagen: "", descripcion: "" });
   const [filter, setFilter] = useState("");
 
   const load = async () => {
@@ -46,12 +46,13 @@ const ProductManagement = () => {
       stock: p.stock ?? 0,
       categoria: p.categoria || "",
       imagen: p.imagen || "",
+      descripcion: p.descripcion || "",
     });
   };
 
   const onCancel = () => {
     setEditingId(null);
-    setForm({ nombre: "", precio: 0, stock: 0, categoria: "", imagen: "" });
+    setForm({ nombre: "", precio: 0, stock: 0, categoria: "", imagen: "", descripcion: "" });
   };
 
   const onSave = async (id) => {
@@ -64,6 +65,7 @@ const ProductManagement = () => {
         stock: Number(form.stock) || 0,
         categoria: form.categoria,
         imagen: form.imagen,
+        descripcion: form.descripcion || "",
       };
       if (current && typeof current.precio !== "undefined" && current.precio !== nextPrecio) {
         updates.precioAnterior = current.precio;
@@ -99,13 +101,14 @@ const ProductManagement = () => {
         stock: Number(createForm.stock) || 0,
         categoria: createForm.categoria.trim(),
         imagen: createForm.imagen.trim(),
+        descripcion: createForm.descripcion.trim() || "",
       };
       if (!payload.nombre) {
         alert("El nombre es requerido");
         return;
       }
       await createProduct(payload);
-      setCreateForm({ nombre: "", precio: "", stock: "", categoria: "", imagen: "" });
+      setCreateForm({ nombre: "", precio: "", stock: "", categoria: "", imagen: "", descripcion: "" });
       await load();
       alert("✅ Producto creado");
     } catch (e) {
@@ -151,12 +154,21 @@ const ProductManagement = () => {
       {/* Crear producto */}
       <div className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6">
         <h4 className="text-white font-semibold mb-4">Crear nuevo producto</h4>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-3">
           <input className="px-3 py-2 rounded bg-black/50 border border-green-400/30 text-white" placeholder="Nombre" value={createForm.nombre} onChange={(e)=>setCreateForm({...createForm, nombre:e.target.value})} />
           <input className="px-3 py-2 rounded bg-black/50 border border-green-400/30 text-white" placeholder="Precio" type="number" value={createForm.precio} onChange={(e)=>setCreateForm({...createForm, precio:e.target.value})} />
           <input className="px-3 py-2 rounded bg-black/50 border border-green-400/30 text-white" placeholder="Stock" type="number" value={createForm.stock} onChange={(e)=>setCreateForm({...createForm, stock:e.target.value})} />
           <input className="px-3 py-2 rounded bg-black/50 border border-green-400/30 text-white" placeholder="Categoría" value={createForm.categoria} onChange={(e)=>setCreateForm({...createForm, categoria:e.target.value})} />
           <input className="px-3 py-2 rounded bg-black/50 border border-green-400/30 text-white" placeholder="URL Imagen" value={createForm.imagen} onChange={(e)=>setCreateForm({...createForm, imagen:e.target.value})} />
+        </div>
+        <div className="mb-3">
+          <textarea 
+            className="w-full px-3 py-2 rounded bg-black/50 border border-green-400/30 text-white placeholder-gray-400 focus:outline-none focus:border-green-400" 
+            placeholder="Descripción del producto" 
+            value={createForm.descripcion} 
+            onChange={(e)=>setCreateForm({...createForm, descripcion:e.target.value})}
+            rows="3"
+          />
         </div>
         <div className="mt-3">
           <button disabled={creating} onClick={onCreate} className={`px-4 py-2 rounded-lg font-bold ${creating ? 'bg-gray-600 text-gray-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600 text-black'} `}>
@@ -175,6 +187,7 @@ const ProductManagement = () => {
               <th className="py-2 pr-4">Precio</th>
               <th className="py-2 pr-4">Stock</th>
               <th className="py-2 pr-4">Categoría</th>
+              <th className="py-2 pr-4">Descripción</th>
               <th className="py-2 pr-4">Imagen</th>
               <th className="py-2 pr-4">Acciones</th>
             </tr>
@@ -209,6 +222,18 @@ const ProductManagement = () => {
                     <input className="w-full px-3 py-2 rounded bg-black/50 border border-green-400/30 text-white" value={form.categoria} onChange={(e)=>setForm({...form, categoria:e.target.value})} />
                   ) : (
                     p.categoria || "-"
+                  )}
+                </td>
+                <td className="py-3 pr-4 min-w-[200px] max-w-[300px]">
+                  {editingId === p.id ? (
+                    <textarea 
+                      className="w-full px-3 py-2 rounded bg-black/50 border border-green-400/30 text-white" 
+                      value={form.descripcion} 
+                      onChange={(e)=>setForm({...form, descripcion:e.target.value})}
+                      rows="3"
+                    />
+                  ) : (
+                    <span className="text-white/70 text-xs line-clamp-2">{p.descripcion || "-"}</span>
                   )}
                 </td>
                 <td className="py-3 pr-4 w-56">

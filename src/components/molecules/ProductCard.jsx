@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
+import { generateProductDescription } from "../../utils/productDescriptions";
 
 const ProductCard = ({ product, onStockUpdate }) => {
   const navigate = useNavigate();
@@ -98,7 +99,7 @@ const ProductCard = ({ product, onStockUpdate }) => {
         </h3>
         
         <p className="text-gray-300 text-sm mb-3 line-clamp-2" itemProp="description">
-          {product.descripcion || 'Descripción no disponible'}
+          {product.descripcion || generateProductDescription(product)}
         </p>
         
         <div className="flex items-center justify-between mb-3">
