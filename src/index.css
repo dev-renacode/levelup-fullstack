@@ -3,11 +3,22 @@
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translate(-50%, -20px);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-in-centered {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
   }
 }
 
@@ -23,7 +34,11 @@
 }
 
 .animate-fade-in {
-  animation: fade-in 0.5s ease-out;
+  animation: fade-in 0.4s ease-out;
+}
+
+.animate-fade-in-centered {
+  animation: fade-in-centered 0.4s ease-out;
 }
 
 .animate-slide-in {
