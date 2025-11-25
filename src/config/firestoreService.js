@@ -292,7 +292,7 @@ export async function createOrder(orderData) {
         const orderRef = await addDoc(collection(db, "compras"), {
             ...orderData,
             fechaCreacion: new Date(),
-            estado: "pendiente",
+            estado: "completado",
             estadoPago: "pagado"
         });
         return orderRef.id;

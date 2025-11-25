@@ -663,7 +663,7 @@ const Profile = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 bg-black/80 backdrop-blur-sm p-8 overflow-y-auto min-h-screen">
+        <div className="flex-1 bg-black/80 backdrop-blur-sm p-25 overflow-y-auto min-h-screen">
           <div className="max-w-7xl mx-auto">
             {/* Title Section */}
             <div className="mb-8">
