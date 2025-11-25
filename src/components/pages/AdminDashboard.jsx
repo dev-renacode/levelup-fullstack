@@ -186,7 +186,7 @@ const AdminDashboard = () => {
             <div className="space-y-2">
               <button
                 onClick={() => handleNavigate("dashboard")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] cursor-pointer ${
                   currentPage === "dashboard"
                     ? "bg-green-400/20 text-green-400 border border-green-400/30"
                     : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
@@ -198,7 +198,7 @@ const AdminDashboard = () => {
 
               <button
                 onClick={() => handleNavigate("orders")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] cursor-pointer ${
                   currentPage === "orders"
                     ? "bg-green-400/20 text-green-400 border border-green-400/30"
                     : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
@@ -210,7 +210,7 @@ const AdminDashboard = () => {
 
               <button
                 onClick={() => handleNavigate("products")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] cursor-pointer ${
                   currentPage === "products"
                     ? "bg-green-400/20 text-green-400 border border-green-400/30"
                     : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
@@ -222,7 +222,7 @@ const AdminDashboard = () => {
 
               <button
                 onClick={() => handleNavigate("users")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] cursor-pointer ${
                   currentPage === "users"
                     ? "bg-green-400/20 text-green-400 border border-green-400/30"
                     : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
@@ -234,7 +234,7 @@ const AdminDashboard = () => {
 
               <button
                 onClick={() => handleNavigate("contacts")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] cursor-pointer ${
                   currentPage === "contacts"
                     ? "bg-green-400/20 text-green-400 border border-green-400/30"
                     : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
@@ -246,7 +246,7 @@ const AdminDashboard = () => {
 
               <button
                 onClick={() => handleNavigate("reports")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] cursor-pointer ${
                   currentPage === "reports"
                     ? "bg-green-400/20 text-green-400 border border-green-400/30"
                     : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
@@ -258,7 +258,7 @@ const AdminDashboard = () => {
 
               <Link
                 to="/admin/api-docs"
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] bg-cyan-500/20 text-cyan-400 border border-cyan-400/30 hover:bg-cyan-500/30 hover:text-cyan-300"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] bg-cyan-500/20 text-cyan-400 border border-cyan-400/30 hover:bg-cyan-500/30 hover:text-cyan-300 cursor-pointer"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -278,7 +278,7 @@ const AdminDashboard = () => {
             <div className="space-y-2">
               <Link
                 to="/perfil"
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 text-white/70 hover:text-green-400 hover:bg-green-400/10 font-[Roboto]"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 text-white/70 hover:text-green-400 hover:bg-green-400/10 font-[Roboto] cursor-pointer"
               >
                 <ProfileIcon />
                 <span>Perfil</span>
@@ -286,7 +286,7 @@ const AdminDashboard = () => {
 
               <button
                 onClick={handleStoreRedirect}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-green-500/20 border border-green-400/30 text-green-400 hover:bg-green-400/30 transition-all duration-300 font-[Roboto]"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-green-500/20 border border-green-400/30 text-green-400 hover:bg-green-400/30 transition-all duration-300 font-[Roboto] cursor-pointer"
               >
                 <StoreIcon />
                 <span>Tienda</span>
@@ -294,7 +294,7 @@ const AdminDashboard = () => {
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-red-500/20 border border-red-400/30 text-red-400 hover:bg-red-500/30 transition-all duration-300 font-[Roboto]"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-red-500/20 border border-red-400/30 text-red-400 hover:bg-red-500/30 transition-all duration-300 font-[Roboto] cursor-pointer"
               >
                 <LogoutIcon />
                 <span>Cerrar Sesión</span>
@@ -410,7 +410,7 @@ const AdminDashboard = () => {
               {/* Reportes Card */}
               <button
                 onClick={() => handleNavigate("reports")}
-                className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 text-left w-full"
+                className="bg-black/80 backdrop-blur-md border border-green-400/30 rounded-xl p-6 hover:border-green-400/50 hover:shadow-lg hover:shadow-green-400/20 transition-all duration-300 text-left w-full cursor-pointer"
               >
                 <div className="text-green-400 mb-4">
                   <FeatureReportsIcon />
