@@ -9,7 +9,7 @@ info:
 
 servers:
   - url: https://firestore.googleapis.com/v1
-    description: Firebase Firestore API
+    description: Firebase Firestore API - Level Up
 
 tags:
   - name: Dashboard
