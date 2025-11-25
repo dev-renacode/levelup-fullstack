@@ -210,11 +210,38 @@ const ProductManagement = () => {
                     new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(p.precio ?? 0)
                   )}
                 </td>
-                <td className="py-3 pr-4 w-24">
+                <td className="py-3 pr-4 min-w-[120px]">
                   {editingId === p.id ? (
-                    <input type="number" className="w-full px-3 py-2 rounded bg-black/50 border border-green-400/30 text-white" value={form.stock} onChange={(e)=>setForm({...form, stock:e.target.value})} />
+                    <input 
+                      type="text" 
+                      inputMode="numeric"
+                      className="w-full min-w-[100px] px-4 py-3 rounded-lg bg-white border-2 border-green-400 text-black font-bold text-xl focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-400/30 shadow-lg" 
+                      style={{ 
+                        color: '#000000', 
+                        fontSize: '20px', 
+                        fontWeight: 'bold',
+                        backgroundColor: '#ffffff',
+                        textAlign: 'center'
+                      }}
+                      value={form.stock || ''} 
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Solo permitir números enteros positivos
+                        if (value === "" || /^\d+$/.test(value)) {
+                          setForm({...form, stock: value === "" ? 0 : parseInt(value, 10) || 0});
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        // Prevenir caracteres no numéricos excepto teclas de control
+                        if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter', 'Home', 'End'].includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      placeholder="0"
+                      autoFocus
+                    />
                   ) : (
-                    p.stock ?? 0
+                    <span className={p.stock <= 0 ? 'text-red-400 font-bold text-lg' : 'text-white text-lg'}>{p.stock ?? 0}</span>
                   )}
                 </td>
                 <td className="py-3 pr-4 w-40">
