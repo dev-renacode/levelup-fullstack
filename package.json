@@ -8,7 +8,10 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "npm run build && npx firebase-tools deploy --only hosting"
+    "deploy": "npm run build && npx firebase-tools deploy --only hosting",
+    "test": "karma start karma.conf.cjs",
+    "test:watch": "karma start karma.conf.cjs --auto-watch=true --single-run=false",
+    "test:ci": "karma start karma.conf.cjs --browsers=ChromeHeadless --single-run=true"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -22,10 +25,13 @@
     "webpack": "^5.102.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
     "@eslint/js": "^9.33.0",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.0",
+    "babel-loader": "^10.0.0",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
@@ -35,6 +41,9 @@
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
     "karma-jasmine": "^5.1.0",
+    "karma-jasmine-html-reporter": "^2.1.0",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-spec-reporter": "^0.0.36",
     "karma-webpack": "^5.0.1",
     "vite": "^7.1.2"
   }

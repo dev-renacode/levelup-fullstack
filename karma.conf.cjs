@@ -2,7 +2,7 @@ const webpackConfig = require('./webpack.config.cjs')
 
 module.exports = function(config){
     config.set({
-        framework: ['jasmine'],
+        frameworks: ['jasmine'],
 
         files: [
             'src/test/unit/**/*.test.js'
@@ -33,7 +33,16 @@ module.exports = function(config){
             'karma-jasmine',
             'karma-chrome-launcher',
             'karma-webpack'
-        ]
+        ],
+        
+        // Asegurar que Jasmine se carga correctamente
+        client: {
+            jasmine: {
+                random: true,
+                seed: '4321',
+                stopOnFailure: false
+            },
+            clearContext: false
+        }
     })
 }
-
