@@ -19,6 +19,7 @@ import Orders from "../components/pages/Orders";
 import Profile from "../components/pages/Profile";
 import Notifications from "../components/pages/Notifications";
 import AdminDashboard from "../components/pages/AdminDashboard";
+import ApiDocs from "../components/pages/ApiDocs";
 
 // Componente Home
 const Home = () => (
@@ -93,6 +94,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute requireAdmin={true}>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/api-docs"
+          element={
+            <ProtectedRoute requireAdmin={true}>
+              <ApiDocs />
             </ProtectedRoute>
           }
         />
