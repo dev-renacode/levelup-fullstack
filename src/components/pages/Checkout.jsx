@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNotifications } from "../../contexts/NotificationContext";
-import { createOrder } from "../../config/firestoreService";
+import { createOrder, getUserOrders } from "../../config/firestoreService";
 import { downloadEnhancedInvoicePDF } from "../../utils/pdfGenerator";
 import { useEmail } from "../../utils/hooks/useEmail";
 import GameBackgroundEffects from "../molecules/GameBackgroundEffects";
@@ -20,6 +20,8 @@ const Checkout = () => {
   const [completedOrderData, setCompletedOrderData] = useState(null);
   const [processingStep, setProcessingStep] = useState("");
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [isFirstOrder, setIsFirstOrder] = useState(false);
+  const [checkingFirstOrder, setCheckingFirstOrder] = useState(true);
 
   // Datos de regiones y comunas de Chile
   const regionesYComunas = {
@@ -74,6 +76,29 @@ const Checkout = () => {
     }
   }, [cartItems.length, paymentCompleted, navigate]);
 
+  // Verificar si es el primer pedido del usuario
+  useEffect(() => {
+    const checkFirstOrder = async () => {
+      if (isAuthenticated && userData?.uid) {
+        try {
+          setCheckingFirstOrder(true);
+          const userOrders = await getUserOrders(userData.uid);
+          // Si no tiene órdenes, es su primer pedido
+          setIsFirstOrder(userOrders.length === 0);
+        } catch (error) {
+          console.error('Error al verificar primer pedido:', error);
+          setIsFirstOrder(false);
+        } finally {
+          setCheckingFirstOrder(false);
+        }
+      } else {
+        setCheckingFirstOrder(false);
+      }
+    };
+
+    checkFirstOrder();
+  }, [isAuthenticated, userData?.uid]);
+
   if (!isAuthenticated || (cartItems.length === 0 && !paymentCompleted)) {
     return null;
   }
@@ -84,6 +109,12 @@ const Checkout = () => {
       currency: 'CLP'
     }).format(price);
   };
+
+  // Calcular descuento del 20% si es el primer pedido
+  const discountPercentage = isFirstOrder ? 20 : 0;
+  const subtotal = getTotalPrice();
+  const discountAmount = isFirstOrder ? subtotal * 0.20 : 0;
+  const totalWithDiscount = subtotal - discountAmount;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -177,9 +208,12 @@ const Checkout = () => {
         })),
         
         // Totales
-        subtotal: getTotalPrice(),
+        subtotal: subtotal,
+        descuento: discountAmount,
+        porcentajeDescuento: discountPercentage,
+        esPrimerPedido: isFirstOrder,
         envio: 0, // Envío gratis
-        total: getTotalPrice(),
+        total: totalWithDiscount,
         
         // Metadatos
         totalProductos: getTotalItems(),
@@ -208,7 +242,7 @@ const Checkout = () => {
           console.log("Enviando notificación de compra exitosa para usuario:", userData.uid);
           const notificationId = await sendNotification(userData.uid, {
             titulo: "¡Compra realizada exitosamente!",
-            mensaje: `Tu orden ${orderData.numeroOrden} ha sido procesada correctamente. Total: ${formatPrice(getTotalPrice())}`,
+            mensaje: `Tu orden ${orderData.numeroOrden} ha sido procesada correctamente. Total: ${formatPrice(orderData.total)}${orderData.descuento > 0 ? ` (con ${orderData.porcentajeDescuento}% de descuento)` : ''}`,
             tipo: "success",
             extraData: {
               orderId: firebaseOrderId,
@@ -231,16 +265,15 @@ const Checkout = () => {
         console.warn("Usuario no autenticado, no se puede enviar notificación");
       }
       
+      // Establecer paymentCompleted antes de limpiar el carrito para evitar redirección
+      setPaymentCompleted(true);
+      
       // Mostrar notificación de éxito
       setShowSuccessNotification(true);
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      setPaymentCompleted(true);
-      
-      // Esperar más tiempo antes de limpiar el carrito para que el usuario pueda descargar la boleta
-      setTimeout(async () => {
-        await clearCart();
-      }, 30000); // 30 segundos de delay para dar tiempo a descargar la boleta
+      // Limpiar el carrito después de establecer paymentCompleted
+      await clearCart();
       
     } catch (error) {
       console.error("Error al procesar el pago:", error);
@@ -420,9 +453,21 @@ const Checkout = () => {
                         })}</span>
                       </div>
                       
+                      {completedOrderData?.descuento > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Subtotal:</span>
+                          <span className="text-white">{formatPrice(completedOrderData.subtotal)}</span>
+                        </div>
+                      )}
+                      {completedOrderData?.descuento > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-300">Descuento (20% primer pedido):</span>
+                          <span className="text-green-400 font-bold">-{formatPrice(completedOrderData.descuento)}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between">
                         <span className="text-gray-300">Total:</span>
-                        <span className="text-green-400 font-bold">{formatPrice(getTotalPrice())}</span>
+                        <span className="text-green-400 font-bold">{formatPrice(completedOrderData?.total || getTotalPrice())}</span>
                       </div>
                       
                       <div className="flex justify-between">
@@ -601,8 +646,45 @@ const Checkout = () => {
                 <h2 className="text-2xl font-bold text-white mb-2">Carrito de compra</h2>
                 <p className="text-gray-400 text-sm">Completa la siguiente información</p>
               </div>
-              <div className="bg-gradient-to-r from-green-400 to-blue-400 text-black px-6 py-3 rounded-lg font-bold text-lg">
-                Total a pagar: {formatPrice(getTotalPrice())}
+              <div className="text-right">
+                {isFirstOrder && (
+                  <div className="bg-gradient-to-r from-green-400 to-blue-400 text-black px-4 py-2 rounded-lg font-bold text-sm mb-2 animate-pulse">
+                    🎮 ¡20% OFF en tu primera compra!
+                  </div>
+                )}
+                <div className="bg-gradient-to-r from-green-400 to-blue-400 text-black px-6 py-3 rounded-lg font-bold text-lg">
+                  Total a pagar: {formatPrice(totalWithDiscount)}
+                </div>
+              </div>
+            </div>
+            
+            {/* Resumen de totales con descuento */}
+            <div className="bg-black/50 border border-green-400/30 rounded-lg p-4 mb-4">
+              <div className="space-y-2">
+                <div className="flex justify-between text-gray-300">
+                  <span>Subtotal:</span>
+                  <span>{formatPrice(subtotal)}</span>
+                </div>
+                {isFirstOrder && (
+                  <>
+                    <div className="flex justify-between text-green-400 font-bold">
+                      <span>Descuento (20% primer pedido):</span>
+                      <span>-{formatPrice(discountAmount)}</span>
+                    </div>
+                    <div className="border-t border-green-400/30 pt-2 mt-2">
+                      <div className="flex justify-between text-white font-bold text-lg">
+                        <span>Total:</span>
+                        <span className="text-green-400">{formatPrice(totalWithDiscount)}</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+                {!isFirstOrder && (
+                  <div className="flex justify-between text-white font-bold text-lg">
+                    <span>Total:</span>
+                    <span className="text-green-400">{formatPrice(totalWithDiscount)}</span>
+                  </div>
+                )}
               </div>
             </div>
             
