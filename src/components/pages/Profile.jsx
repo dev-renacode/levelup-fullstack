@@ -603,7 +603,7 @@ const Profile = () => {
               
               <button
                 onClick={() => setCurrentSection("info")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] cursor-pointer ${
                   currentSection === "info"
                     ? "bg-green-400/20 text-green-400 border border-green-400/30"
                     : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
@@ -615,7 +615,7 @@ const Profile = () => {
 
               <button
                 onClick={() => setCurrentSection("orders")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] cursor-pointer ${
                   currentSection === "orders"
                     ? "bg-green-400/20 text-green-400 border border-green-400/30"
                     : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
@@ -627,7 +627,7 @@ const Profile = () => {
 
               <button
                 onClick={() => setCurrentSection("contact")}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] ${
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 font-[Roboto] cursor-pointer ${
                   currentSection === "contact"
                     ? "bg-green-400/20 text-green-400 border border-green-400/30"
                     : "text-white/70 hover:text-green-400 hover:bg-green-400/10"
@@ -645,7 +645,7 @@ const Profile = () => {
             <div className="space-y-2">
               <button
                 onClick={handleStoreRedirect}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-green-500/20 border border-green-400/30 text-green-400 hover:bg-green-400/30 transition-all duration-300 font-[Roboto]"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-green-500/20 border border-green-400/30 text-green-400 hover:bg-green-400/30 transition-all duration-300 font-[Roboto] cursor-pointer"
               >
                 <StoreIcon />
                 <span className="text-white">Tienda</span>
@@ -653,7 +653,7 @@ const Profile = () => {
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center space-x-3 px-4 py- predecessors rounded-lg text-left bg-red-500/20 border border-red-400/30 text-red-400 hover:bg-red-500/30 transition-all duration-300 font-[Roboto]"
+                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left bg-red-500/20 border border-red-400/30 text-red-400 hover:bg-red-500/30 transition-all duration-300 font-[Roboto] cursor-pointer"
               >
                 <LogoutIcon />
                 <span>Cerrar Sesión</span>
@@ -663,7 +663,7 @@ const Profile = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 bg-black/80 backdrop-blur-sm p-25 overflow-y-auto min-h-screen">
+        <div className="flex-1 bg-black/80 backdrop-blur-sm p-8 overflow-y-auto min-h-screen">
           <div className="max-w-7xl mx-auto">
             {/* Title Section */}
             <div className="mb-8">
