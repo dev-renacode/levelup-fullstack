@@ -50,7 +50,7 @@ const Cart = () => {
                   Explora nuestras categorías y agrega productos a tu carrito
                 </p>
                 <Link
-                  to="/"
+                  to="/productos"
                   className="inline-block bg-green-500 hover:bg-green-600 text-black px-6 py-3 rounded-lg font-bold transition-colors"
                 >
                   Continuar Comprando

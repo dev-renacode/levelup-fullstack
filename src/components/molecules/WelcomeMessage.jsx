@@ -26,8 +26,8 @@ const WelcomeMessage = () => {
   }
 
   return (
-    <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full mx-4">
-      <div className="bg-green-500/90 backdrop-blur-md border border-green-400/50 rounded-xl shadow-2xl shadow-green-400/20 p-6 animate-fade-in">
+    <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full mx-4 animate-fade-in-centered">
+      <div className="bg-green-500/90 backdrop-blur-md border border-green-400/50 rounded-xl shadow-2xl shadow-green-400/20 p-6">
         <div className="flex items-center space-x-3">
           <div className="flex-shrink-0">
             <div className="w-10 h-10 bg-green-400/20 rounded-full flex items-center justify-center">
